@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Reps</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">欢迎使用远程医疗系统客户端</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="name_label">用户名：</string>
+    <string name="pwd_label">密码：</string>
+    <string name="exit">取消</string>
+	<string name="oldPwd_label">原密码：</string>
+	<string name="newPwd_label">新密码：</string>
+	<string name="confimPwd_label">确认密码：</string>
+	<string name="btn_edit">修改</string>
+	<string name="btn_cancel">取消</string>
+	<string name="app_title">远程医疗客户端</string>
+	<string name="patient">患者</string>
+	<string name="doctor">医生</string>
+	<string name="pharmacist">药师</string>
+	<string name="drug_administration">药监局</string>
+	<string name="forget_password">忘记密码？</string>
+	<string name="inputNameHnit">请输入登录帐号</string>
+	<string name="inputPwdHnit">请输入登录密码</string>
+
+</resources>
