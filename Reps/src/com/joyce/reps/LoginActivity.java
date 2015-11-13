@@ -36,17 +36,15 @@ import android.widget.Toast;
 @SuppressLint("HandlerLeak")
 public class LoginActivity extends Activity {
 	public static Handler sLoginHandler = null;
+	public static String mLoginUsername;
+	private TCPSocket mLoginSocket = Sockets.socket_center;
+	private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
 
 	private EditText mUsernametText, mPwdText;
 	private Button mLoginBtn;
 	private TextView mForgetPwd, mRegister;
 	private RadioGroup mUserTypes;
 	private RadioButton mChoosedType;
-
-	private String mLoginUsername;
-	private String mDefaultStore;
-	public TCPSocket mLoginSocket = Sockets.socket_center;
-	public ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,9 +114,9 @@ public class LoginActivity extends Activity {
 			}
 		};
 
-		String username = mUsernametText.getText().toString();
-		String pwd = mPwdText.getText().toString();
-		String type = mChoosedType.getText().toString();
+		String username = mUsernametText.getText().toString().trim();
+		String pwd = mPwdText.getText().toString().trim();
+		String type = mChoosedType.getText().toString().trim();
 		// 用户名和密码为空
 		if (username.length() == 0 || pwd.length() == 0) {
 			Toast.makeText(getApplicationContext(), "请输入用户名和密码",
@@ -160,7 +158,6 @@ public class LoginActivity extends Activity {
 		String login_result = "";
 		LoginBackInfo y = LoginBackInfo.getLogin_Back_Info(data.getM_buffer());
 		mLoginUsername = y.getUsername();
-		mDefaultStore = y.getPharmacist();
 		mLoginSocket.mUsername = y.getUsername();
 		boolean yesno = y.isYesno();
 		if (yesno) {

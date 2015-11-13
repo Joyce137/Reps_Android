@@ -15,6 +15,7 @@
 	<string name="btn_edit">修改</string>
 	<string name="btn_cancel">取消</string>
 	<string name="app_title">远程医疗客户端</string>
+	<string name="register_title">远程医疗客户端用户注册</string>
 	<string name="patient">患者</string>
 	<string name="doctor">医生</string>
 	<string name="pharmacist">药师</string>

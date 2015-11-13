@@ -4,10 +4,8 @@ import java.io.IOException;
 
 import android.util.Log;
 
-import com.joyce.reps.LoginActivity;
 import com.joyce.reps.model.Sockets;
 import com.joyce.reps.model.TCPSocket;
-import com.joyce.reps.serverInterface.LoginBackInfo;
 import com.joyce.reps.serverInterface.NetPack;
 import com.joyce.reps.serverInterface.PackHead;
 import com.joyce.reps.serverInterface.Types;
@@ -60,7 +58,7 @@ public class ReceiveThread extends Thread {
 						NetPack data = NetPack.getNET_PACKInfo(recvBuf);
 						if (data.VerifyCRC() == data.getM_Crc()) {
 							// 交给RecvPack处理
-							recvPack(data);
+							p.recvPack(data);
 
 							// 将recvBuf清空
 							for (int i = 0; i < recvBuf.length; i++) {
@@ -91,25 +89,6 @@ public class ReceiveThread extends Thread {
 					}
 				}
 			}
-		}
-	}
-
-	// 分发数据包RecvPack
-	public void recvPack(NetPack data) {
-		Log.e("RecvPack", "RecvPack------");
-		// 登录标志
-		if (data.getM_nFlag() == Types.Login_is) {
-			LoginBackInfo y = LoginBackInfo.getLogin_Back_Info(data
-					.getM_buffer());
-			if (y.getRecon() == Types.USER_LOGIN_FLAG) {
-				// 登录-向登录界面发消息
-				LoginActivity.sLoginHandler.obtainMessage(0, data)
-						.sendToTarget();
-			}
-		} else if (data.getM_nFlag() == Types.INFONOYES) {
-			// doControlMsg(data);
-		} else {
-			// onRecvNetPack(data);
 		}
 	}
 }

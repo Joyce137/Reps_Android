@@ -4,21 +4,21 @@ import com.joyce.reps.utils.Utils;
 
 //FileInfo   ---文件包信息
 public class FileInfo {
-	byte[] filename = new byte[100];
-	byte[] shop = new byte[12]; // 药店
-	byte[] doctor = new byte[12]; // 医生
-	byte[] pharmacist = new byte[12]; // 药剂师
-	int type; // 文件类型 1.指纹，2.资质图片，3.章，4.盖医生章的处方，5.盖药剂师和医生章的处方
-	int id; // 文件包id
-	int flag; // 是否是文件尾包
-	int start; // 文件转换为char数组好，每个报的数据从数组的那个位置开始写入
-	int len; // 文件的总字符数
-	int idnum; // 文件总ID数
-	int content_len;
-	byte[] content = new byte[Types.FILE_MAX_BAG];
-	byte[] random_str = new byte[20];
+	public byte[] filename = new byte[100];
+	public byte[] shop = new byte[12]; // 药店
+	public byte[] doctor = new byte[12]; // 医生
+	public byte[] pharmacist = new byte[12]; // 药剂师
+	public int type; // 文件类型 1.指纹，2.资质图片，3.章，4.盖医生章的处方，5.盖药剂师和医生章的处方
+	public int id; // 文件包id
+	public int flag; // 是否是文件尾包
+	public int start; // 文件转换为char数组好，每个报的数据从数组的那个位置开始写入
+	public int len; // 文件的总字符数
+	public int idnum; // 文件总ID数
+	public int content_len;
+	public byte[] content = new byte[Types.FILE_MAX_BAG];
+	public byte[] random_str = new byte[20];
 
-	int size = 100 + 12 + 12 + 12 + 4 + 4 + 4 + 4 + 4 + 4 + 4
+	public int size = 100 + 12 + 12 + 12 + 4 + 4 + 4 + 4 + 4 + 4 + 4
 			+ Types.FILE_MAX_BAG + 20;
 
 	public FileInfo() {

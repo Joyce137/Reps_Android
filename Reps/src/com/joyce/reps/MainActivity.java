@@ -12,6 +12,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+	public static MainActivity context;
 	private Button mLoginBtn;
 	private Button mRegBtn;
 

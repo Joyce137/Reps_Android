@@ -4,28 +4,28 @@ import com.joyce.reps.utils.Utils;
 
 //MSG_USER_INFO	 ---用户信息
 public class UserInfo {
-	byte[] sex = new byte[5];
-	byte[] age = new byte[5];
-	int status; // 登陆状态 0 离线；1 在线；3 忙碌
-	byte[] zhicheng = new byte[20]; // 职称
-	byte[] realName = new byte[25]; // 真实姓名
-	byte[] loginName = new byte[25];// 登录名 必须唯一
-	byte[] keshi = new byte[50]; // 科室
-	int type; // 用户类型 1.医生，2.药监局，3.患者，4.药剂师
-	int cw; // 中西药 true:中药，false:西药
-	byte[] address = new byte[100];
-	byte[] shopName = new byte[100];
-	byte[] doc_pha_address = new byte[100]; // 医生药剂师所属单位
-	int vip;
-	int off; // false：不能接受离线文件
-	byte[] phone = new byte[20]; // 电话
-	byte[] pharmacist = new byte[12]; // 关联的药剂师名称
-	byte[] password = new byte[15];
-	byte[] dianzhang = new byte[15];
-	byte[] caozuoyuan = new byte[15];
-	byte[] ID_Num = new byte[20];
-	byte[] yibao_Num = new byte[20];
-	byte[] pastDiseaseHistory = new byte[200];
+	public byte[] sex = new byte[5];
+	public byte[] age = new byte[5];
+	public int status; // 登陆状态 0 离线；1 在线；3 忙碌
+	public byte[] zhicheng = new byte[20]; // 职称
+	public byte[] realName = new byte[25]; // 真实姓名
+	public byte[] loginName = new byte[25];// 登录名 必须唯一
+	public byte[] keshi = new byte[50]; // 科室
+	public int type; // 用户类型 1.医生，2.药监局，3.患者，4.药剂师
+	public int cw; // 中西药 true:中药，false:西药
+	public byte[] address = new byte[100];
+	public byte[] shopName = new byte[100];
+	public byte[] doc_pha_address = new byte[100]; // 医生药剂师所属单位
+	public int vip;
+	public int off; // false：不能接受离线文件
+	public byte[] phone = new byte[20]; // 电话
+	public byte[] defaultStore = new byte[12]; // 关联的药店名
+	public byte[] password = new byte[15];
+	public byte[] dianzhang = new byte[15];
+	public byte[] caozuoyuan = new byte[15];
+	public byte[] ID_Num = new byte[20];
+	public byte[] yibao_Num = new byte[20];
+	public byte[] pastDiseaseHistory = new byte[200];
 
 	public static int size = 5 + 5 + 2 + 4 + 20 + 25 + 25 + 50 + 4 + 4 + 100
 			+ 100 + 100 + 4 + 4 + 20 + 12 + 15 + 15 + 15 + 20 + 20 + 200 + 3;
@@ -69,7 +69,7 @@ public class UserInfo {
 		// phone
 		System.arraycopy(phone, 0, buf, 452, phone.length);
 		// pharmacist
-		System.arraycopy(pharmacist, 0, buf, 472, pharmacist.length);
+		System.arraycopy(defaultStore, 0, buf, 472, defaultStore.length);
 		// password
 		System.arraycopy(password, 0, buf, 484, password.length);
 		// dianzhang
@@ -143,7 +143,7 @@ public class UserInfo {
 		p.phone = temp;
 		// pharmacist
 		System.arraycopy(buf, 472, temp, 0, 12);
-		p.pharmacist = temp;
+		p.defaultStore = temp;
 		// password
 		System.arraycopy(buf, 484, temp, 0, 15);
 		p.password = temp;

@@ -3,10 +3,10 @@ package com.joyce.reps.serverInterface;
 import com.joyce.reps.utils.Utils;
 
 //PostFileInfo  ---post基本文件信息到发送文件线程
-class PostFileInfo {
-	byte[] filename = new byte[100];
-	byte[] filepath = new byte[150];
-	int type;
+public class PostFileInfo {
+	public byte[] filename = new byte[100];
+	public byte[] filepath = new byte[150];
+	public int type;
 
 	public static int size = 100 + 150 + 4;
 	byte[] buf = new byte[size];

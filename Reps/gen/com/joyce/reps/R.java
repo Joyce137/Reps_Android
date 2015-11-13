@@ -134,21 +134,22 @@ public final class R {
         public static final int btn_cancel=0x7f05000c;
         public static final int btn_edit=0x7f05000b;
         public static final int confimPwd_label=0x7f05000a;
-        public static final int doctor=0x7f05000f;
-        public static final int drug_administration=0x7f050011;
+        public static final int doctor=0x7f050010;
+        public static final int drug_administration=0x7f050012;
         public static final int exit=0x7f050007;
-        public static final int forget_password=0x7f050012;
+        public static final int forget_password=0x7f050013;
         public static final int hello_world=0x7f050002;
-        public static final int inputNameHnit=0x7f050013;
-        public static final int inputPwdHnit=0x7f050014;
+        public static final int inputNameHnit=0x7f050014;
+        public static final int inputPwdHnit=0x7f050015;
         public static final int login=0x7f050003;
         public static final int name_label=0x7f050005;
         public static final int newPwd_label=0x7f050009;
         public static final int oldPwd_label=0x7f050008;
-        public static final int patient=0x7f05000e;
-        public static final int pharmacist=0x7f050010;
+        public static final int patient=0x7f05000f;
+        public static final int pharmacist=0x7f050011;
         public static final int pwd_label=0x7f050006;
         public static final int register=0x7f050004;
+        public static final int register_title=0x7f05000e;
     }
     public static final class style {
         /** 

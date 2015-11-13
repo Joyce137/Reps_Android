@@ -90,4 +90,18 @@ public class Utils {
 		return formatter.format(new Date());
 
 	}
+	
+	//判断是否仅包括数字、下划线和字母
+	public static boolean onlyIncludingNumber_Letter(String str){
+		for(int i = 0;i<str.length();i++){
+			char ch = str.charAt(i);
+			if((ch>='0'&&ch<='9')||(ch>='a'&&ch<='z')||(ch>='a'&&ch<='z')||ch == '_'){
+				continue;
+			}
+			else{
+				return false;
+			}
+		}
+		return true;
+	}
 }
