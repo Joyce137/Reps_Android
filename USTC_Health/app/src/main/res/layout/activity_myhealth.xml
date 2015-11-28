@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/activity_toolbar"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.0">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.example.administrator.ustc_health.HeartView
+                android:id="@+id/heart_view"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+            <LinearLayout
+                android:layout_width="20dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/gradient_bg"
+                android:elevation="5dp"></LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="85"
+                android:textColor="@android:color/white"
+                android:textSize="45sp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.0"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@android:color/white"
+            app:tabIndicatorColor="@android:color/holo_green_dark"
+            app:tabSelectedTextColor="@android:color/holo_green_dark"
+            app:tabTextColor="@android:color/black" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@android:color/white"
+
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </LinearLayout>
+
+</LinearLayout>
