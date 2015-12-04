@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.example.ustc.healthreps.model.Sockets;
 import com.example.ustc.healthreps.model.TCPSocket;
 import com.example.ustc.healthreps.patient.PatientActivity;
+import com.example.ustc.healthreps.register.RegisterActivity;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.Types;
@@ -39,6 +42,14 @@ public class LoginActivity extends Activity {
     private RadioGroup mUserTypes;
     private RadioButton mChoosedType;
 
+    private InputMethodLayout mLayout01;
+
+    TextView textView;
+    FrameLayout.LayoutParams layoutParams;
+    LinearLayout linearLayout;
+    FrameLayout frameLayout;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +58,48 @@ public class LoginActivity extends Activity {
         // 添加网络驻主线程网络访问权限
         AndroidNetAccess.netAccess();
 
+        //初始化布局
+        initLayout();
         // 初始化界面
         initView();
     }
 
+    private void initLayout() {
+        linearLayout = (LinearLayout) findViewById(R.id.layout_lin01);
+        frameLayout = (FrameLayout) findViewById(R.id.layout_fra01);
+        mLoginBtn = (Button) findViewById(R.id.loginOk);
+        mLayout01 = (InputMethodLayout) findViewById(R.id.layout_login01);
+        textView = (TextView) findViewById(R.id.layout_textview01);
+        layoutParams = (FrameLayout.LayoutParams) textView.getLayoutParams();
+        mLayout01.setOnkeyboarddStateListener(new InputMethodLayout.onKeyboardsChangeListener() {// 监听软键盘状态
+
+            @Override
+            public void onKeyBoardStateChange(int state) {
+                // TODO Auto-generated method stub
+                switch (state) {
+                    case InputMethodLayout.KEYBOARD_STATE_SHOW:
+
+
+                        mLoginBtn.setVisibility(View.INVISIBLE);
+                        frameLayout.setVisibility(View.GONE);
+                        linearLayout.setVisibility(View.VISIBLE);
+
+                        break;
+                    case InputMethodLayout.KEYBOARD_STATE_HIDE:
+                        linearLayout.setVisibility(View.GONE);
+                        frameLayout.setVisibility(View.VISIBLE);
+
+                        mLoginBtn.setVisibility(View.VISIBLE);
+
+
+                        break;
+                }
+            }
+        });
+    }
+
     private void initView() {
+
         mUsernametText = (EditText) findViewById(R.id.usernameText);
         mPwdText = (EditText) findViewById(R.id.pwdText);
         mUserTypes = (RadioGroup) findViewById(R.id.userTypeRadio);

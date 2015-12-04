@@ -35,7 +35,35 @@
         <activity android:name=".MainActivity"
             android:theme="@style/Theme.Login"></activity>
 
-        <activity android:name=".RegisterActivity"></activity>
+        <activity
+            android:name=".register.RegisterActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+
+        </activity>
+        <activity
+            android:name=".register.RegisterActivityFin"
+            android:parentActivityName=".register.RegisterActivityPh"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".register.RegisterActivityPh" />
+        </activity>
+        <activity
+            android:name=".register.RegisterActivityPh"
+            android:parentActivityName=".register.RegisterActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".register.RegisterActivity" />
+        </activity>
 
         <activity android:name=".patient.DoctorList"></activity>
         <activity android:name=".patient.PharmacistList"></activity>

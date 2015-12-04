@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-
+    <com.example.ustc.healthreps.InputMethodLayout
+        android:id="@+id/layout_login01"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_weight="4"
 
-        android:layout_weight="1"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:visibility="visible">
 
         <FrameLayout
+            android:id="@+id/layout_fra01"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -27,6 +29,7 @@
                 app:civ_border_width="2dp" />
 
             <TextView
+                android:id="@+id/layout_textview01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
@@ -47,14 +50,39 @@
                 android:textSize="20sp" />
 
         </FrameLayout>
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_lin01"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="15dp"
+                android:src="@mipmap/per_image"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="1dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Login In"
+                android:textColor="@android:color/white"
+                android:textSize="30dp" />
+        </LinearLayout>
+
+    </com.example.ustc.healthreps.InputMethodLayout>
 
 
     <LinearLayout
 
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="5"
         android:orientation="vertical">
 
         <LinearLayout
@@ -71,7 +99,6 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp">
 
