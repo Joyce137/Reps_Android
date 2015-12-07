@@ -46,9 +46,7 @@ public class DetailActivity extends ActionBarActivity implements android.view.Vi
         Student student = new Student();
         student = repo.getStudentById(_Student_Id);
 
-        editTextAge.setText(String.valueOf(student.age));
         editTextName.setText(student.name);
-        editTextEmail.setText(student.email);
     }
 
 
@@ -57,8 +55,6 @@ public class DetailActivity extends ActionBarActivity implements android.view.Vi
         if (view == findViewById(R.id.btnSave)){
             StudentRepo repo = new StudentRepo(this);
             Student student = new Student();
-            student.age= Integer.parseInt(editTextAge.getText().toString());
-            student.email=editTextEmail.getText().toString();
             student.name=editTextName.getText().toString();
             student.student_ID=_Student_Id;
 

@@ -1,58 +1,18 @@
 package com.example.ustc.sqlitetest;
 
 import android.app.ListActivity;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends ListActivity implements android.view.View.OnClickListener{
 
     Button btnGetAll;
     TextView student_Id;
-
-    @Override
-    public void onClick(View view) {
-
-
-            StudentRepo repo = new StudentRepo(this);
-
-            ArrayList<HashMap<String, String>> studentList =  repo.getStudentList();
-            if(studentList.size()!=0) {
-                ListView lv = getListView();
-                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        student_Id = (TextView) view.findViewById(R.id.student_Id);
-                        String studentId = student_Id.getText().toString();
-                        Intent objIndent = new Intent(getApplicationContext(), DetailActivity.class);
-                        objIndent.putExtra("student_Id", Integer.parseInt(studentId));
-                        startActivity(objIndent);
-                    }
-                });
-                ListAdapter adapter = new SimpleAdapter( MainActivity.this,studentList, R.layout.entry, new String[] { "id","name"}, new int[] {R.id.student_Id, R.id.student_name});
-                setListAdapter(adapter);
-
-        }
-    }
-
-    public static String getDataDir(Context context) throws Exception {
-        return context.getPackageManager()
-                .getPackageInfo(context.getPackageName(), 0)
-                .applicationInfo.dataDir;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,5 +21,28 @@ public class MainActivity extends ListActivity implements android.view.View.OnCl
 
         btnGetAll = (Button) findViewById(R.id.button);
         btnGetAll.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        //药品查询接口
+        String queryCategoryStr = "感";      //查询条件字符串
+        queryMedicinesByCategory(queryCategoryStr);
+    }
+
+    public void queryMedicinesByCategory(String queryCategoryStr){
+        DBManager dbManager = new DBManager(this);
+        dbManager.openDatabase();
+
+        SQLiteDatabase database = dbManager.getDatabase();
+
+        //Medicine逻辑对象
+        MedicineRepo mp = new MedicineRepo(database);
+
+        //查询结果列表
+        ArrayList<Medicine> list = mp.getMedicineByCategory(queryCategoryStr);
+        int count = list.size();
+
+        dbManager.closeDatabase();
     }
 }
