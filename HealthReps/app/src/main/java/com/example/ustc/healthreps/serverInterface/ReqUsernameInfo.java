@@ -2,7 +2,7 @@ package com.example.ustc.healthreps.serverInterface;
 
 //Req_Info_Username
 public class ReqUsernameInfo {
-	byte[] username = new byte[12];
+	public byte[] username = new byte[12];
 
 	public static int SIZE = 12;
 

@@ -17,8 +17,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ustc.healthreps.model.Sockets;
-import com.example.ustc.healthreps.model.TCPSocket;
+import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.serverInterface.ReqSingleUserInfo;
+import com.example.ustc.healthreps.serverInterface.ReqUsernameInfo;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.patient.PatientActivity;
 import com.example.ustc.healthreps.register.RegisterActivity;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
@@ -29,12 +32,16 @@ import com.example.ustc.healthreps.threads.ReceiveThread;
 import com.example.ustc.healthreps.utils.AndroidNetAccess;
 import com.example.ustc.healthreps.utils.CRC4;
 
+import java.io.UnsupportedEncodingException;
+
 public class LoginActivity extends Activity {
 
     public static Handler sLoginHandler = null;
     public static String mLoginUsername;
     private TCPSocket mLoginSocket = Sockets.socket_center;
     private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
+
+    private int userType;       //用户类型
 
     private EditText mUsernametText, mPwdText;
     private Button mLoginBtn;
@@ -176,19 +183,17 @@ public class LoginActivity extends Activity {
             crc.Encrypt(crcPwd, b);
 
             // 判断用户类型
+            userType = Types.USER_TYPE_PATIENT;
             if (type.equals("患者")) {
-                mLoginSocket.sendUserinfo(username, crcPwd,
-                        Types.USER_TYPE_PATIENT, Types.USER_LOGIN_FLAG);
+                userType = Types.USER_TYPE_PATIENT;
             } else if (type.equals("医生")) {
-                mLoginSocket.sendUserinfo(username, crcPwd,
-                        Types.USER_TYPE_DOCTOR, Types.USER_LOGIN_FLAG);
+                userType = Types.USER_TYPE_DOCTOR;
             } else if (type.equals("药师")) {
-                mLoginSocket.sendUserinfo(username, crcPwd,
-                        Types.USER_TYPE_PHA, Types.USER_LOGIN_FLAG);
+                userType = Types.USER_TYPE_PHA;
             } else {
-                mLoginSocket.sendUserinfo(username, crcPwd,
-                        Types.USER_TYPE_PATIENT, Types.USER_LOGIN_FLAG);
+                userType = Types.USER_TYPE_PATIENT;
             }
+            mLoginSocket.sendUserinfo(username, crcPwd, userType, Types.USER_LOGIN_FLAG);
         }
     }
 
@@ -202,17 +207,53 @@ public class LoginActivity extends Activity {
         boolean yesno = y.isYesno();
         if (yesno) {
             // 登录成功
-            login_result = "yes";
-            Log.e("login error", login_result);
+            Users.sLoginUsername = y.getUsername();
 
             if (Looper.myLooper() == null) {
                 Looper.prepare();
             }
-            // Toast.makeText(MainActivity.this, login_result,
-            // Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this,
-                    PatientActivity.class);
+
+            //请求登录用户信息
+            ReqSingleUserInfo info = new ReqSingleUserInfo();
+            try{
+                info.username = Users.sLoginUsername.getBytes("GBK");
+                info.type = userType;
+                info.isPicExist = true;
+            }catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            NetPack p = new NetPack(-1,ReqSingleUserInfo.SIZE,Types.MODIFY_USER_INFO,info.getReqSingleUserInfoBytes());
+            p.CalCRC();
+            Sockets.socket_center.sendPack(p);
+
+            //请求所有医生
+            ReqUsernameInfo req = new ReqUsernameInfo();
+            try{
+                req.username = Users.sLoginUsername.getBytes("GBK");
+            }catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            p = new NetPack(-1,ReqUsernameInfo.SIZE,Types.Req_AllDoctors,req.getReqUsernameInfoBytes());
+            p.CalCRC();
+            Sockets.socket_center.sendPack(p);
+
+
+            //判断用户类型，决定跳转界面
+            Intent intent = null;
+            if(userType == Types.USER_TYPE_PATIENT){
+                intent = new Intent(LoginActivity.this, PatientActivity.class);
+            }
+            else if (userType == Types.USER_TYPE_DOCTOR){
+                //医生界面
+            }
+            else if (userType == Types.USER_TYPE_PHA){
+                //药剂师界面
+            }
+            else{
+                //药监局
+            }
             startActivity(intent);
+
             // 关闭接收线程
             mReceiveThread.isTrue = false;
             mReceiveThread.interrupt();

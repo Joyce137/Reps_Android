@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.utils.AppPath;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,12 +22,9 @@ public class DBManager {
 
     private final int BUFFER_SIZE = 400000;
     public static final String DB_NAME = "medicine.db"; //保存的数据库文件名
-    public static final String PACKAGE_NAME = "com.example.ustc.healthreps";
 
     //在手机里存放数据库的位置(/data/data/com.example.ustc.healthreps/databases/medicine.db)
-    public static final String DB_PATH = "/data"
-            +Environment.getDataDirectory().getAbsolutePath() + "/"
-            + PACKAGE_NAME + "/databases";
+    public static final String DB_PATH = AppPath.getPathByFileType("databases");
 
     private SQLiteDatabase database;
     private Context context;
@@ -44,9 +42,7 @@ public class DBManager {
     }
 
     public void openDatabase() {
-        File file=new File(DB_PATH);
-        if(!file.exists())
-            file.mkdir();
+        AppPath.CheckAndMkdirPathExist(DB_PATH);
         this.database = this.openDatabase(DB_PATH + "/" + DB_NAME);
     }
 

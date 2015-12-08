@@ -4,9 +4,9 @@ import java.io.UnsupportedEncodingException;
 
 //绑定药店
 public class BindStore {
-	private String username; // char[15];
-	private String pha; // char[15];
-	private boolean yesno;
+	public String username; // char[15];
+	public String pha; // char[15];
+	public boolean yesno;
 
 	public BindStore() {
 		username = "";

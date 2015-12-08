@@ -1,7 +1,9 @@
-package com.example.ustc.healthreps.medicine;
+package com.example.ustc.healthreps.repo;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.ustc.healthreps.model.Medicine;
 
 import java.util.ArrayList;
 

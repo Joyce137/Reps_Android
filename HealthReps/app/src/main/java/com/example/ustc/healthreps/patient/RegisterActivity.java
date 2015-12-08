@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
-import com.example.ustc.healthreps.model.Sockets;
-import com.example.ustc.healthreps.model.TCPSocket;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.Types;

@@ -2,7 +2,7 @@ package com.example.ustc.healthreps.serverInterface;
 
 //HeartBeat
 public class HeartBeat {
-	byte[] username = new byte[15]; // char[15]
+	public byte[] username = new byte[15]; // char[15]
 	// byte ack; //确认字符ACK
 
 	public HeartBeat() {

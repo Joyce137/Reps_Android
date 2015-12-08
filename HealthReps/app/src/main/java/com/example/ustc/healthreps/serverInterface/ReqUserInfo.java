@@ -4,10 +4,10 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //ReqUserInfo
 public class ReqUserInfo {
-	int type;
-	byte[] keshi = new byte[100];
-	byte[] username = new byte[12];
-	boolean doc_pha; // 医生还是药剂师
+	public int type;
+	public byte[] keshi = new byte[100];
+	public byte[] username = new byte[12];
+	public boolean doc_pha; // 医生还是药剂师
 
 	public static int SIZE = 4+100+12+1+3;
 

@@ -2,20 +2,20 @@ package com.example.ustc.healthreps.serverInterface;
 
 //PreList  ---预购清单文件
 public class PreList {
-	byte[] patient = new byte[12]; // 病人姓名
-	byte[] sex = new byte[5];
-	byte[] age = new byte[5];
-	byte[] ID = new byte[5];
-	byte[] feibie = new byte[10];
-	byte[] address = new byte[100];
-	byte[] content = new byte[800];
-	byte[] shop = new byte[12];
-	byte[] doctor = new byte[12];
-	byte[] pharmacist = new byte[12];
-	byte[] phone = new byte[15];
-	byte[] selfreport = new byte[50]; // 患者自述
-	byte[] filename = new byte[100];
-	byte[] date = new byte[10];
+	public byte[] patient = new byte[12]; // 病人姓名
+	public byte[] sex = new byte[5];
+	public byte[] age = new byte[5];
+	public byte[] ID = new byte[5];
+	public byte[] feibie = new byte[10];
+	public byte[] address = new byte[100];
+	public byte[] content = new byte[800];
+	public byte[] shop = new byte[12];
+	public byte[] doctor = new byte[12];
+	public byte[] pharmacist = new byte[12];
+	public byte[] phone = new byte[15];
+	public byte[] selfreport = new byte[50]; // 患者自述
+	public byte[] filename = new byte[100];
+	public byte[] date = new byte[10];
 
 	public static int size = 12 + 5 + 5 + 5 + 10 + 100 + 800 + 12 + 12 + 12
 			+ 15 + 50 + 100 + 10;

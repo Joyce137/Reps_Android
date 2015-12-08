@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.model;
+package com.example.ustc.healthreps.socket;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +22,11 @@ import android.util.Log;
 import com.example.ustc.healthreps.BaseActivity;
 import com.example.ustc.healthreps.LoginActivity;
 import com.example.ustc.healthreps.MainActivity;
+import com.example.ustc.healthreps.model.DocPha;
+import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.patient.RegisterActivity;
+import com.example.ustc.healthreps.repo.ChangePwdRepo;
+import com.example.ustc.healthreps.repo.DocPhaRepo;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ErrorNo;
 import com.example.ustc.healthreps.serverInterface.FileInfo;
@@ -30,11 +34,16 @@ import com.example.ustc.healthreps.serverInterface.HeartBeat;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.PostFileInfo;
+import com.example.ustc.healthreps.serverInterface.PreList;
+import com.example.ustc.healthreps.serverInterface.ReqDoc;
+import com.example.ustc.healthreps.serverInterface.SingleUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.serverInterface.UserInfo;
 import com.example.ustc.healthreps.serverInterface.UserLogin;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
 import com.example.ustc.healthreps.threads.SendFileThread;
+import com.example.ustc.healthreps.utils.AppPath;
 import com.example.ustc.healthreps.utils.Utils;
 
 public class TCPSocket {
@@ -306,7 +315,28 @@ public class TCPSocket {
 			else if(y.getRecon() == Types.USER_ONLINE_FLAG){
 				//
 			}
-		} 
+		}
+		//请求单个用户信息
+		else if (data.getM_nFlag() == Types.REQ_SINGLE_USER_INFO){
+			DocPhaRepo.sDocPhaRepoHandler.obtainMessage(0, data).sendToTarget();
+		}
+
+		//请求个人用户信息
+		else if(data.getM_nFlag() == Types.MODIFY_USER_INFO){
+			//User Info
+			UserInfo userInfo = UserInfo.getMSG_USER_INFO(data.getM_buffer());
+			Users.sLoginUser = userInfo;
+		}
+
+		//请求所有医生信息
+		else if(data.getM_nFlag() == Types.Req_AllDoctors){
+			ReqDoc docInfo = ReqDoc.getReqDoc(data.getM_buffer());
+			DocPha doc = new DocPha();
+			System.arraycopy(docInfo.docName,0,doc.username,0,docInfo.docName.length);
+			System.arraycopy(docInfo.realName,0,doc.realname,0,docInfo.realName.length);
+			Users.sAllDoctors.add(doc);
+		}
+
 		//文件标志
 		else if(data.getM_nFlag() == Types.FILETAG){
 			saveFile(data);
@@ -359,6 +389,12 @@ public class TCPSocket {
 						mHeartBeatTask = null;
 					}
 				}
+				break;
+			//收到的是请求用户信息包
+			case Types.REQ_USER_INFO:
+				//搜索时显示的用户信息
+				DocPhaRepo.sDocPhaRepoHandler.obtainMessage(0, data).sendToTarget();
+				break;
 			default:
 				break;
 		}
@@ -375,6 +411,7 @@ public class TCPSocket {
 		//修改信息
 		else if(msg.getFlag() == Types.Mod_Info){
 			//modInfo_Dlg->OnrecvRegMessage(y);
+			ChangePwdRepo.sChangePwdRepoHandler.obtainMessage(0,msg).sendToTarget();
 		}
 		//修改密码
 		else if(msg.getFlag() == Types.Mod_Pass){
@@ -499,7 +536,7 @@ public class TCPSocket {
 	public boolean writeFile(FileInfo p, byte[] file) {
 		String filename = new String(p.filename);
 		File fp;
-		String path = getPath("file");
+		String path = AppPath.getPathByFileType("file");
 		if(p.type == Types.FILE_TYPE_PIC_REG || p.type == Types.FILE_TYPE_PIC_REG_SMALL){
 			path += "pic\\";
 			File f = new File(path);
@@ -606,12 +643,6 @@ public class TCPSocket {
 		sendPack(p);		
 	}
 
-	//GetPath -- databases : 存放位置
-	private String getPath(String type) {
-		Context c = MainActivity.context;
-		String path = c.getDatabasePath(type).toString()+"/";
-		return path;
-	}
 
 	private String getFileNameDate(String filename) {
 		//拆分
@@ -624,6 +655,26 @@ public class TCPSocket {
 		}
 		//如果不是，则使用现在时间
 		return Utils.getDate();
+	}
+
+
+	//保存清单文件
+	public boolean savePrelist(String path,PreList p){
+		byte[] prelist = new byte[2000];
+		prelist = p.getPreListBytes();
+		File f = new File(path);
+		if (!f.exists()){
+			return false;
+		}
+		try {
+			FileOutputStream fos = new FileOutputStream(f,false);
+			fos.write(prelist);
+			fos.flush();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 }

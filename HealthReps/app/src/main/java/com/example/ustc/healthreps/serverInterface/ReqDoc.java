@@ -4,8 +4,8 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //ReqDoc
 public class ReqDoc {
-	byte[] docName = new byte[12];
-	byte[] realName = new byte[20];
+	public byte[] docName = new byte[12];
+	public byte[] realName = new byte[20];
 
 	public static int SIZE = 12+20;
 

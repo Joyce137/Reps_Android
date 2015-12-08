@@ -4,9 +4,9 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //ReqSingleUserInfo-----请求时发的包
 public class ReqSingleUserInfo {
-	int type;
-	byte[] username = new byte[12];
-	boolean isPicExist;
+	public int type;
+	public byte[] username = new byte[12];
+	public boolean isPicExist;
 
 	public static int SIZE = 4+12+1+3;
 

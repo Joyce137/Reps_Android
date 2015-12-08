@@ -2,9 +2,9 @@ package com.example.ustc.healthreps.serverInterface;
 
 //Mod_PASSWORD  ---修改密码
 public class ModPassword {
-	byte[] name = new byte[30];
-	byte[] oldPwd = new byte[30];
-	byte[] newPwd = new byte[30];
+	public byte[] name = new byte[30];
+	public byte[] oldPwd = new byte[30];
+	public byte[] newPwd = new byte[30];
 
 	public static int SIZE = 30+30+30;
 

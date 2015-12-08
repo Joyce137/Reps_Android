@@ -6,22 +6,22 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //ModInfo  ---修改个人信息
 public class ModUserInfo {
-	byte[] sex = new byte[5];
-	byte[] age = new byte[5];
-	byte[] zhicheng = new byte[20]; // 职称
-	byte[] keshi = new byte[100]; // 科室
-	int cw; // 中西药 true:中药，false:西药
-	byte[] address = new byte[100];
-	byte[] shopName = new byte[100];
-	byte[] doc_pha_address = new byte[100]; // 医生药剂师所属单位
-	int vip;
-	int off; // false：不能接受离线文件
-	byte[] phone = new byte[20]; // 电话
-	byte[] pharmacist = new byte[12]; //关联的药剂师名称
-	byte[] dianzhang = new byte[15];	//店长
-	byte[] caozuoyuan = new byte[15];	//操作员
+	public byte[] sex = new byte[5];
+	public byte[] age = new byte[5];
+	public byte[] zhicheng = new byte[20]; // 职称
+	public byte[] keshi = new byte[100]; // 科室
+	public int cw; // 中西药 true:中药，false:西药
+	public byte[] address = new byte[100];
+	public byte[] shopName = new byte[100];
+	public byte[] doc_pha_address = new byte[100]; // 医生药剂师所属单位
+	public int vip;
+	public int off; // false：不能接受离线文件
+	public byte[] phone = new byte[20]; // 电话
+	public byte[] pharmacist = new byte[12]; //关联的药剂师名称
+	public byte[] dianzhang = new byte[15];	//店长
+	public byte[] caozuoyuan = new byte[15];	//操作员
 
-	public static int SIZE = 5+5+20+100+2+4+100+100+100+4+4+20+12+15+15;
+	public static int SIZE = 5+5+20+100+2+4+100+100+100+4+4+20+12+15+15+2;
 
 	//ModUserInfo->byte[]
 	public byte[] getModUserInfoBytes(){

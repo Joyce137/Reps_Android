@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.ustc.healthreps.model.Sockets;
+import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.serverInterface.PostFileInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 

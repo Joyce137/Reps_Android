@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.medicine;
+package com.example.ustc.healthreps.model;
 
 /**
  * Created by CaoRuijuan on 12/7/15.

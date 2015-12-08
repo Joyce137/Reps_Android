@@ -5,8 +5,8 @@ import java.util.TimerTask;
 import android.util.Log;
 
 import com.example.ustc.healthreps.BaseActivity;
-import com.example.ustc.healthreps.model.Sockets;
-import com.example.ustc.healthreps.model.TCPSocket;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.Types;
 
 //心跳包任务

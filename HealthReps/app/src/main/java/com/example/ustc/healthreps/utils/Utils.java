@@ -1,5 +1,7 @@
 package com.example.ustc.healthreps.utils;
 
+import com.example.ustc.healthreps.serverInterface.Types;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -103,5 +105,22 @@ public class Utils {
 			}
 		}
 		return true;
+	}
+
+	//密码加密
+	public static byte[] encryptPwd(String pwd){
+		String str = pwd;
+		byte crcPwd[] = str.getBytes();
+		for (int i = 0; i < crcPwd.length; i++)
+			crcPwd[i] = 0;
+		byte strb[] = str.getBytes();
+		for (int i = 0; i < str.length(); i++) {
+			crcPwd[i] = strb[i];
+		}
+		CRC4 crc = new CRC4();
+		byte b[] = Types.AES_KEY.getBytes();
+		crc.Encrypt(crcPwd, b);
+
+		return crcPwd;
 	}
 }

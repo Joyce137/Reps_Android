@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.ustc.healthreps.R;
-import com.example.ustc.healthreps.doctor.Doctor;
 
 public class DoctorList extends Activity implements OnItemClickListener {
 

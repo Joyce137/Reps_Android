@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.model;
+package com.example.ustc.healthreps.socket;
 
 //公共TCPSocket
 public class Sockets {

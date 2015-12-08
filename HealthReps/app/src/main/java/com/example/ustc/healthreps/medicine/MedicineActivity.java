@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.model.Medicine;
+import com.example.ustc.healthreps.repo.MedicineRepo;
 
 import java.util.ArrayList;
 

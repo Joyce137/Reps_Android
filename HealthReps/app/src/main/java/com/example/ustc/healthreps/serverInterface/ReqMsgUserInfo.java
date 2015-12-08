@@ -3,17 +3,17 @@ package com.example.ustc.healthreps.serverInterface;
 import com.example.ustc.healthreps.utils.Utils;
 
 //Req_MSG_USER_INFO	---刷新状态的时候显示的用户信息
-public class RefreshUserInfo {
-	byte[] sex = new byte[3];
-	int status; // 登陆状态 0 离线；1 在线；3 忙碌
-	byte[] zhicheng = new byte[20]; // 职称
-	byte[] realName = new byte[25]; // 真实姓名
-	byte[] loginName = new byte[25];// 登录名 必须唯一
+public class ReqMsgUserInfo {
+	public byte[] sex = new byte[3];
+	public int status; // 登陆状态 0 离线；1 在线；3 忙碌
+	public byte[] zhicheng = new byte[20]; // 职称
+	public byte[] realName = new byte[25]; // 真实姓名
+	public byte[] loginName = new byte[25];// 登录名 必须唯一
 
 	public static int SIZE = 3+1+4+20+25+25+2;
 
-	//RefreshUserInfo->byte[]
-	public byte[] getRefreshUserInfoBytes() {
+	//ReqMsgUserInfo->byte[]
+	public byte[] getReqMsgUserInfoBytes() {
 		byte[] buf = new byte[SIZE];
 		byte[] temp_int = null;
 
@@ -32,9 +32,9 @@ public class RefreshUserInfo {
 		return buf;
 	}
 
-	//byte[]->RefreshUserInfo
-	public static RefreshUserInfo getRefreshUserInfo(byte[] buf){
-		RefreshUserInfo p = new RefreshUserInfo();
+	//byte[]->ReqMsgUserInfo
+	public static ReqMsgUserInfo getReqMsgUserInfo(byte[] buf){
+		ReqMsgUserInfo p = new ReqMsgUserInfo();
 		byte[] temp = null;
 		byte[] temp_int = new byte[4];
 

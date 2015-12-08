@@ -4,9 +4,9 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //ReqFile 清单  资质图片  处方 等等
 public class ReqFile {
-	int type; // 2 资质图片， 1 指纹 ， 3 章 ，4 处方 盖医生章的 5 盖药剂师章和医生章的 6 预购清单
-	byte[] filename = new byte[100];
-	byte[] username = new byte[12];
+	public int type; // 2 资质图片， 1 指纹 ， 3 章 ，4 处方 盖医生章的 5 盖药剂师章和医生章的 6 预购清单
+	public byte[] filename = new byte[100];
+	public byte[] username = new byte[12];
 
 	public static int SIZE = 4+100+12;
 

@@ -4,9 +4,9 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //MSG_FILE_INFO_SINGLE  ---单个文件信息
 public class SingleFileInfo {
-	int type; // 文件类型
-	boolean flag; // false表示对方未接受，true表示已接受
-	byte[] filename = new byte[100];
+	public int type; // 文件类型
+	public boolean flag; // false表示对方未接受，true表示已接受
+	public byte[] filename = new byte[100];
 
 	public static int SIZE = 4+1+3+100;
 

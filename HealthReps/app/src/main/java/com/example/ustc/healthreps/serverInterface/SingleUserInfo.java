@@ -4,15 +4,15 @@ import com.example.ustc.healthreps.utils.Utils;
 
 //SingleUserInfo-----接收时的包
 public class SingleUserInfo {
-	int type;
-	byte[] phone = new byte[20];
-	byte[] address = new byte[100];
-	byte[] shopName = new byte[100];
-	byte[] dianzhang = new byte[15];
-	byte[] caozuoyuan = new byte[15];
-	byte[] realname = new byte[12];
-	byte[] zhicheng = new byte[20];
-	byte[] Doc_Pha_add = new byte[100];
+	public int type;
+	public byte[] phone = new byte[20];
+	public byte[] address = new byte[100];
+	public byte[] shopName = new byte[100];
+	public byte[] dianzhang = new byte[15];
+	public byte[] caozuoyuan = new byte[15];
+	public byte[] realname = new byte[12];
+	public byte[] zhicheng = new byte[20];
+	public byte[] Doc_Pha_add = new byte[100];
 
 	public static int SIZE = 4+20+100+100+15+15+12+20+100+2;
 
@@ -43,7 +43,7 @@ public class SingleUserInfo {
 		return buf;
 	}
 
-	public SingleUserInfo getSingleUserInfo(byte[] buf) {
+	public static SingleUserInfo getSingleUserInfo(byte[] buf) {
 		SingleUserInfo p = new SingleUserInfo();
 		byte[] temp = null;
 		byte[] temp_int = new byte[4];

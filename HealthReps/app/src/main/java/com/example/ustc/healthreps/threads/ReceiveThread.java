@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import android.util.Log;
 
-import com.example.ustc.healthreps.model.Sockets;
-import com.example.ustc.healthreps.model.TCPSocket;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.PackHead;
 import com.example.ustc.healthreps.serverInterface.Types;
