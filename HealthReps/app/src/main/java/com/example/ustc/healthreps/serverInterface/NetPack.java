@@ -120,6 +120,7 @@ public class NetPack {
 		// nDatalen
 		System.arraycopy(buf, 4, temp, 0, 2);
 		nDataLen = Utils.vtolh(temp);
+		Log.e("ReceiveMessageThread", "recvBuf--"+nDataLen);
 
 		// m_nFlag
 		System.arraycopy(buf, 6, temp, 0, 2);
@@ -151,11 +152,11 @@ public class NetPack {
 	}
 
 	public int VerifyCRC() {
-		int sum = 0;
+		long sum = 0;
 		Log.e("VerifyCRC", "nDataLen" + nDataLen);
 		for (int i = 0; i < nDataLen; i++) {
 			sum += m_buffer[i];
 		}
-		return sum % 65536;
+		return (int)sum % 65536;
 	}
 }

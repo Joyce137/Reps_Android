@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.repo.RegisterRepo;
+import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
@@ -37,6 +39,8 @@ public class RegisterActivity extends Activity {
 	private TCPSocket mRegisterSocket = Sockets.socket_center;
 	private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
 	private SendFileThread mSendFileThread = AllThreads.sSendFileThread;
+
+	public static Handler sRegResultHandler = null;
 	
 	public static final int REG_INFO_TYPE = 0x0003;
 	private int m_dlgType = REG_INFO_TYPE;
@@ -44,6 +48,9 @@ public class RegisterActivity extends Activity {
 	
 	private String sex, age, realName, userName, userPwd, defaultStore, phoneNum, province, city, street, address, IDNum, yibaoNum, pastDiseaseHistory;
 	int vip;
+
+	private RegisterRepo registerRepo = new RegisterRepo();
+	private User userText = new User();
 	
 	//View
 	private EditText mUsernameText,mRealNameText,mPwdText,mConfirmPwdText;
@@ -98,54 +105,40 @@ public class RegisterActivity extends Activity {
 				onRecvRegMessage(data);
 			}
 		};
+
+		//接收消息
+		sRegResultHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				int resultType = (int) msg.obj;
+				handleRegisterResult(resultType);
+			}
+		};
 		//检查输入
 		if(!checkInput()){
 			return;
 		}
-		//发头像
-		sendHeadPhoto();
-		
-		//发文本
-		sendTextInfo();
+		//注册
+		registerRepo.register(userText);
 	}
-	//发头像
-	private void sendHeadPhoto() {
-		String userName = mUsernameText.getText().toString();
-		String fileName = userName+".jpg";
-		m_picPath = "/sdcard2/1.jpg";
-		Sockets.socket_center.sendFile(m_picPath, fileName, Types.FILE_TYPE_PIC_REG);
-	}
-	
-	//发文本
-	private void sendTextInfo() {
-		UserInfo user = new UserInfo();
-		try{
-			user.realName = realName.getBytes("GBK");
-			user.loginName = userName.getBytes();
-			
-			byte[] strPwd = new byte[100];
-			strPwd = userPwd.getBytes();
-			CRC4 crc4 = new CRC4();
-			crc4.Encrypt(strPwd, Types.AES_KEY.getBytes());
-			user.password = strPwd;
-				
-			user.sex = sex.getBytes();
-			user.age = age.getBytes();
-			user.defaultStore = defaultStore.getBytes();
-			user.vip = vip;
-			user.phone = phoneNum.getBytes();
-			user.address = address.getBytes("GBK");
-			user.type = Types.USER_TYPE_PATIENT;
-			user.ID_Num = IDNum.getBytes();
-			user.yibao_Num = yibaoNum.getBytes();
-			user.pastDiseaseHistory = pastDiseaseHistory.getBytes("GBK");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+	//处理注册结果
+	public void handleRegisterResult(int resultType){
+		String type = null;
+		switch (resultType){
+			case 0:
+				type = "注册成功！";
+				break;
+			case 1:
+				type = "用户名已存在！";
+				break;
+			case 2:
+				type = "头像上传失败！";
+				break;
+			default:
+				break;
 		}
-			
-		NetPack pack = new NetPack(-1, UserInfo.size, m_dlgType == REG_INFO_TYPE?Types.Reg_Center:Types.Mod_Info, user.getMSG_USER_INFOBytes());
-		pack.CalCRC();
-		Sockets.socket_center.sendPack(pack);
+		Toast.makeText(getApplicationContext(), type,Toast.LENGTH_SHORT).show();
 	}
 
 	//获取输入

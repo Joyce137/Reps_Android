@@ -17,31 +17,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ustc.healthreps.database.entity.Cookie;
+import com.example.ustc.healthreps.database.impl.CookieDaoImpl;
 import com.example.ustc.healthreps.model.Users;
-import com.example.ustc.healthreps.serverInterface.ReqSingleUserInfo;
-import com.example.ustc.healthreps.serverInterface.ReqUsernameInfo;
-import com.example.ustc.healthreps.socket.Sockets;
-import com.example.ustc.healthreps.socket.TCPSocket;
-import com.example.ustc.healthreps.patient.PatientActivity;
+import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.register.RegisterActivity;
+import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
+import com.example.ustc.healthreps.serverInterface.ReqMsgUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
-import com.example.ustc.healthreps.threads.AllThreads;
-import com.example.ustc.healthreps.threads.ReceiveThread;
-import com.example.ustc.healthreps.utils.AndroidNetAccess;
-import com.example.ustc.healthreps.utils.CRC4;
-
-import java.io.UnsupportedEncodingException;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.utils.Utils;
 
 public class LoginActivity extends Activity {
-
-    public static Handler sLoginHandler = null;
-    public static String mLoginUsername;
-    private TCPSocket mLoginSocket = Sockets.socket_center;
-    private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
-
-    private int userType;       //用户类型
 
     private EditText mUsernametText, mPwdText;
     private Button mLoginBtn;
@@ -56,19 +45,38 @@ public class LoginActivity extends Activity {
     LinearLayout linearLayout;
     FrameLayout frameLayout;
 
+    private LoginRepo repo =  new LoginRepo();
+    public static Handler sLoginResultHandler = null;
+    private CookieDaoImpl cookieDao = new CookieDaoImpl(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // 添加网络驻主线程网络访问权限
-        AndroidNetAccess.netAccess();
+        //判断cookie是否有效,有效直接跳到主页面
+        Cookie cookie = repo.validCookie(cookieDao);
+        if(cookie != null){
+            Users.sLoginUsername = cookie.username;
+            Users.sLoginUserType = cookie.getRealType();
+            cookieDao.updateDate(0);
+            goToNextActivity(Users.sLoginUserType);
+        }
 
         //初始化布局
         initLayout();
         // 初始化界面
         initView();
+
+        // 接收消息
+        sLoginResultHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                int resulttype = (int)msg.obj;
+                handleLoginResult(resulttype);
+            }
+        };
     }
 
     private void initLayout() {
@@ -97,7 +105,6 @@ public class LoginActivity extends Activity {
                         frameLayout.setVisibility(View.VISIBLE);
 
                         mLoginBtn.setVisibility(View.VISIBLE);
-
 
                         break;
                 }
@@ -134,164 +141,91 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-    // 登录事件
-    protected void login() {
-        // 初始化socket
-        mLoginSocket.initSocket();
+   private void login(){
+       String username = mUsernametText.getText().toString().trim();
+       String pwd = mPwdText.getText().toString().trim();
+       String type = mChoosedType.getText().toString().trim();
+       // 用户名和密码为空
+       if (username.length() == 0 || pwd.length() == 0) {
+           Toast.makeText(getApplicationContext(), "请输入用户名和密码",
+                   Toast.LENGTH_SHORT).show();
+       } else {
+           repo.login(username, pwd, type);
+       }
+   }
 
-        // 启动接收线程
-        if (mReceiveThread == null) {
-            mReceiveThread = new ReceiveThread();
-            mReceiveThread.start();
-        }
 
-        // 接收消息
-        sLoginHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                NetPack data = (NetPack) msg.obj;
-                onRecvLoginMessage(data);
-            }
-        };
 
-        String username = mUsernametText.getText().toString().trim();
-        String pwd = mPwdText.getText().toString().trim();
-        String type = mChoosedType.getText().toString().trim();
-        // 用户名和密码为空
-        if (username.length() == 0 || pwd.length() == 0) {
-            Toast.makeText(getApplicationContext(), "请输入用户名和密码",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            // 密码加密
-            String str = pwd;
-            byte crcPwd[] = str.getBytes();
-            for (int i = 0; i < crcPwd.length; i++)
-                crcPwd[i] = 0;
-            byte strb[] = str.getBytes();
-            for (int i = 0; i < str.length(); i++) {
-                crcPwd[i] = strb[i];
-            }
-            CRC4 crc = new CRC4();
-            byte b[] = Types.AES_KEY.getBytes();
-            crc.Encrypt(crcPwd, b);
+    //登录结果处理
+    public void handleLoginResult(int resultType){
+        //0-登录成功；1-密码或账号错误；2-已经在线; 3-账号与客户端不匹配; type-审核未通过
+        switch (resultType){
+            //登录成功
+            case 0:
+                //添加到cookie
+                repo.addToCookie(cookieDao);
 
-            // 判断用户类型
-            userType = Types.USER_TYPE_PATIENT;
-            if (type.equals("患者")) {
-                userType = Types.USER_TYPE_PATIENT;
-            } else if (type.equals("医生")) {
-                userType = Types.USER_TYPE_DOCTOR;
-            } else if (type.equals("药师")) {
-                userType = Types.USER_TYPE_PHA;
-            } else {
-                userType = Types.USER_TYPE_PATIENT;
-            }
-            mLoginSocket.sendUserinfo(username, crcPwd, userType, Types.USER_LOGIN_FLAG);
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+                goToNextActivity(Users.sLoginUserType);
+                Looper.loop();
+                break;
+            //登录失败
+            default:
+                String login_result = null;
+                switch (resultType) {
+                    case 1:
+                        login_result = "账号或者密码错误";
+                        break;
+                    case 2:
+                        login_result = "该账号已经在线";
+                        break;
+                    case 3:
+                        login_result = "账号与客户端不匹配";
+                        break;
+                    case 4:
+                        login_result = "审核未通过";
+                        break;
+                    default:
+                        break;
+                }
+
+                Log.e("login error", login_result);
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+                Toast.makeText(LoginActivity.this, login_result, Toast.LENGTH_SHORT)
+                        .show();
+                Looper.loop();
+                break;
         }
     }
 
-    // 收到login登录结果信息
-    public void onRecvLoginMessage(NetPack data) {
-        System.out.println("onRecvLoginMessage-----------");
-        String login_result = "";
-        LoginBackInfo y = LoginBackInfo.getLogin_Back_Info(data.getM_buffer());
-        mLoginUsername = y.getUsername();
-        mLoginSocket.mUsername = y.getUsername();
-        boolean yesno = y.isYesno();
-        if (yesno) {
-            // 登录成功
-            Users.sLoginUsername = y.getUsername();
+    //判断用户类型，决定跳转界面
+    public  void goToNextActivity(String userType){
+        Intent intent = null;
 
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
-
-            //请求登录用户信息
-            ReqSingleUserInfo info = new ReqSingleUserInfo();
-            try{
-                info.username = Users.sLoginUsername.getBytes("GBK");
-                info.type = userType;
-                info.isPicExist = true;
-            }catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            NetPack p = new NetPack(-1,ReqSingleUserInfo.SIZE,Types.MODIFY_USER_INFO,info.getReqSingleUserInfoBytes());
-            p.CalCRC();
-            Sockets.socket_center.sendPack(p);
-
-            //请求所有医生
-            ReqUsernameInfo req = new ReqUsernameInfo();
-            try{
-                req.username = Users.sLoginUsername.getBytes("GBK");
-            }catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            p = new NetPack(-1,ReqUsernameInfo.SIZE,Types.Req_AllDoctors,req.getReqUsernameInfoBytes());
-            p.CalCRC();
-            Sockets.socket_center.sendPack(p);
-
-
-            //判断用户类型，决定跳转界面
-            Intent intent = null;
-            if(userType == Types.USER_TYPE_PATIENT){
-                intent = new Intent(LoginActivity.this, PatientActivity.class);
-            }
-            else if (userType == Types.USER_TYPE_DOCTOR){
-                //医生界面
-            }
-            else if (userType == Types.USER_TYPE_PHA){
-                //药剂师界面
-            }
-            else{
-                //药监局
-            }
-            startActivity(intent);
-
-            // 关闭接收线程
-            mReceiveThread.isTrue = false;
-            mReceiveThread.interrupt();
-            mReceiveThread = null;
-            Looper.loop();
-        } else {
-            // 1、登陆的时候 type = 1 密码和账号错误；type = 2 已经在线; type = 3 使用错了客户端; type =
-            // 4 审核未过
-            int type = y.getType();
-            switch (type) {
-                case 1:
-                    login_result = "账号或者密码错误";
-                    break;
-                case 2:
-                    login_result = "该账号已经在线";
-                    break;
-                case 3:
-                    login_result = "账号与客户端不匹配";
-                    break;
-                case 4:
-                    login_result = "审核未通过";
-                    break;
-                default:
-                    break;
-            }
-
-            Log.e("login error", login_result);
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
-            Toast.makeText(LoginActivity.this, login_result, Toast.LENGTH_SHORT)
-                    .show();
-            // 关闭接收线程
-            mReceiveThread.isTrue = false;
-            mReceiveThread.interrupt();
-            mReceiveThread = null;
-            Looper.loop();
+        if(userType == "患者"){
+            intent = new Intent(LoginActivity.this, TestActivity.class);
         }
+        else if (userType == "医生"){
+            //医生界面
+        }
+        else if (userType == "药师"){
+            //药剂师界面
+        }
+        else{
+            //药监局
+        }
+
+        startActivity(intent);
     }
 
 }

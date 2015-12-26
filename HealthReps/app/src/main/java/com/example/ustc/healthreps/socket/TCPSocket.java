@@ -7,26 +7,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Map.Entry;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.example.ustc.healthreps.BaseActivity;
-import com.example.ustc.healthreps.LoginActivity;
-import com.example.ustc.healthreps.MainActivity;
 import com.example.ustc.healthreps.model.DocPha;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.patient.ChatActivity;
 import com.example.ustc.healthreps.patient.RegisterActivity;
+import com.example.ustc.healthreps.patient.State;
 import com.example.ustc.healthreps.repo.ChangePwdRepo;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
+import com.example.ustc.healthreps.repo.LoginRepo;
+import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ErrorNo;
 import com.example.ustc.healthreps.serverInterface.FileInfo;
@@ -36,7 +40,7 @@ import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.PostFileInfo;
 import com.example.ustc.healthreps.serverInterface.PreList;
 import com.example.ustc.healthreps.serverInterface.ReqDoc;
-import com.example.ustc.healthreps.serverInterface.SingleUserInfo;
+import com.example.ustc.healthreps.serverInterface.ReqFileInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.serverInterface.UserInfo;
 import com.example.ustc.healthreps.serverInterface.UserLogin;
@@ -52,9 +56,11 @@ public class TCPSocket {
 	private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
 	private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
 	
-	Map<String, byte[]>filenametofile;
-	Map<String, Set<Integer>>filenametoid;
+	Map<String, byte[]>filenametofile = new HashMap<>();
+	Map<String, Set<Integer>>filenametoid = new HashMap<>();
 	Set<String> fail_filename;
+
+	public ArrayList<FileInfo> fileInfoList = new ArrayList<FileInfo>();
 	
 	// 初始化Socket
 	// InitSocket
@@ -64,9 +70,18 @@ public class TCPSocket {
 		try {
 			Log.e("InitSocket", "1");
 			addr = InetAddress.getByName(DefaultIP);
-			mSocket = new Socket(addr, DefaultPort);
-
-			return true;
+			if(mSocket == null){
+//				mSocket = new Socket(addr, DefaultPort);
+//				mSocket.setSoTimeout(1000*5);
+				//设置超时时间为5s
+				mSocket = new Socket();
+				InetSocketAddress address = new InetSocketAddress(addr,DefaultPort);
+				mSocket.connect(address,1000*5);
+			}
+			if(mSocket.isConnected())
+				return true;
+			else
+				return false;
 		} catch (UnknownHostException e) {
 			Log.e("InitSocket", "2");
 			e.printStackTrace();
@@ -75,17 +90,22 @@ public class TCPSocket {
 			Log.e("InitSocket", "3");
 			e.printStackTrace();
 			return false;
+		} catch (Exception e){
+			Log.e("InitSocket", "4");
+			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public void initSocket() {
+	public boolean initSocket() {
 		if (!initSocket(Types.center_Port, Types.version_IP))
 			if (!initSocket(Types.center_Port, Types.version_IP))
 				if (!initSocket(Types.center_Port, Types.version_IP)) {
 					System.out.println("网络故障，请稍后重试");
-					return;
+					return false;
 				}
 		Log.e("initSocket", "initSocket成功！");
+		return true;
 	}
 	
 	//ShutSocket
@@ -308,17 +328,18 @@ public class TCPSocket {
 					.getM_buffer());
 			if (y.getRecon() == Types.USER_LOGIN_FLAG) {
 				// 登录-向登录界面发消息
-				LoginActivity.sLoginHandler.obtainMessage(0, data)
+				LoginRepo.sLoginHandler.obtainMessage(0, data)
 						.sendToTarget();
 			}
 			//上线标志
 			else if(y.getRecon() == Types.USER_ONLINE_FLAG){
-				//
+				//设置用户在线
+				Users.sOnline = true;
 			}
 		}
 		//请求单个用户信息
 		else if (data.getM_nFlag() == Types.REQ_SINGLE_USER_INFO){
-			DocPhaRepo.sDocPhaRepoHandler.obtainMessage(0, data).sendToTarget();
+			//DocPhaRepo.sDocPhaRepoHandler.obtainMessage(0, data).sendToTarget();
 		}
 
 		//请求个人用户信息
@@ -339,6 +360,9 @@ public class TCPSocket {
 
 		//文件标志
 		else if(data.getM_nFlag() == Types.FILETAG){
+			saveFile(data);
+		}
+		else if(data.getM_nFlag() == Types.FileList){
 			saveFile(data);
 		}
 		//一些控制信息
@@ -370,11 +394,13 @@ public class TCPSocket {
 						.getM_buffer());
 				//重连成功
 				if(y.isYesno()){
+					Users.sOnline = true;
 					BaseActivity.mBeatTimes = 0;
 					sendHeartBeat();
 				}
 				//该用户已在别处登陆，断线重连失败
 				else{
+					Users.sOnline = false;
 					String reconAlert = "该用户已在别处登陆，断线重连失败，如需请重新登陆";
 					//重连失败，向根页面发消息
 					BaseActivity.sAlertHandler.obtainMessage(0, reconAlert)
@@ -394,6 +420,10 @@ public class TCPSocket {
 			case Types.REQ_USER_INFO:
 				//搜索时显示的用户信息
 				DocPhaRepo.sDocPhaRepoHandler.obtainMessage(0, data).sendToTarget();
+				break;
+			//聊天信息
+			case Types.ForwardInfo:
+				ChatActivity.sChatHandler.obtainMessage(0, data).sendToTarget();
 				break;
 			default:
 				break;
@@ -427,105 +457,114 @@ public class TCPSocket {
 	    	//Main_Dlg->OnRecvControlMsg(y);
 	    }       
 	}
-	
+
+	public void TimerProc(){
+		synchronized (this){
+			Iterator<Entry<String, byte[]>> iter = filenametofile.entrySet().iterator();
+			//for(iter = filenametofile.entrySet().)
+		}
+	}
 	//保存文件SaveFile
 	public void saveFile(NetPack data) {
 		//临界区操作
 		synchronized (this) {
 			FileInfo p = FileInfo.getFileInfo(data.getM_buffer());
+			//添加到文件列表
+			fileInfoList.add(p);
+			Log.e("saveFile", "pack_id: " + p.id);
+
 			int len = p.len,i,idnum = p.idnum;
-			String filename = new String(p.filename);
 			String random_str = new String(p.random_str);
 			//Map与迭代器
-			filenametofile = new HashMap<String, byte[]>();
 			Iterator<Entry<String, byte[]>> iter = filenametofile.entrySet().iterator();
-			
-			//寻找random_str			
+			Entry<String,byte[]> entry = null;
+
+			//寻找random_str	--->iter指向对应的filenametofile
 			while(iter.hasNext()){
-				String key = iter.next().getKey();
+				entry = iter.next();
+				String key = entry.getKey();
 				if(key == random_str){
 					break;
 				}
-			}			
-			
+			}
+
 			//找不到且包flag为文件开始
 			if(!filenametofile.containsKey(random_str)&&p.flag == Types.FILESTRAT){
-				//filenametofile处理
+				//filenametofile处理，添加开始包
 				byte[] file = new byte[len];
 				filenametofile.put(random_str, file);
-				
-				Set<Integer> s = null;
+
+				//指定该文件的其他内容包索引到filenametoid
+				Set<Integer> s = new HashSet<>();
 				for(i = 1;i<=idnum;i++){
 					if(i!=p.id){
-						s.add(i);
+						s.add(new Integer(i));
 					}
 					else{
 						System.arraycopy(p.content, 0, file, p.start, p.content_len);
 					}
 				}
-				
-				//filenametoid处理
-				filenametoid = new HashMap<String, Set<Integer>>();
 				filenametoid.put(random_str, s);
-				
+
+				//如果文件只有一个包
 				if(idnum == 1){
-					if(!writeFile(p, iter.next().getValue())){
-						//文件发送失败
-						System.out.println("文件发送失败");
+					//写文件
+					if(!writeFile(p, entry.getValue())){
+						//写文件失败
+						System.out.println("写文件失败");
 					}
-					Iterator<Entry<String, Set<Integer>>> iter1 = filenametoid.entrySet().iterator();
-					//寻找random_str			
-					while(iter1.hasNext()){
-						String key = iter1.next().getKey();
-						if(key == random_str){
-							filenametoid.remove(iter1);
-							break;
-						}
-					}		
-					
-					iter = filenametofile.entrySet().iterator();
-					
-					//寻找random_str			
-					while(iter.hasNext()){
-						String key = iter.next().getKey();
-						if(key == random_str){
-							filenametofile.remove(iter);
-							break;
-						}
-					}			
+					//清除filenametoid中的random_str
+					filenametoid.remove(random_str);
+
+					//清除filenametofile中的random_str
+					filenametofile.remove(random_str);
 					return;
 				}
 			}
 			//找到了random_str
 			else{
-				System.arraycopy(p.content, 0, iter.next().getValue(), p.start, p.content_len);
+				//写进filenametofile的random_str对应的value相应位置中
+				byte[] tempValue = entry.getValue();
+				System.arraycopy(p.content,0,tempValue,p.start,p.content_len);
+				entry.setValue(tempValue);
+
+				//处理filenametoid
 				Iterator<Entry<String, Set<Integer>>> iter1 = filenametoid.entrySet().iterator();
-				//寻找random_str			
-				while(iter1.hasNext()){
-					String key = iter1.next().getKey();
-					if(key == random_str){
+				Entry<String,Set<Integer>> entry1 = null;
+				//寻找random_str
+				while (iter1.hasNext()) {
+					entry1 = iter1.next();
+					String key = entry1.getKey();
+					if (key == random_str) {
 						break;
 					}
 				}
+
 				//没找到
-				if(iter1 == null){
+				if (!filenametoid.containsKey(random_str)) {
 					return;
 				}
-				if(iter1.next().getValue().contains(p.id)){
-					iter1.next().getValue().remove(p.id);
+
+				//找到了
+				//判断对应value是否包括id，有则去除
+				if (entry1.getValue().contains(p.id)) {
+					entry1.getValue().remove(p.id);
 				}
-				if(iter1.next().getValue().size() == 0){
-					if(!writeFile(p, iter.next().getValue())){
-						//文件发送失败
-						System.out.println("文件发送失败");
+
+				//对应value清除完后没有数据,则写文件
+				if (entry1.getValue().size() == 0) {
+					if (!writeFile(p, entry.getValue())) {
+						//写文件失败
+						System.out.println("写文件失败");
 					}
-					filenametoid.remove(iter1);
-					filenametofile.remove(iter);
+					//删除对应的iterator---即key==random_str
+					filenametoid.remove(random_str);
+				 	filenametofile.remove(random_str);
 					return;
 				}
-				if(p.flag == Types.FILEEND){
-					filenametoid.remove(iter1);
-					filenametofile.remove(iter);
+				if (p.flag == Types.FILEEND) {
+					filenametoid.remove(random_str);
+					filenametofile.remove(random_str);
 					return;
 				}
 			}
@@ -536,45 +575,42 @@ public class TCPSocket {
 	public boolean writeFile(FileInfo p, byte[] file) {
 		String filename = new String(p.filename);
 		File fp;
+		//保存到file路径下
 		String path = AppPath.getPathByFileType("file");
+		AppPath.CheckAndMkdirPathExist(path);
+		//图片
 		if(p.type == Types.FILE_TYPE_PIC_REG || p.type == Types.FILE_TYPE_PIC_REG_SMALL){
-			path += "pic\\";
-			File f = new File(path);
-			if(!f.exists()){
-				f.mkdirs();
-			}
+			path += "/pic";
+			AppPath.CheckAndMkdirPathExist(path);
 		}
+		//文件
 		else if(p.type == Types.FILE_TYPE_PRES_LOCAL_UNCHECK || p.type == Types.FILE_TYPE_PRES_CHECK
 				||p.type == Types.FILE_TYPE_PRES_CHECK_REJECT){
-			String dateTime = Sockets.socket_center.getFileNameDate(filename);
-			path += "本地文件\\";
-			File f = new File(path);
-			if(!f.exists()){
-				f.mkdirs();
-			}
-			path = path + LoginActivity.mLoginUsername+"\\";
-			f = new File(path);
-			if(!f.exists()){
-				f.mkdirs();
-			}
-			
+			//提取文件名中的data
+			String dateTime = Utils.getFileNameDate(filename);
+			//保存在本地文件下
+			path += "/本地文件";
+			AppPath.CheckAndMkdirPathExist(path);
+
+			//登录名下
+			path = path + "/" + Users.sLoginUsername;
+			AppPath.CheckAndMkdirPathExist(path);
+
+			//分类存储
 			if(p.type == Types.FILE_TYPE_PRES_LOCAL_UNCHECK)
-				path += "已收处方(未审)\\";
+				path += "/已收处方(未审)";
 			else if(p.type == Types.FILE_TYPE_PRES_CHECK)
-				path += "已收处方(已审)\\";
+				path += "/已收处方(已审)";
 			else if(p.type == Types.FILE_TYPE_PRES_CHECK_REJECT)
-				path += "已收处方(拒审)\\";
-			
-			f = new File(path);
-			if(!f.exists()){
-				f.mkdirs();
-			}
-			path = path + dateTime + "\\";
-			f = new File(path);
-			if(!f.exists()){
-				f.mkdirs();
-			}
+				path += "/已收处方(拒审)";
+			AppPath.CheckAndMkdirPathExist(path);
+
+			//按日期分类存储
+			path = path + "/" + dateTime;
+			AppPath.CheckAndMkdirPathExist(path);
 		}
+
+		//路径已设置好，开始存储
 		path += filename;
 		fp = new File(path);
 		//如果不存在，则创建
@@ -584,8 +620,10 @@ public class TCPSocket {
 			} catch (IOException e) {
 				System.out.println("创建文件失败");
 				e.printStackTrace();
+				return false;
 			}
 		}
+		//若文件不可读写，则false
 		if(!(fp.isFile()|fp.canWrite())){
 			return false;
 		}
@@ -598,39 +636,59 @@ public class TCPSocket {
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-		
-		//删除文件列表中的文件记录
-		//????
-		
+
+		//自动更新文件列表
+
+		//如果当前list中显示的是待收处方，则删除该条记录
+		if(State.sFilelistType == 3){
+			//Main_Dlg->RemoveSingleItemFromFileList(pFile->filename);
+			//LoginRepo.sLoginHandler.obtainMessage(0, data).sendToTarget();
+		}
+
+		//收到的文件为处方
 		if(p.type != Types.FILE_TYPE_PIC_REG && p.type != Types.FILE_TYPE_PIC_REG_SMALL){
+			//已收处方（已审）
 			if(p.type == Types.FILE_TYPE_PRES_CHECK){
+				//自动更新列表
 				//Main_Dlg->FileStatusButtonShining(true, IDC_MFCBUTTON_MAIN_RECV);
 			}
+			//已收处方（拒审）
 			else if(p.type == Types.FILE_TYPE_PRES_CHECK_REJECT){
+				//自动更新列表
 				//Main_Dlg->FileStatusButtonShining(true, IDC_MFCBUTTON_MAIN_RECV_REJECT); 
 			}
+			//已收处方（未审）
 			else if(p.type == Types.FILE_TYPE_PRES_LOCAL_UNCHECK){
+				//自动更新列表
 				//Main_Dlg->FileStatusButtonShining(true, IDC_MFCBUTTON_MAIN_RECV_UNAUTH);
 			}
 			
 			//更新文件列表
-			//??Main_Dlg->m_filelist_type
-			
+			//如果当前list中显示的是已收处方，则更新
+			if(State.sFilelistType == 4||State.sFilelistType == 5||State.sFilelistType == 6){
+				//LoginRepo.sLoginHandler.obtainMessage(0, data).sendToTarget();
+			}
+
+			//发送反馈消息
 			ControlMsg cm = new ControlMsg(new String(p.filename), mUsername, Types.Chufang_Content, true, p.type);
 			sendControlMsg(cm);
 			return true;
 		}
-		
+
+		//类型为图片
 		if(p.type == Types.FILE_TYPE_PIC_REG){
 			//Main_Dlg->ShowInfoPicture(path);
 		}
+		//小头像
 		else if(p.type == Types.FILE_TYPE_PIC_REG_SMALL){
 			//Main_Dlg->clientInfoDlg
 		}
 		return true;
 	}
 
+	//复制文件Copy
 	//Send_ControlMsg
 	public void sendControlMsg(ControlMsg msg) {
 		NetPack p = new NetPack();
@@ -641,20 +699,6 @@ public class TCPSocket {
 		p.setM_buffer(msg.getBuf());
 		
 		sendPack(p);		
-	}
-
-
-	private String getFileNameDate(String filename) {
-		//拆分
-		String[] fileNameArray = filename.split("-");
-		String dataStr = fileNameArray[4];
-		
-		//判断是否为时间串
-		if(Utils.filterUnNumber(dataStr)==dataStr && dataStr.length() == 8){
-			return dataStr;
-		}
-		//如果不是，则使用现在时间
-		return Utils.getDate();
 	}
 
 
@@ -675,6 +719,24 @@ public class TCPSocket {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	//请求文件列表
+	public void reqFileList(String mUsername, boolean send_recv, int fileType){
+		ReqFileInfo info = new ReqFileInfo();
+		try {
+			info.username = mUsername.getBytes("GBK");
+			info.send_recv = send_recv;
+			info.type = fileType;
+		}
+		catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+
+		NetPack pack = new NetPack(-1,ReqFileInfo.SIZE,Types.FileList,info.getReqFileInfoBytes());
+		pack.CalCRC();
+
+		Sockets.socket_center.sendPack(pack);
 	}
 
 }

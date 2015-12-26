@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import android.util.Log;
 
 import com.example.ustc.healthreps.BaseActivity;
+import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.Types;
@@ -39,9 +40,11 @@ public class HeartBeatTask extends TimerTask{
 				mSocket.sendHeartBeat();
 			}
 			else if(m_beatTimes >= 5){
+				Users.sOnline = false;
 				//m_connect_alert.setBackgroundColor(color.red);
-				System.out.println(m_beatTimes+"-----color.red");
+				System.out.println(m_beatTimes + "-----color.red");
 				mSocket.shutSocket();
+
 		        if (mSocket.initSocket(Types.center_Port, Types.version_IP))
 		        {
 		        	mSocket.reLogin(BaseActivity.mLoginName);

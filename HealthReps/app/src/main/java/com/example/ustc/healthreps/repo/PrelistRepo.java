@@ -44,7 +44,7 @@ public class PrelistRepo extends ReceiveSuper{
         return filename;
     }
 
-    public void sendPrelist(){
+    public void sendPrelist(PrelistContent prelistContent){
         PreList prelist = savePrelistToLocal();
         if (prelist != null){
             NetPack pack = new NetPack(-1, PreList.size, Types.PreList_Content,prelist.getPreListBytes());

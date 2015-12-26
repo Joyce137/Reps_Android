@@ -1,10 +1,15 @@
 package com.example.ustc.healthreps.repo;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.ustc.healthreps.database.DBManagerForExist;
 import com.example.ustc.healthreps.model.DocPha;
+import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.patient.DoctorList;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.ReqMsgUserInfo;
 import com.example.ustc.healthreps.serverInterface.ReqSingleUserInfo;
@@ -13,6 +18,7 @@ import com.example.ustc.healthreps.serverInterface.SingleUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.utils.AppPath;
+import com.example.ustc.healthreps.utils.Utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -29,6 +35,7 @@ public class DocPhaRepo extends ReceiveSuper{
 
     public String mPhotoPath = "";
     public SingleUserInfo mSingleUserInfo;
+    public Context context;
 
     public DocPhaRepo(){
         super();
@@ -53,6 +60,41 @@ public class DocPhaRepo extends ReceiveSuper{
         return list;
     }
 
+    //根据搜索条件搜索
+    public void searchDoctor(SearchInfo searchInfo){
+        ReqUserInfo reqUserInfo = new ReqUserInfo();
+        try{
+            reqUserInfo.doc_pha = true; //医生
+            reqUserInfo.keshi = searchInfo.keshi.getBytes("GBK");
+            reqUserInfo.username = Users.sLoginUsername.getBytes("GBK");
+            reqUserInfo.type= Utils.changeTypeToInt(Users.sLoginUserType);
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    //搜索药店
+    public void searchStore(SearchInfo searchInfo){
+
+    }
+
+    //搜索药品（从本地数据库搜索）
+    public ArrayList<Medicine> searchDrug(SearchInfo searchInfo,Context context){
+        DBManagerForExist dbManager = new DBManagerForExist(context);
+        dbManager.openDatabase();
+
+        SQLiteDatabase database = dbManager.getDatabase();
+
+        //Medicine逻辑对象
+        MedicineRepo mp = new MedicineRepo(database);
+
+        //查询结果列表
+        ArrayList<Medicine> list = mp.getMedicineByCategory(searchInfo.drugCategory);
+
+        dbManager.closeDatabase();
+        return list;
+    }
 
     //根据科室请求医生信息
     public void reqDocInfoByKeshi(String keshiStr){
@@ -83,7 +125,8 @@ public class DocPhaRepo extends ReceiveSuper{
         //搜索产生的简单用户信息-用作显示在列表中
         else if(data.getM_nFlag() == Types.REQ_USER_INFO){
             ReqMsgUserInfo req = ReqMsgUserInfo.getReqMsgUserInfo(data.getM_buffer());
-            msgList.add(req);
+            //msgList.add(req);
+            DoctorList.sDocHandler.obtainMessage(0, req).sendToTarget();
         }
 
         closeReceiveThread();

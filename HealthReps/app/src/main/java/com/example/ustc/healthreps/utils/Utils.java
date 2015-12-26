@@ -38,10 +38,13 @@ public class Utils {
 			}
 			return n + 256;
 		} else {
-			short n = 0;
+			int n = 0;
 			for (int i = 0; i < bArr.length && i < 4; i++) {
 				int left = i * 8;
 				n += (bArr[i] << left);
+			}
+			if(n<0){
+				n = n + 65536;
 			}
 			return n;
 		}
@@ -122,5 +125,46 @@ public class Utils {
 		crc.Encrypt(crcPwd, b);
 
 		return crcPwd;
+	}
+
+	//获取现在时间
+	public static String getFileNameDate(String filename) {
+		//拆分
+		String[] fileNameArray = filename.split("-");
+		String dataStr = fileNameArray[4];
+
+		//判断是否为时间串
+		if(Utils.filterUnNumber(dataStr)==dataStr && dataStr.length() == 8){
+			return dataStr;
+		}
+		//如果不是，则使用现在日期
+		return Utils.getDate();
+	}
+
+	//type(String)->int
+	public static int changeTypeToInt(String type){
+		if(type == "患者"){
+			return Types.USER_TYPE_PATIENT;
+		}
+		else if(type == "医生"){
+			return Types.USER_TYPE_DOCTOR;
+		}
+		else if(type == "药师"){
+			return Types.USER_TYPE_PHA;
+		}
+		else if(type == "药监局"){
+			//药监局;
+		}
+		return Types.USER_TYPE_STORE;
+	}
+
+	//判断某日期与当前日期的差值(是否一个月以内）
+	public static boolean checkValid(String date){
+		String now = getDate();
+		for(int i = 0;i<6;i++){
+			if(now.charAt(i)>date.charAt(i))
+				return false;
+		}
+		return true;
 	}
 }

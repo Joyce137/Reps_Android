@@ -26,6 +26,7 @@ public class UserInfo {
 	public byte[] ID_Num = new byte[20];
 	public byte[] yibao_Num = new byte[20];
 	public byte[] pastDiseaseHistory = new byte[200];
+	public String imagePath;
 
 	public static int size = 5 + 5 + 2 + 4 + 20 + 25 + 25 + 50 + 4 + 4 + 100
 			+ 100 + 100 + 4 + 4 + 20 + 12 + 15 + 15 + 15 + 20 + 20 + 200 + 3;

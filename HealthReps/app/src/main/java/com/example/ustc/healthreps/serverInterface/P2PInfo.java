@@ -2,9 +2,9 @@ package com.example.ustc.healthreps.serverInterface;
 
 //P2PInfo  ---聊天消息
 public class P2PInfo {
-	byte[] username = new byte[12];
-	byte[] toUsername = new byte[12];
-	byte[] info = new byte[200];
+	public byte[] username = new byte[12];
+	public byte[] toUsername = new byte[12];
+	public byte[] info = new byte[200];
 
 	public static int SIZE = 12+12+200;
 	//P2PInfo->byte[]

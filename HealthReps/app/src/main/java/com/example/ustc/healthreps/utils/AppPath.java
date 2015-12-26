@@ -10,6 +10,9 @@ import java.io.File;
 public class AppPath {
     public static final String PACKAGE_NAME = "com.example.ustc.healthreps";
 
+    //在手机里存放数据库的位置(/data/data/com.example.ustc.healthreps/databases/xx.db)
+    public static final String DB_PATH = AppPath.getPathByFileType("databases");
+
     //在手机里存放数据库的位置(/data/data/com.example.ustc.healthreps)
     public static final String APP_PATH = "/data"
             + Environment.getDataDirectory().getAbsolutePath() + "/"

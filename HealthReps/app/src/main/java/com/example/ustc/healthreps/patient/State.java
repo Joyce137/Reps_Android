@@ -6,8 +6,13 @@ import android.view.Window;
 
 import com.example.ustc.healthreps.R;
 
-public class State extends Activity {
+import java.util.logging.Handler;
 
+public class State extends Activity {
+	public static Handler sFileStateHandler = null;
+
+	//当前list中显示的文件类型
+	public static int sFilelistType = 1; //默认为待发清单1
 	/*
 	 * (non-Javadoc)
 	 * 

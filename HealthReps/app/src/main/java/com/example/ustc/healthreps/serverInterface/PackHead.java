@@ -77,7 +77,6 @@ public class PackHead {
 	// ͨbyte数组还原为对象
 	public static PackHead getPackHeadInfo(byte[] buf) {
 		int m_Start = Types.PACK_START_FLAG;
-		;
 		int m_Crc = -1;
 		int nDataLen = 0;
 		int m_nFlag = 0;

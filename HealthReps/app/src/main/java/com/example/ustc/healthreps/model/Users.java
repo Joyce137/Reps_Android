@@ -10,7 +10,9 @@ import java.util.ArrayList;
  */
 public class Users {
     public static String sLoginUsername;
+    public static String sLoginUserType;
     public static UserInfo sLoginUser;
+    public static boolean sOnline;
 
     //所有医生列表
     public static ArrayList<DocPha> sAllDoctors = new ArrayList<DocPha>();

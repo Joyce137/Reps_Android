@@ -8,13 +8,14 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.DesignDemo">
         <activity
-            android:name=".medicine.MedicineActivity"
+            android:name=".TestActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity
             android:name=".ScanBleFailedActivity"
             android:theme="@style/Theme.ScanDemo"></activity>
@@ -65,13 +66,15 @@
                 android:value=".register.RegisterActivity" />
         </activity>
 
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".medicine.MedicineActivity"></activity>
         <activity android:name=".patient.DoctorList"></activity>
         <activity android:name=".patient.PharmacistList"></activity>
         <activity android:name=".patient.Set"></activity>
         <activity android:name=".patient.State"></activity>
         <activity android:name=".patient.PatientActivity"></activity>
         <activity android:name=".patient.DoctorSessionAty"></activity>
+
+        <activity android:name=".ErrorActivity"></activity>
 
         <activity
             android:name=".SetActivity"

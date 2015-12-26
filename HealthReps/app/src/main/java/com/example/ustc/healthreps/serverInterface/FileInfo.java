@@ -18,8 +18,8 @@ public class FileInfo {
 	public byte[] content = new byte[Types.FILE_MAX_BAG];
 	public byte[] random_str = new byte[20];
 
-	public int size = 100 + 12 + 12 + 12 + 4 + 4 + 4 + 4 + 4 + 4 + 4
-			+ Types.FILE_MAX_BAG + 20;
+	public int size = 100 + 12 + 12 + 12 + 2 + 2 + 4 + 2 + 2 + 4 + 4 + 4 + 2
+			+ Types.FILE_MAX_BAG + 20+2;
 
 	public FileInfo() {
 		content_len = Types.FILE_MAX_BAG;
@@ -106,34 +106,34 @@ public class FileInfo {
 		type = (short) Utils.vtolh(temp2);
 		f.type = type;
 		// id
-		System.arraycopy(buf, 138, temp4, 0, 4);
+		System.arraycopy(buf, 140, temp4, 0, 4);
 		id = Utils.vtolh(temp4);
 		f.id = id;
 		// flag
-		System.arraycopy(buf, 142, temp2, 0, 2);
+		System.arraycopy(buf, 144, temp2, 0, 2);
 		flag = (short) Utils.vtolh(temp2);
 		f.flag = flag;
 		// start
-		System.arraycopy(buf, 144, temp4, 0, 4);
+		System.arraycopy(buf, 148, temp4, 0, 4);
 		start = Utils.vtolh(temp4);
 		f.start = start;
 		// len
-		System.arraycopy(buf, 148, temp4, 0, 4);
+		System.arraycopy(buf, 152, temp4, 0, 4);
 		len = Utils.vtolh(temp4);
 		f.len = len;
 		// idnum
-		System.arraycopy(buf, 152, temp4, 0, 4);
+		System.arraycopy(buf, 156, temp4, 0, 4);
 		idnum = Utils.vtolh(temp4);
 		f.idnum = idnum;
 		// content_len
-		System.arraycopy(buf, 156, temp2, 0, 2);
+		System.arraycopy(buf, 160, temp2, 0, 2);
 		content_len = (short) Utils.vtolh(temp2);
 		f.content_len = content_len;
 		// content
-		System.arraycopy(buf, 158, content, 0, Types.FILE_MAX_BAG);
+		System.arraycopy(buf, 162, content, 0, Types.FILE_MAX_BAG);
 		f.content = content;
 		// random_str
-		System.arraycopy(buf, 158 + Types.FILE_MAX_BAG, random_str, 0, 20);
+		System.arraycopy(buf, 162 + Types.FILE_MAX_BAG, random_str, 0, 20);
 		f.random_str = random_str;
 
 		return f;

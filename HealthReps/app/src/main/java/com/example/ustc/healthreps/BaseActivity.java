@@ -2,6 +2,7 @@ package com.example.ustc.healthreps;
 
 import java.util.Timer;
 
+import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
 import com.example.ustc.healthreps.threads.ReceiveThread;
@@ -15,7 +16,7 @@ import android.widget.Toast;
 //用于实现心跳包，需要心跳包的类都得继承这个类
 public class BaseActivity extends Activity{
 	public static int mBeatTimes = 0;
-	public static String mLoginName = LoginActivity.mLoginUsername;
+	public static String mLoginName = LoginRepo.mLoginUsername;
 	public static Handler sAlertHandler;
 	private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
 	private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;

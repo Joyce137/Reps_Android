@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.database.DBManagerForExist;
 import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.repo.MedicineRepo;
 
@@ -33,7 +34,7 @@ public class MedicineActivity extends ListActivity implements View.OnClickListen
     }
 
     public void queryMedicinesByCategory(String queryCategoryStr){
-        DBManager dbManager = new DBManager(this);
+        DBManagerForExist dbManager = new DBManagerForExist(this);
         dbManager.openDatabase();
 
         SQLiteDatabase database = dbManager.getDatabase();
