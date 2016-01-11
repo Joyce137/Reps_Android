@@ -1,6 +1,7 @@
 package com.example.ustc.healthreps;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,14 +16,14 @@ import com.example.ustc.healthreps.utils.AndroidNetAccess;
  * Created by CaoRuijuan on 12/8/15.
  */
 public class ChangePwdActivity extends Activity{
-    private Button submitBtn;
+    private Button submitBtn, backBtn;
     private String oldPwd, newPwd;
     public ChangePwdRepo changePwdRepo = new ChangePwdRepo();
     public static Handler sMsgHandler = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_changepwd);
 
         // 添加网络驻主线程网络访问权限
         AndroidNetAccess.netAccess();
@@ -35,7 +36,14 @@ public class ChangePwdActivity extends Activity{
     }
 
     public void initView(){
-        submitBtn = (Button)findViewById(R.id.submit_changepwd);
+        backBtn = (Button) findViewById(R.id.changePWD_back1);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        submitBtn = (Button)findViewById(R.id.changePWD_button);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

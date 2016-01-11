@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/popup_right_bg"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+    
+    <View
+        android:layout_marginTop="5dp"
+        android:id="@id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    <TextView 
+       android:layout_marginTop="5dp"
+       android:id="@+id/tv_smart"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="智 能 排 序"
+       android:textSize="18dp"
+       android:gravity="center"/>
+    <View
+        android:layout_marginTop="5dp"
+        android:id="@id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    <TextView 
+       android:layout_marginTop="5dp"
+       android:id="@+id/tv_nearest"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="离 我 最 近"
+       android:textSize="18dp"
+       android:gravity="center"/>
+    <View
+        android:layout_marginTop="5dp"
+        android:id="@id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    <TextView 
+       android:layout_marginTop="5dp"
+       android:id="@+id/tv_hotest"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="人 气 最 高"
+       android:textSize="18dp"
+       android:gravity="center"/>
+    <View
+        android:layout_marginTop="5dp"
+        android:id="@id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    <TextView 
+       android:layout_marginTop="5dp"
+       android:id="@+id/tv_best"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="评 价 最 好"
+       android:textSize="18dp"
+       android:gravity="center"/>
+    <View
+        android:layout_marginTop="5dp"
+        android:id="@+id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+
+</LinearLayout>

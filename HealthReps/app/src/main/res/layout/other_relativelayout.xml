@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.ustc.healthreps.ui.AddRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/allRelativeLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">"
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="fill_parent"
+        android:background="#E0FFFF"
+        android:layout_height="65dp" >
+
+        <Button
+            android:id="@+id/btn_other"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="+" />
+        
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="发送" />
+
+
+        <EditText
+            android:id="@+id/et_sendmessage"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/btn_other"
+            android:layout_toLeftOf="@id/btn_send"
+            android:background="@drawable/edittext1"
+            android:singleLine="true"
+            android:textSize="18sp" />
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/rl_other"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_bottom"
+        android:background="#f6f5f5"
+        android:visibility="gone"
+        >
+        
+        <RelativeLayout 
+            android:id="@+id/rl_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10sp"
+            android:layout_marginLeft="15sp">
+            
+            <ImageButton 
+                android:id="@+id/ib1"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:background="#00ffff"
+                />
+            <TextView 
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:text="图片"
+                android:layout_below="@id/ib1"
+                android:layout_marginBottom="15sp"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            android:id="@+id/rl_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/rl_pic"
+            android:layout_marginTop="10sp"
+            android:layout_marginLeft="30sp"
+            >
+            
+            <ImageButton 
+                android:id="@+id/ib2"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:background="#00ffff"
+                />
+            <TextView 
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:text="文件"
+                android:layout_below="@id/ib2"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            android:id="@+id/rl_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="15sp">
+            
+            <ImageButton 
+                android:id="@+id/ib4"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:background="#00ffff"
+                />
+            <TextView 
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:text="视频"
+                android:layout_below="@id/ib4"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            android:id="@+id/rl_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/rl_video"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="30sp"
+            >
+            
+            <ImageButton 
+                android:id="@+id/ib3"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:background="#00ffff"
+                />
+            <TextView 
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:text="音频"
+                android:layout_below="@id/ib3"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+        
+        </RelativeLayout>
+
+</com.example.ustc.healthreps.ui.AddRelativeLayout>

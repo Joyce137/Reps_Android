@@ -26,7 +26,7 @@ public class DoctorSessionAty extends Activity {
 
 		setContentView(R.layout.doctor_session);
 
-		Button backButton = (Button) findViewById(R.id.back_button1);
+		Button backButton = (Button) findViewById(R.id.btn_back11);
 		backButton.setOnClickListener(new OnClickListener() {
 
 			@Override

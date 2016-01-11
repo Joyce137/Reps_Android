@@ -1,0 +1,166 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/top"
+    	android:layout_width="fill_parent"
+    	android:layout_height="50dp"
+    	android:layout_alignParentTop="true"
+    	android:paddingLeft="5dp"
+    	android:paddingRight="5dp"
+    	android:background="#008000">
+        
+        
+        <TextView
+            android:id="@+id/storename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text="药店名"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF" 
+            android:layout_centerVertical="true"
+        	android:layout_alignParentLeft="true"/>
+        
+        
+        <RelativeLayout android:id="@+id/rlSearchFrameDelete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+        	android:layout_centerVertical="true"
+			android:gravity="center_vertical"
+			android:layout_marginLeft="5dp"
+			android:layout_toRightOf="@id/storename">
+            
+		    	<EditText android:id="@+id/etSearch"
+		        	android:layout_width="fill_parent"
+		        	android:layout_height="wrap_content"
+					android:singleLine="true"
+		        	android:background="@drawable/search_frame"
+		        	android:layout_marginRight="5dp"
+		        	android:paddingLeft="32dp"
+		        	android:textSize="16sp"
+		        	android:hint="输入药品、症状"/>
+		    	
+		    	<ImageView android:id="@+id/ivDeleteText"
+		    	    android:layout_width="wrap_content"
+		    	    android:layout_height="wrap_content"
+		    	    android:layout_alignParentRight="true"
+		    	    android:src="@drawable/delete"
+		    	    android:layout_centerInParent="true"
+		    	    android:paddingRight="20dp"
+		    	    android:visibility="gone"/>
+        </RelativeLayout>
+         
+        </RelativeLayout>
+        
+    
+    <LinearLayout
+        android:id="@+id/middlelinearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/dep"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="科 别"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="症 状"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/smartSort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="智能排序"
+                android:textColor="#666666" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <View
+        android:layout_below="@+id/middlelinearlayout"
+        android:id="@+id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_div_line">
+        <!-- your views...-->
+        <ListView
+            android:id="@+id/medic_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            </ListView>
+
+        <!--使背景变灰-->
+        <View
+            android:id="@+id/main_darkview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark_bg"
+            android:visibility="gone" />
+    </RelativeLayout>
+    
+     </LinearLayout>
+</RelativeLayout>

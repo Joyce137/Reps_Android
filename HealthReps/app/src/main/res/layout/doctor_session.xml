@@ -1,110 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/rl_layout"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:background="#008000"
+        android:orientation="vertical" >
 
         <Button
-            android:id="@+id/back_button1"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_back11"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="后退" />
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_back"
+            android:paddingLeft="10dp"
+            android:text="返回"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/doctor_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="医生姓名"
-            android:textSize="18sp" />
-
+            android:layout_centerInParent="true"
+            android:text="姓名"
+            android:textColor="#ffffff"
+            android:textSize="20.0sp" />
+        
         <TextView
             android:id="@+id/doctor_gradeName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="级别"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:text="科室"
+            android:layout_marginRight="15dp"
+            android:textColor="#ffffff"
+            android:textSize="20.0sp" />
+        
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/ll_bottom"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_alignParentBottom="true" >
 
-        <Button
-            android:id="@+id/video_button"
-            android:layout_width="0dp"
+        <!-- 聊天输入框 -->
+        <include
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="视频" />
-
-        <Button
-            android:id="@+id/audio_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="音频" />
-
-        <Button
-            android:id="@+id/createList_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="创建清单" />
+            layout="@layout/other_relativelayout" />
+        
     </LinearLayout>
+    
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/ll_bottom"
+        android:layout_below="@id/rl_layout"
+        android:layout_marginLeft="5.0dip"
+        android:layout_marginRight="5.0dip"
+        android:layout_marginTop="10.0dip"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:dividerHeight="5dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:stackFromBottom="true"
+        android:scrollbars="none" />
 
-        <ListView
-            android:id="@+id/recordlistview"
-            android:layout_width="match_parent"
-            android:layout_height="311dp"
-            android:cacheColorHint="#0000"
-            android:divider="@null"
-            android:dividerHeight="5dp"
-            android:scrollbarStyle="outsideOverlay"
-            android:stackFromBottom="true" />
-    </LinearLayout>
-
-    <!-- 下面这个LinearLayout里的后两行是为了进入当前界面时让EditText不自动获取焦点 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal" 
-        android:focusable="true"  
-  		android:focusableInTouchMode="true">
-
-        <EditText
-            android:id="@+id/doctor_session_editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10">
-        </EditText>
-
-        <Button
-            android:id="@+id/sendmessage_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发送" />
-
-        <Button
-            android:id="@+id/addfile_button"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.61"
-            android:text="+" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

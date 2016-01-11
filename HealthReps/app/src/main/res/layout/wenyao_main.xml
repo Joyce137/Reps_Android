@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <include
+        android:id="@+id/id_toolbar"
+        layout="@layout/activity_my_toolbar" />
+    
+    <LinearLayout
+        android:id="@+id/middlelinearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_toolbar" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/fujin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="附 近"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/allStore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="全部药店"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tuan_tab_linear_background"
+            android:paddingBottom="0.5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0.5dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/smartSort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_arrow_down_black"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="智能排序"
+                android:textColor="#666666" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <View
+        android:layout_below="@+id/middlelinearlayout"
+        android:id="@+id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/div_gray"/>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_div_line">
+        <!-- your views...-->
+        <ListView
+            android:id="@+id/lv_store"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            </ListView>
+
+        <!--使背景变灰-->
+        <View
+            android:id="@+id/main_darkview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark_bg"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+</RelativeLayout>

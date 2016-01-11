@@ -32,4 +32,45 @@ public class Medicine {
     public String pinyin;   //拼音简码
     public String taboo;    //禁忌
     public String disease;  //对应病症1
+
+    private String MedicName;          //药品名字
+    private String MedicCategroy;      //药品类别
+    private String MedicBehavior;      //药品主治症状
+
+    public Medicine(){
+        super();
+    }
+    public Medicine(String MedicName,String MedicCategroy,String MedicBehavior){
+        super();
+        this.MedicName = MedicName;
+        this.MedicCategroy = MedicCategroy;
+        this.MedicBehavior = MedicBehavior;
+    }
+
+    public String getMedicName() {
+        return MedicName;
+    }
+
+    public void setMedicName(String medicName) {
+        MedicName = medicName;
+    }
+
+    public String getMedicCategroy() {
+        return MedicCategroy;
+    }
+
+    public void setMedicCategroy(String medicCategroy) {
+        MedicCategroy = medicCategroy;
+    }
+
+    public String getMedicBehavior() {
+        return MedicBehavior;
+    }
+
+    public void setMedicBehavior(String medicBehavior) {
+        MedicBehavior = medicBehavior;
+    }
+    public String toString() {
+        return getMedicName() + "" + getMedicCategroy() + "" + getMedicBehavior();
+    }
 }

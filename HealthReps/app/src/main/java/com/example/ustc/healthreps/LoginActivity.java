@@ -47,7 +47,7 @@ public class LoginActivity extends Activity {
 
     private LoginRepo repo =  new LoginRepo();
     public static Handler sLoginResultHandler = null;
-    private CookieDaoImpl cookieDao = new CookieDaoImpl(this);
+//    private CookieDaoImpl cookieDao = new CookieDaoImpl(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +55,13 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         //判断cookie是否有效,有效直接跳到主页面
-        Cookie cookie = repo.validCookie(cookieDao);
-        if(cookie != null){
-            Users.sLoginUsername = cookie.username;
-            Users.sLoginUserType = cookie.getRealType();
-            cookieDao.updateDate(0);
-            goToNextActivity(Users.sLoginUserType);
-        }
+//        Cookie cookie = repo.validCookie(cookieDao);
+//        if(cookie != null){
+//            Users.sLoginUsername = cookie.username;
+//            Users.sLoginUserType = cookie.getRealType();
+//            cookieDao.updateDate(0);
+//            goToNextActivity(Users.sLoginUserType);
+//        }
 
         //初始化布局
         initLayout();
@@ -123,15 +123,17 @@ public class LoginActivity extends Activity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                login();
+                //login();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
-        mForgetPwd = (TextView) findViewById(R.id.registerText);
+        mForgetPwd = (TextView) findViewById(R.id.forgotPwdText);
         mForgetPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 Intent intent = new Intent(LoginActivity.this,
-                        RegisterActivity.class);
+                        ChangePwdActivity.class);
                 startActivity(intent);
             }
         });
@@ -169,7 +171,7 @@ public class LoginActivity extends Activity {
             //登录成功
             case 0:
                 //添加到cookie
-                repo.addToCookie(cookieDao);
+//                repo.addToCookie(cookieDao);
 
                 if (Looper.myLooper() == null) {
                     Looper.prepare();

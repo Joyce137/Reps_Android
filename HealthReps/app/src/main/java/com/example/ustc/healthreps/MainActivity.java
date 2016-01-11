@@ -16,20 +16,36 @@ import android.widget.TextView;
 
 import android.content.Context;
 
+import com.example.ustc.healthreps.friends.MyFriendsActivity;
+import com.example.ustc.healthreps.health.DeviceListActivity;
+import com.example.ustc.healthreps.health.MyhealthActivity;
+import com.example.ustc.healthreps.health.ScanBleActivity;
+import com.example.ustc.healthreps.ui.FileDealActivity;
+import com.example.ustc.healthreps.ui.SearchDoctor;
+import com.example.ustc.healthreps.ui.SearchMedicine;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout menu_my;
+    private LinearLayout menu_doctor;
+    private LinearLayout menu_medicine;
     private LinearLayout menu_file;
     private LinearLayout menu_friends;
 
     private ImageView iv_my;
+    private ImageView iv_doctor;
+    private ImageView iv_medicine;
     private ImageView iv_file;
     private ImageView iv_friends;
 
     private TextView tv_my;
+    private TextView tv_doctor;
+    private TextView tv_medicine;
     private TextView tv_file;
     private TextView tv_friends;
 
     private Fragment myFragment;
+    private Fragment doctorFragment;
+    private Fragment medicineFragment;
     private Fragment fileFragment;
     private Fragment friendsFragment;
 
@@ -58,26 +74,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 底部菜单5个Linearlayout
         menu_my = (LinearLayout) findViewById(R.id.ly_my);
+        menu_doctor = (LinearLayout) findViewById(R.id.ly_doctor);
+        menu_medicine = (LinearLayout) findViewById(R.id.ly_medicine);
         menu_file = (LinearLayout) findViewById(R.id.ly_file);
         menu_friends = (LinearLayout) findViewById(R.id.ly_friends);
 
 
         // 底部菜单5个ImageView
         iv_my = (ImageView) findViewById(R.id.iv_my);
+        iv_doctor = (ImageView) findViewById(R.id.iv_doctor);
+        iv_medicine = (ImageView) findViewById(R.id.iv_medicine);
         iv_file = (ImageView) findViewById(R.id.iv_file);
         iv_friends = (ImageView) findViewById(R.id.iv_friends);
 
         // 底部菜单5个菜单标题
         tv_my = (TextView) findViewById(R.id.tv_my);
+        tv_doctor = (TextView) findViewById(R.id.tv_doctor);
+        tv_medicine = (TextView) findViewById(R.id.tv_medicine);
         tv_file = (TextView) findViewById(R.id.tv_file);
         tv_friends = (TextView) findViewById(R.id.tv_friends);
-
-
     }
 
     private void initEvent() {
         // 设置按钮监听
         menu_my.setOnClickListener(this);
+        menu_doctor.setOnClickListener(this);
+        menu_medicine.setOnClickListener(this);
         menu_friends.setOnClickListener(this);
         menu_file.setOnClickListener(this);
     }
@@ -99,9 +121,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
 
+            //寻医
+            case 1:
+                if(doctorFragment == null){
+                    doctorFragment = new SearchDoctor();
+                    transaction.add(R.id.frame_content,doctorFragment);
+                }
+                else {
+                    transaction.show(doctorFragment);
+                }
+                break;
+
+            //问药
+            case 2:
+                if(medicineFragment == null){
+                    medicineFragment = new SearchMedicine();
+                    transaction.add(R.id.frame_content,medicineFragment);
+                }
+                else {
+                    transaction.show(medicineFragment);
+                }
+                break;
+
             case 3:
                 if (fileFragment == null) {
-                    fileFragment = new FileActivity();
+                    fileFragment = new FileDealActivity();
                     transaction.add(R.id.frame_content, fileFragment);
                 } else {
                     transaction.show(fileFragment);
@@ -128,6 +172,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (myFragment != null) {
             transaction.hide(myFragment);
         }
+        if(doctorFragment != null){
+            transaction.hide(doctorFragment);
+        }
+        if(medicineFragment != null){
+            transaction.hide(medicineFragment);
+        }
         if (friendsFragment != null) {
             transaction.hide(friendsFragment);
         }
@@ -135,8 +185,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             transaction.hide(fileFragment);
         }
-
-
     }
 
     @Override
@@ -185,14 +233,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void restartBotton() {
         // ImageView置为灰色
         iv_my.setImageResource(R.mipmap.me1);
+        iv_doctor.setImageResource(R.mipmap.chat1);
+        iv_medicine.setImageResource(R.mipmap.chat1);
         iv_file.setImageResource(R.mipmap.find1);
         iv_friends.setImageResource(R.mipmap.contact1);
 
         // TextView置为灰色
         tv_my.setTextColor(0xffA6A6A6);
+        tv_doctor.setTextColor(0xffA6A6A6);
+        tv_medicine.setTextColor(0xffA6A6A6);
         tv_file.setTextColor(0xffA6A6A6);
         tv_friends.setTextColor(0xffA6A6A6);
-
     }
 
     @Override
@@ -203,6 +254,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 iv_my.setImageResource(R.mipmap.me);
                 tv_my.setTextColor(0xff008000);
                 initFragment(0);
+                break;
+            case R.id.ly_doctor:
+                iv_doctor.setImageResource(R.mipmap.chat);
+                tv_doctor.setTextColor(0xff008000);
+                initFragment(1);
+                break;
+            case R.id.ly_medicine:
+                iv_medicine.setImageResource(R.mipmap.chat);
+                tv_medicine.setTextColor(0xff008000);
+                initFragment(2);
                 break;
             case R.id.ly_file:
                 iv_file.setImageResource(R.mipmap.find);

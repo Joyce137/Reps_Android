@@ -3,6 +3,7 @@ package com.example.ustc.healthreps.utils;
 import android.os.Environment;
 
 import java.io.File;
+import java.lang.String;
 
 /**
  * Created by CaoRuijuan on 12/8/15.

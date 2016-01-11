@@ -50,7 +50,27 @@ public class TestActivity extends Activity {
 //            mReceiveThread.start();
 //        }
 
-        initView();
+        //initView();
+        initView1();
+    }
+
+    public void initView1(){
+        testBtn = (Button)findViewById(R.id.testBtn);
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testGPS();
+            }
+        });
+
+        deleteBtn = (Button)findViewById(R.id.button3);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteDB();
+            }
+        });
+
     }
 
     public void initView(){
@@ -83,6 +103,7 @@ public class TestActivity extends Activity {
 
     }
 
+    //测试数据库
     public void testDB(){
         CookieDaoImpl dao = new CookieDaoImpl(this);
         dao.insert(new Cookie("1", "12", "12", "20151222"));
@@ -99,10 +120,12 @@ public class TestActivity extends Activity {
         System.out.print(list.size());
     }
 
+    //删除数据库
     public void deleteDB(){
         this.deleteDatabase("user.db");
 
     }
+
     //请求登录用户信息
     public void reqUserInfo(){
         ReqSingleUserInfo info = new ReqSingleUserInfo();
@@ -116,5 +139,10 @@ public class TestActivity extends Activity {
         NetPack p = new NetPack(-1,ReqSingleUserInfo.SIZE,Types.REQ_SINGLE_USER_INFO,info.getReqSingleUserInfoBytes());
         p.CalCRC();
         Sockets.socket_center.sendPack(p);
+    }
+
+    //测试GPS
+    public void testGPS(){
+
     }
 }

@@ -30,7 +30,6 @@ import com.example.ustc.healthreps.patient.State;
 import com.example.ustc.healthreps.repo.ChangePwdRepo;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
 import com.example.ustc.healthreps.repo.LoginRepo;
-import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ErrorNo;
 import com.example.ustc.healthreps.serverInterface.FileInfo;
