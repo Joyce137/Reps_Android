@@ -68,15 +68,15 @@ public class LoginActivity extends Activity {
         // 初始化界面
         initView();
 
-        // 接收消息
-        sLoginResultHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                int resulttype = (int)msg.obj;
-                handleLoginResult(resulttype);
-            }
-        };
+//        // 接收消息
+//        sLoginResultHandler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                int resulttype = (int)msg.obj;
+//                handleLoginResult(resulttype);
+//            }
+//        };
     }
 
     private void initLayout() {

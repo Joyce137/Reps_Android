@@ -473,4 +473,6 @@
     <color name="popup_right_bg_selected">#ccc</color>
     <color name="div_gray">#ccc</color>
 
+    <color name="backColor">#2000</color>
+
 </resources>

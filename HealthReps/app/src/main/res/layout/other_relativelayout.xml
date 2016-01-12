@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:layout_marginLeft="10dp"
-            android:text="+" />
+            android:background="@drawable/yuyin_icon" />
         
         <Button
             android:id="@+id/btn_send"
@@ -29,7 +29,9 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:gravity="center"
-            android:text="发送" />
+            android:background="@color/green"
+            android:text="发送"
+            android:textColor="@color/white"/>
 
 
         <EditText

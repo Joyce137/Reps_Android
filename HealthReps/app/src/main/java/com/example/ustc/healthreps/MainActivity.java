@@ -15,12 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.example.ustc.healthreps.friends.MyFriendsActivity;
 import com.example.ustc.healthreps.health.DeviceListActivity;
 import com.example.ustc.healthreps.health.MyhealthActivity;
 import com.example.ustc.healthreps.health.ScanBleActivity;
+import com.example.ustc.healthreps.model.MedicStore;
+import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.ui.FileDealActivity;
+import com.example.ustc.healthreps.ui.MedicineList;
 import com.example.ustc.healthreps.ui.SearchDoctor;
 import com.example.ustc.healthreps.ui.SearchMedicine;
 
@@ -51,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static Context context;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 初始化底部按钮事件
         initEvent();
         // 初始化并设置当前Fragment
-        initFragment(0);
+        if (savedInstanceState == null) {
+            initFragment(0);
+        }
     }
 
     private void initView() {
@@ -111,53 +116,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         // 隐藏所有Fragment
         hideFragment(transaction);
+        if (fragmentManager.getFragments() != null && fragmentManager.getFragments().size() > 0) {
+            for (Fragment cf : fragmentManager.getFragments()) {
+                if(cf instanceof FileDealActivity
+                        || cf instanceof MyhealthActivity
+                        || cf instanceof SearchDoctor
+                        || cf instanceof SearchMedicine
+                        || cf instanceof MedicineList)
+                    transaction.hide(cf);
+            }
+        }
+
         switch (index) {
             case 0:
-                if (myFragment == null) {
-                    myFragment = new MyhealthActivity();
-                    transaction.add(R.id.frame_content, myFragment);
-                } else {
-                    transaction.show(myFragment);
-                }
+//                if (myFragment == null) {
+//                    myFragment = new MyhealthActivity();
+//                    transaction.add(R.id.frame_content, myFragment);
+//                } else {
+//                    transaction.show(myFragment);
+//                }
+                myFragment = new MyhealthActivity();
+                transaction.add(R.id.frame_content, myFragment);
                 break;
 
             //寻医
             case 1:
-                if(doctorFragment == null){
-                    doctorFragment = new SearchDoctor();
-                    transaction.add(R.id.frame_content,doctorFragment);
-                }
-                else {
-                    transaction.show(doctorFragment);
-                }
+//                if(doctorFragment == null){
+//                    doctorFragment = new SearchDoctor();
+//                    transaction.add(R.id.frame_content,doctorFragment);
+//                }
+//                else {
+//                    transaction.show(doctorFragment);
+//                }
+                doctorFragment = new SearchDoctor();
+                transaction.add(R.id.frame_content,doctorFragment);
                 break;
 
             //问药
             case 2:
-                if(medicineFragment == null){
-                    medicineFragment = new SearchMedicine();
-                    transaction.add(R.id.frame_content,medicineFragment);
+                if(Users.sDefaultStore != null){      //设置过默认药店
+                    Toast.makeText(getApplication(), "你已经设置过默认药店", Toast.LENGTH_SHORT).show();
+                    medicineFragment = new MedicineList();
+                    transaction.add(R.id.frame_content, medicineFragment);
                 }
                 else {
-                    transaction.show(medicineFragment);
+                    Toast.makeText(getApplication(),"你尚未设置过默认药店",Toast.LENGTH_SHORT).show();
+                    medicineFragment = new SearchMedicine();
+                    transaction.add(R.id.frame_content, medicineFragment);
                 }
+
                 break;
 
             case 3:
-                if (fileFragment == null) {
-                    fileFragment = new FileDealActivity();
-                    transaction.add(R.id.frame_content, fileFragment);
-                } else {
-                    transaction.show(fileFragment);
-                }
+                fileFragment = new FileDealActivity();
+                transaction.add(R.id.frame_content, fileFragment);
                 break;
             case 4:
-                if (friendsFragment == null) {
-                    friendsFragment = new MyFriendsActivity();
-                    transaction.add(R.id.frame_content, friendsFragment);
-                } else {
-                    transaction.show(friendsFragment);
-                }
+                friendsFragment = new MyFriendsActivity();
+                transaction.add(R.id.frame_content, friendsFragment);
                 break;
             default:
                 break;

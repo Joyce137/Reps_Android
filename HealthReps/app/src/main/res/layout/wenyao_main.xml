@@ -1,3 +1,4 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
@@ -91,11 +92,17 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/main_div_line">
         <!-- your views...-->
+        <include
+            layout="@layout/store_info_header"
+            android:id="@+id/table_title"/>
+
         <ListView
             android:id="@+id/lv_store"
+            android:layout_below="@+id/table_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            </ListView>
+        </ListView>
+
 
         <!--使背景变灰-->
         <View

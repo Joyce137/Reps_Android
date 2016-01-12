@@ -1,6 +1,6 @@
 package com.example.ustc.healthreps.repo;
 
-import com.example.ustc.healthreps.model.Medicine;
+import com.example.ustc.healthreps.database.entity.MedicineEntity;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.PreList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class PrelistRepo extends ReceiveSuper{
     UserInfo user = Users.sLoginUser;
     //清单中药品列表
-    public ArrayList<Medicine> prelist_medicine = new ArrayList<Medicine>();
+    public ArrayList<MedicineEntity> prelist_medicineEntity = new ArrayList<MedicineEntity>();
 
     public PrelistRepo(){
         super();

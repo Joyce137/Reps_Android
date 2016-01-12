@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.ustc.healthreps.database.DBConstants;
-import com.example.ustc.healthreps.database.DBManager;
+import com.example.ustc.healthreps.database.DBManagerForExist;
+import com.example.ustc.healthreps.database.DBManagerForNew;
 import com.example.ustc.healthreps.database.annotation.ColumnName;
 import com.example.ustc.healthreps.database.annotation.PrimaryKey;
 import com.example.ustc.healthreps.database.annotation.TableName;
@@ -16,7 +17,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.zip.CheckedOutputStream;
 
 /**
  * Created by CaoRuijuan on 12/22/15.
@@ -24,14 +24,22 @@ import java.util.zip.CheckedOutputStream;
 public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
     private String TAG = "DaoSupportImpl";
     private Context context;
-    private DBManager dbManager;
+    private DBManagerForNew dbManagerForNew;
+    private DBManagerForExist dbManagerForExist;
     private SQLiteDatabase db;
 
-    public DaoSupportImpl(Context context, String dbName) {
+    public DaoSupportImpl(Context context, String dbName, boolean isExist) {
         this.context = context;
 
-        dbManager = new DBManager(context, dbName);
-        db = dbManager.getWritableDatabase();
+        if(isExist){
+            dbManagerForExist = new DBManagerForExist(context);
+            dbManagerForExist.openDatabase();
+            db = dbManagerForExist.getDatabase();
+        }
+        else{
+            dbManagerForNew = new DBManagerForNew(context, dbName);
+            db = dbManagerForNew.getWritableDatabase();
+        }
     }
 
     //获取实体对象
@@ -207,11 +215,11 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
     }
 
     @Override
-    public ArrayList<DBEntity> find(String[] columns, String selection, String[] selectionArgs) {
+    public ArrayList<DBEntity> find(String[] columns, String selection, String[] selectionArgs, String orderBy) {
         ArrayList<DBEntity> result = new ArrayList<>();
 
         //query(String table, String[] columns, String selection,String[] selectionArgs, String groupBy, String having,String orderBy)
-        Cursor cursor = db.query(getTableName(), columns, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query(getTableName(), columns, selection, selectionArgs, null, null, orderBy);
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -223,6 +231,11 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
 
         cursor.close();
         return result;
+    }
+
+    @Override
+    public ArrayList<DBEntity> find(String[] columns, String selection, String[] selectionArgs) {
+        return find(columns,selection,selectionArgs,null);
     }
 
     @Override

@@ -1,16 +1,15 @@
 package com.example.ustc.healthreps.model;
 
-/**
-* @param StoreName
-* @param StoreCategroy
-* @param StroeZone
-*/
 public class MedicStore {
 
 	private String StoreName;
 	private String StoreCategroy;
 	private String StroeZone;
-	
+
+	public  MedicStore(){
+
+	}
+
 	public MedicStore(String StoreName,String StoreCategroy,String StroeZone){
 		super();
 		this.StoreName = StoreName;

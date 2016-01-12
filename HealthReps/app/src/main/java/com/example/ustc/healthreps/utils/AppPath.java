@@ -15,8 +15,8 @@ public class AppPath {
     public static final String DB_PATH = AppPath.getPathByFileType("databases");
 
     //在手机里存放数据库的位置(/data/data/com.example.ustc.healthreps)
-    public static final String APP_PATH = "/data"
-            + Environment.getDataDirectory().getAbsolutePath() + "/"
+    public static final String APP_PATH = "/data/data/"
+//            + Environment.getDataDirectory().getAbsolutePath() + "/"
             + PACKAGE_NAME;
 
     //得到存放类型的path

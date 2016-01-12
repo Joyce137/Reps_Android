@@ -2,21 +2,25 @@ package com.example.ustc.healthreps.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.app.Activity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -36,6 +40,7 @@ import com.baidu.location.LocationClientOption;
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.FirstClassAdapter;
 import com.example.ustc.healthreps.adapter.SecondClassAdapter;
+import com.example.ustc.healthreps.adapter.TabStoreAdapter;
 import com.example.ustc.healthreps.citylist.CityList;
 import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.gps.GPSService;
@@ -50,11 +55,9 @@ import com.example.ustc.healthreps.model.SecondClassItem;
  */
 public class SearchMedicine extends Fragment {
     View view;
-
+    MedicineList smfragment = null;
     private LocationClient locationClient = null;
 
-    //Toolbar
-    LinearLayout layout;
     private PopupWindow popupWindow;
     ImageView imageView;
     Toolbar toolbar;
@@ -73,7 +76,9 @@ public class SearchMedicine extends Fragment {
 
     //药店信息列表
     private ListView store_list_view;
-    ArrayAdapter<MedicStore> store_Adapter;
+
+    private TabStoreAdapter store_Adapter;
+
     List <MedicStore> list = new ArrayList <MedicStore>();
     //弹出PopupWindow时背景变暗
     private View darkView;
@@ -83,6 +88,8 @@ public class SearchMedicine extends Fragment {
 
     //弹出PopupWindow时，箭头方向
     private boolean flag1=true,flag2=true,flag3=true;
+    private LinearLayout layout;
+    private ListView listView;
 
     //智能排序
     private TextView smart_sort,nearest_sort,hot_sort,best_sort;
@@ -110,9 +117,11 @@ public class SearchMedicine extends Fragment {
         mainTab3TV.setOnClickListener(l);
     }
 
+    //Toolbar
+    LinearLayout layout_toolbar;
     public void initToolbar() {
-        layout = (LinearLayout) view.findViewById(R.id.ly_loc);
-        layout.setOnClickListener(new View.OnClickListener() {
+        layout_toolbar = (LinearLayout) view.findViewById(R.id.ly_loc);
+        layout_toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CityList.class);
@@ -272,60 +281,107 @@ public class SearchMedicine extends Fragment {
         }
 
         private void tab3OnClick() {
-            // TODO Auto-generated method stub
-            if (popupWindow3.isShowing()) {
-                popupWindow3.dismiss();
-            } else {
-                Drawable nav_up = null;
-                if(flag3)
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
-                    flag3=false;
+                // TODO Auto-generated method stub
+                if(flag3){
+                    Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
+                    nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                    mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
                 }
-                else
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
-                    flag3=true;
+                else{
+                    Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
+                    nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                    mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
                 }
-                nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-                mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
 
-                popupWindow3.showAsDropDown(view.findViewById(R.id.main_div_line));
-                popupWindow3.setAnimationStyle(-1);
-                //背景变暗
-                darkView.startAnimation(animIn);
-                darkView.setVisibility(View.VISIBLE);
+                //药店关键字过滤信息
+                final String title[] = {"智能排序","离我最近","人气最高","评价最好"};
+                //加载布局
+                layout = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
+                //找到布局控件
+                listView = (ListView)layout.findViewById(R.id.lv_dialog);
+                //设置适配器
+                listView.setAdapter(new ArrayAdapter<String>(getActivity(),
+                        R.layout.more_text_setting,R.id.tv_text,title));
+                //实例化popupwindow
+                popupWindow3 = new PopupWindow(layout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //控制键盘是否可以获得焦点
+                popupWindow3.setFocusable(true);
+                popupWindow3.setAnimationStyle(R.style.mystyle);
+                popupWindow3.setBackgroundDrawable(new BitmapDrawable(null, ""));
+                WindowManager manager = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
+
+                //获取xoff
+                int xpos = manager.getDefaultDisplay().getWidth()/2-popupWindow3.getWidth()/2;
+                //xoff,yoff基于anchor的左下角进行偏移
+                popupWindow3.showAsDropDown(mainTab3TV, xpos, 0);
+                //监听
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String str = title[position];
+                        popupWindow3.dismiss();
+                        mainTab3TV.setText(str);
+
+                        //指示图标归位
+                        Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
+                        nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                        mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
+
+                        Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-        }
 
-        private void tab2OnClick() {
-            // TODO Auto-generated method stub
-            if (popupWindow2.isShowing()) {
-                popupWindow2.dismiss();
-            }
-            else {
-                Drawable nav_up = null;
+            //药店信息过滤
+            private void tab2OnClick() {
 
-                if(flag2)
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
-                    flag2=false;
+                if(flag2){
+                    Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
+                    nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                    mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
                 }
-                else
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
-                    flag2=true;
+                else{
+                    Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
+                    nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                    mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
                 }
-                nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-                mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
 
-                popupWindow2.showAsDropDown(view.findViewById(R.id.main_div_line));
-                popupWindow2.setAnimationStyle(-1);
-                //背景变暗
-                darkView.startAnimation(animIn);
-                darkView.setVisibility(View.VISIBLE);
+                //药店关键字过滤信息
+                final String title[] = {"全部药店","医保药店","中药店","24h药店"};
+                //加载布局
+                layout = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
+                //找到布局控件
+                listView = (ListView)layout.findViewById(R.id.lv_dialog);
+                //设置适配器
+                listView.setAdapter(new ArrayAdapter<String>(getActivity(),
+                        R.layout.more_text_setting,R.id.tv_text,title));
+                //实例化popupwindow
+                popupWindow2 = new PopupWindow(layout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //控制键盘是否可以获得焦点
+                popupWindow2.setFocusable(true);
+                popupWindow2.setAnimationStyle(R.style.mystyle);
+                popupWindow2.setBackgroundDrawable(new BitmapDrawable(null, ""));
+                WindowManager manager = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
+
+                //获取xoff
+                int xpos = manager.getDefaultDisplay().getWidth()/2-popupWindow2.getWidth()/2;
+                //xoff,yoff基于anchor的左下角进行偏移
+                popupWindow2.showAsDropDown(mainTab2TV, xpos, 0);
+                //监听
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String str = title[position];
+                        popupWindow2.dismiss();
+                        mainTab2TV.setText(str);
+                        //指示图标归位
+                        Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
+                        nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+                        mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
+                        Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-        }
 
         private void tab1OnClick() {
             // TODO Auto-generated method stub
@@ -443,154 +499,6 @@ public class SearchMedicine extends Fragment {
         });
 
 
-        //搜索全部药店信息
-        popupWindow2 = new PopupWindow(getActivity());
-
-        View view2 = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
-        leftLV2 = (ListView) view2.findViewById(R.id.pop_listview_left);
-        rightLV2 = (ListView) view2.findViewById(R.id.pop_listview_right);
-
-        popupWindow2.setContentView(view2);
-        popupWindow2.setBackgroundDrawable(new PaintDrawable());
-        popupWindow2.setFocusable(true);
-
-        popupWindow2.setHeight(ScreenUtils.getScreenH(getActivity()) * 2 / 3);
-        popupWindow2.setWidth(ScreenUtils.getScreenW(getActivity()));
-
-        popupWindow2.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                darkView.startAnimation(animOut);
-                darkView.setVisibility(View.GONE);
-
-                leftLV2.setSelection(0);
-                rightLV2.setSelection(0);
-            }
-        });
-
-        //为了方便扩展，这里的两个ListView均使用BaseAdapter.如果分类名称只显示一个字符串，建议改为ArrayAdapter.
-        //加载一级分类
-        final FirstClassAdapter firstAdapter2 = new FirstClassAdapter(getActivity(), firstList2);
-        leftLV2.setAdapter(firstAdapter2);
-
-        //加载左侧第一行对应右侧二级分类
-        secondList2 = new ArrayList<SecondClassItem>();
-        secondList2.addAll(firstList2.get(0).getSecondList());
-        final SecondClassAdapter secondAdapter2 = new SecondClassAdapter(getActivity(), secondList2);
-        rightLV2.setAdapter(secondAdapter2);
-
-        //左侧ListView点击事件
-        leftLV2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //二级数据
-                List<SecondClassItem> list2 = firstList2.get(position).getSecondList();
-                //如果没有二级类，则直接跳转
-                if (list2 == null || list2.size() == 0) {
-                    popupWindow2.dismiss();
-
-                    int firstId = firstList2.get(position).getId();
-                    String selectedName = firstList2.get(position).getName();
-                    return;
-                }
-
-                FirstClassAdapter adapter = (FirstClassAdapter) (parent.getAdapter());
-                //如果上次点击的就是这一个item，则不进行任何操作
-                if (adapter.getSelectedPosition() == position){
-                    return;
-                }
-
-                //根据左侧一级分类选中情况，更新背景色
-                adapter.setSelectedPosition(position);
-                adapter.notifyDataSetChanged();
-
-                //显示右侧二级分类
-                updateSecondListView2(list2, secondAdapter2);
-            }
-        });
-
-        //右侧ListView点击事件
-        rightLV2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                flag2=true;
-                Drawable nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
-                nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-                mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
-                //关闭popupWindow，显示用户选择的分类
-                popupWindow2.dismiss();
-
-                int firstPosition = firstAdapter2.getSelectedPosition();
-                int firstId = firstList2.get(firstPosition).getId();
-                int secondId = firstList2.get(firstPosition).getSecondList().get(position).getId();
-                String selectedName = firstList2.get(firstPosition).getSecondList().get(position)
-                        .getName();
-                handleResult(2,firstId, secondId,selectedName);
-            }
-        });
-
-        //智能排序选项
-        popupWindow3 = new PopupWindow(getActivity());
-
-        View view3 = LayoutInflater.from(getActivity()).inflate(R.layout.smart_sort, null);
-
-        smart_sort = (TextView) view3.findViewById(R.id.tv_smart);
-        nearest_sort = (TextView) view3.findViewById(R.id.tv_nearest);
-        hot_sort = (TextView) view3.findViewById(R.id.tv_hotest);
-        best_sort = (TextView) view3.findViewById(R.id.tv_best);
-
-        popupWindow3.setContentView(view3);
-        popupWindow3.setFocusable(true);
-
-        popupWindow3.setHeight(ScreenUtils.getScreenH(getActivity())*5/18);
-        popupWindow3.setWidth(ScreenUtils.getScreenW(getActivity()));
-
-        popupWindow3.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                darkView.startAnimation(animOut);
-                darkView.setVisibility(View.GONE);
-            }
-        });
-
-        OnClickListener listen = new ClickListener();
-        smart_sort.setOnClickListener(listen);
-        nearest_sort.setOnClickListener(listen);
-        hot_sort.setOnClickListener(listen);
-        best_sort.setOnClickListener(listen);
-
-    }
-
-    class ClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View view) {
-            String str="null";
-            switch (view.getId()) {
-                case R.id.tv_smart:
-                    str = "智能排序";
-                    break;
-                case R.id.tv_nearest:
-                    str = "离我最近";
-                    break;
-                case R.id.tv_hotest:
-                    str = "人气最高";
-                    break;
-                case R.id.tv_best:
-                    str = "评价最好";
-                    break;
-                default:
-                    break;
-            }
-            Toast.makeText(getActivity().getApplicationContext(), str, Toast.LENGTH_SHORT).show();
-            mainTab3TV.setText(str);
-            popupWindow3.dismiss();
-            Drawable nav_up = null;
-            nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
-            flag3=true;
-            nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-            mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
-        }
     }
 
     private void initData() {
@@ -661,35 +569,6 @@ public class SearchMedicine extends Fragment {
         //copy
         firstList1.addAll(firstList1);
 
-        /*
-         * 全部药店信息，后期该数据从数据库中获取
-         */
-        firstList2 = new ArrayList<FirstClassItem>();
-        //1
-        ArrayList<SecondClassItem> list21 = new ArrayList<SecondClassItem>();
-        list21.add(new SecondClassItem(211, "全部药店1"));
-        list21.add(new SecondClassItem(212, "全部药店2"));
-        list21.add(new SecondClassItem(213, "全部药店3"));
-        firstList2.add(new FirstClassItem(1, "全部药店", list21));
-
-        ArrayList<SecondClassItem> list22 = new ArrayList<SecondClassItem>();
-        list22.add(new SecondClassItem(221, "医保药店1"));
-        list22.add(new SecondClassItem(222, "医保药店2"));
-        list22.add(new SecondClassItem(223, "医保药店3"));;
-        firstList2.add(new FirstClassItem(2, "医保药店", list22));
-
-
-        ArrayList<SecondClassItem> list23 = new ArrayList<SecondClassItem>();
-        list23.add(new SecondClassItem(321, "中药店1"));
-        list23.add(new SecondClassItem(322, "中药店2"));
-        list23.add(new SecondClassItem(323, "中药店3"));;
-        firstList2.add(new FirstClassItem(3, "中药店", list23));
-
-        ArrayList<SecondClassItem> list24 = new ArrayList<SecondClassItem>();
-        list24.add(new SecondClassItem(421, "24h药店1"));
-        list24.add(new SecondClassItem(422, "24h药店2"));
-        list24.add(new SecondClassItem(423, "24h药店3"));;
-        firstList2.add(new FirstClassItem(4, "24h药店", list24));
 
         //初始化药店信息
         List<MedicStore> list_store = new ArrayList<MedicStore>();
@@ -700,21 +579,38 @@ public class SearchMedicine extends Fragment {
             MedicStore mstore = list_store.get(i);
             list.add(mstore);
         }
-        store_Adapter = new ArrayAdapter<MedicStore>(getActivity(),android.R.layout.simple_expandable_list_item_1,list_store);
+
+        store_Adapter = new TabStoreAdapter(getActivity(),list);
         store_list_view.setAdapter(store_Adapter);
         store_list_view.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                // TODO Auto-generated method stub
                 MedicStore mstore = (MedicStore)store_Adapter.getItem(position);
 
-                Intent i = new Intent(getActivity().getApplicationContext(),MedicList.class);
-//                i.setComponent(new ComponentName("com.example.ui",
-//                        "com.example.ui.MedicList"));
-                i.putExtra("store_name", mstore.getStoreName());
-                i.putExtra("store_category", mstore.getStoreCategroy());
-                startActivity(i);
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                if (fm.getFragments() != null && fm.getFragments().size() > 0) {
+                    for (Fragment cf : fm.getFragments()) {
+                        ft.hide(cf);
+                    }
+                }
+
+                if(smfragment == null){
+                    smfragment = new MedicineList();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("store_name", mstore.getStoreName());
+                    bundle.putString("store_category", mstore.getStoreCategroy());
+                    smfragment.setArguments(bundle);
+                    ft.replace(R.id.frame_content, smfragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                else{
+                    ft.show(smfragment);
+                    ft.commit();
+                }
+
             }
         });
 
@@ -731,6 +627,9 @@ public class SearchMedicine extends Fragment {
 
         animIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_anim);
         animOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out_anim);
+
+        ViewGroup tableTitle = (ViewGroup) view.findViewById(R.id.table_title);
+        tableTitle.setBackgroundColor(Color.rgb(65, 105, 225));
     }
 
     //刷新右侧ListView
@@ -740,13 +639,7 @@ public class SearchMedicine extends Fragment {
         secondList1.addAll(list2);
         secondAdapter.notifyDataSetChanged();
     }
-    //刷新右侧ListView
-    private void updateSecondListView2(List<SecondClassItem> list2,
-                                       SecondClassAdapter secondAdapter) {
-        secondList2.clear();
-        secondList2.addAll(list2);
-        secondAdapter.notifyDataSetChanged();
-    }
+
     //处理点击结果
     private void handleResult(int flag,int firstId, int secondId,String selectedName){
         //String text = "first id:" + firstId + ",second id:" + secondId;

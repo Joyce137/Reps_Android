@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">HealthReps</string>
     <string name="action_settings">Settings</string>
-
+    <string name="title_activity_medicine_pick_list">MedicinePickList</string>
 
     //设置菜单
     <string name="myinfo">个人设置</string>
@@ -60,4 +60,11 @@
 
     <string name="no_data">没有找到符合条件的房源</string>
     <string name="title_activity_picture_select">Picture_select</string>
+    <string name="title_activity_person_setting">PersonSetting</string>
+    <string name="title_activity_person_store">PersonStore</string>
+
+    <style name="mystyle" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/head_in</item>  //进入时的动画
+        <item name="@android:windowExitAnimation">@anim/head_out</item>    //退出时的动画
+    </style>
 </resources>

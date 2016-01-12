@@ -24,6 +24,7 @@ public interface IDaoSupport<DBEntity> {
 
     //查
     //query(String table, String[] columns, String selection,String[] selectionArgs, String groupBy, String having,String orderBy)
+    ArrayList<DBEntity> find(String[] columns, String selection,String[] selectionArgs, String orderBy);
     ArrayList<DBEntity> find(String[] columns, String selection,String[] selectionArgs);
 
     //搜索全部

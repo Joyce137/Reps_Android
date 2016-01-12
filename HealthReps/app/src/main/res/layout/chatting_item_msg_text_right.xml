@@ -47,7 +47,7 @@
             android:lineSpacingExtra="2dp"
             android:minHeight="50dp"
             android:textColor="#ff000000"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_username"

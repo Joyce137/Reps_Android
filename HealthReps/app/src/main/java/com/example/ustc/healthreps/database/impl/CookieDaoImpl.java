@@ -16,7 +16,7 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
     private Context context;
 
     public CookieDaoImpl(Context context){
-        super(context,"user");
+        super(context,"user",false);
         this.context = context;
     }
 

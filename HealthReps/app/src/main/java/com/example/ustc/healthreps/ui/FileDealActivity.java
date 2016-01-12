@@ -15,6 +15,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.health.MyhealthActivity;
 
 /*
  * 文件管理类，包含消息和记录两项
@@ -115,24 +116,28 @@ public class FileDealActivity extends Fragment {
 		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		if (type == RECORD_FRAGMENT_TYPE) {
-			if (recordFragment == null) {
-				recordFragment = new RecordFragment();
+//			if (recordFragment == null) {
+//				recordFragment = new RecordFragment();
+//				transaction.add(R.id.fl_content, recordFragment, "record");
+//			} else {
+//				transaction.show(recordFragment);
+//			}
 
-				transaction.add(R.id.fl_content, recordFragment, "record");
-			} else {
-				transaction.show(recordFragment);
-			}
+			recordFragment = new RecordFragment();
+			transaction.add(R.id.fl_content, recordFragment, "record");
 			if (messageFragment != null) {
 				transaction.hide(messageFragment);
 			}
 			currentFragmentType = MESSAGE_FRAGMENT_TYPE;
 		} else {
-			if (messageFragment == null) {
-				messageFragment = new MessageFragment();
-				transaction.add(R.id.fl_content, messageFragment, "message");
-			} else {
-				transaction.show(messageFragment);
-			}
+//			if (messageFragment == null) {
+//				messageFragment = new MessageFragment();
+//				transaction.add(R.id.fl_content, messageFragment, "message");
+//			} else {
+//				transaction.show(messageFragment);
+//			}
+			messageFragment = new MessageFragment();
+			transaction.add(R.id.fl_content, messageFragment, "message");
 			if (recordFragment != null) {
 				transaction.hide(recordFragment);
 			}

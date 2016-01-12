@@ -1,13 +1,11 @@
 package com.example.ustc.healthreps.repo;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 
-import com.example.ustc.healthreps.database.DBManagerForExist;
+import com.example.ustc.healthreps.database.impl.MedicineDaoImpl;
 import com.example.ustc.healthreps.model.DocPha;
-import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.patient.DoctorList;
 import com.example.ustc.healthreps.serverInterface.NetPack;
@@ -36,6 +34,8 @@ public class DocPhaRepo extends ReceiveSuper{
     public String mPhotoPath = "";
     public SingleUserInfo mSingleUserInfo;
     public Context context;
+
+    private MedicineDaoImpl dao;
 
     public DocPhaRepo(){
         super();
@@ -77,23 +77,6 @@ public class DocPhaRepo extends ReceiveSuper{
     //搜索药店
     public void searchStore(SearchInfo searchInfo){
 
-    }
-
-    //搜索药品（从本地数据库搜索）
-    public ArrayList<Medicine> searchDrug(SearchInfo searchInfo,Context context){
-        DBManagerForExist dbManager = new DBManagerForExist(context);
-        dbManager.openDatabase();
-
-        SQLiteDatabase database = dbManager.getDatabase();
-
-        //Medicine逻辑对象
-        MedicineRepo mp = new MedicineRepo(database);
-
-        //查询结果列表
-        ArrayList<Medicine> list = mp.getMedicineByCategory(searchInfo.drugCategory);
-
-        dbManager.closeDatabase();
-        return list;
     }
 
     //根据科室请求医生信息

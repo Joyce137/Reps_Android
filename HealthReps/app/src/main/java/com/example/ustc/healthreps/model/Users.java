@@ -14,6 +14,11 @@ public class Users {
     public static UserInfo sLoginUser;
     public static boolean sOnline;
 
+    //默认药店
+    public static String sDefaultStore = null;
+    //私人医生
+    public static String sDefaultDoctor = null;
+
     //所有医生列表
     public static ArrayList<DocPha> sAllDoctors = new ArrayList<DocPha>();
 }

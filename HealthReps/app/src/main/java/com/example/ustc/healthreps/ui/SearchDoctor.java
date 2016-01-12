@@ -3,23 +3,23 @@ package com.example.ustc.healthreps.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.content.ContentUris;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -39,12 +39,14 @@ import com.baidu.location.LocationClientOption;
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.FirstClassAdapter;
 import com.example.ustc.healthreps.adapter.SecondClassAdapter;
+import com.example.ustc.healthreps.adapter.TabDoctorAdapter;
 import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.gps.GPSService;
 import com.example.ustc.healthreps.citylist.CityList;
 import com.example.ustc.healthreps.model.Doctor;
 import com.example.ustc.healthreps.model.FirstClassItem;
 import com.example.ustc.healthreps.model.SecondClassItem;
+import com.example.ustc.healthreps.model.Users;
 
 import org.w3c.dom.Text;
 
@@ -54,10 +56,9 @@ import org.w3c.dom.Text;
  * by hzy
  */
 public class SearchDoctor extends Fragment {
+
     View view;
     private LocationClient locationClient = null;
-    //Toolbar
-    LinearLayout layout;
     private PopupWindow popupWindow;
     ImageView imageView;
     Toolbar toolbar;
@@ -75,9 +76,11 @@ public class SearchDoctor extends Fragment {
     /**左侧和右侧两个ListView*/
     private ListView leftLV1, rightLV1,leftLV2, rightLV2;
 
+
     //医生信息列表
     private ListView doc_list_view;
-    ArrayAdapter<Doctor> doc_Adapter;
+    private TabDoctorAdapter doc_Adapter;
+
     List <Doctor> list = new ArrayList <Doctor>();
     //弹出PopupWindow时背景变暗
     private View darkView;
@@ -90,6 +93,9 @@ public class SearchDoctor extends Fragment {
 
     //智能排序
     private TextView smart_sort,nearest_sort,hot_sort,best_sort;
+
+    private LinearLayout layout;
+    private ListView listView;
 
     @Nullable
     @Override
@@ -114,9 +120,88 @@ public class SearchDoctor extends Fragment {
         mainTab3TV.setOnClickListener(l);
     }
 
+    //Toolbar
+    LinearLayout layout_popup;
+    private String title[] = {"搜索设备","专属药店","私人医生","添加好友","个人设置"};
+    private ListView listView_popup;
+    public void showPopupWindow(View parent){
+        //加载布局
+        layout_popup = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
+        //找到布局控件
+        listView_popup = (ListView)layout_popup.findViewById(R.id.lv_dialog);
+        //设置适配器
+        listView_popup.setAdapter(new ArrayAdapter<String>(getActivity(),
+                R.layout.more_text_setting, R.id.tv_text, title));
+        //实例化popupwindow
+        popupWindow = new PopupWindow(layout_popup, 350,
+                ViewGroup.LayoutParams.WRAP_CONTENT, false);
+
+        //popupWindow = new PopupWindow(layout,370,570);
+        //控制键盘是否可以获得焦点
+        popupWindow.setFocusable(true);
+        popupWindow.setAnimationStyle(R.style.mystyle);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
+        WindowManager manager = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
+
+        //获取xoff
+        int xpos = manager.getDefaultDisplay().getWidth()/2-popupWindow.getWidth()/2;
+        //xoff,yoff基于anchor的左下角进行偏移
+        popupWindow.showAsDropDown(parent, xpos, 0);
+        //监听
+        listView_popup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String str = null;
+
+                popupWindow.dismiss();
+                switch (position) {
+                    case 0:
+                        str = "搜索设备";
+                        //不是我们组的功能^-^
+                        break;
+                    case 1:
+                        str = "专属药店";
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
+                        if (fm.getFragments() != null && fm.getFragments().size() > 0) {
+                            for (Fragment cf : fm.getFragments()) {
+                                ft.remove(cf);
+                            }
+                        }
+                        SearchMedicine smfragment = new SearchMedicine();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("flag", 1);   //flag=1,表示对SearchMedic来说已经设置过默认药店
+                        smfragment.setArguments(bundle);
+                        ft.replace(R.id.frame_content, smfragment);
+                        ft.addToBackStack(null);
+                        ft.commit();
+
+                        Users.sDefaultStore = "xxx";
+                        break;
+                    case 2:
+                        str = "私人医生";
+                        //不是我们组的功能^-^
+                        break;
+                    case 3:
+                        str = "添加好友";
+                        //不是我们组的功能^-^
+                        break;
+                    case 4:
+                        str = "个人设置";
+                        Intent intent4 = new Intent(view.getContext(), PersonSetting.class);
+                        view.getContext().startActivity(intent4);
+                        break;
+                }
+
+                Toast.makeText(getActivity().getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
     public void initToolbar(){
-        layout=(LinearLayout)view.findViewById(R.id.ly_loc);
-        layout.setOnClickListener(new View.OnClickListener() {
+        layout_popup=(LinearLayout)view.findViewById(R.id.ly_loc);
+        layout_popup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CityList.class);
@@ -127,49 +212,9 @@ public class SearchDoctor extends Fragment {
 
         imageView=(ImageView)view.findViewById(R.id.iv_toolbar_set) ;
         imageView.setOnClickListener(new View.OnClickListener() {
-            boolean up = false;
             @Override
             public void onClick(View view) {
-                LayoutInflater layoutInflater;
-                View popup;
-                layoutInflater = LayoutInflater.from(getActivity());
-                popup = layoutInflater.inflate(R.layout.activity_toolbar_menu, null);
-                popupWindow = new PopupWindow(popup, ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, false);
-                if (!up) {
-                    popupWindow.setBackgroundDrawable(new ColorDrawable(0));
-
-                    menu1 = (TextView)popup.findViewById(R.id.tv_menu_01);
-                    menu1.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity(), "私人医生...", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    menu2 = (TextView)popup.findViewById(R.id.tv_menu_02);
-                    menu2.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity().getApplicationContext(), "专属药店...", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    menu3 = (TextView)popup.findViewById(R.id.tv_menu_03);
-                    menu3.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity(), "个人设置...", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    popupWindow.showAsDropDown(imageView);
-                    popupWindow.update();
-                    up = true;
-                }
-                else{
-                    popupWindow.dismiss();
-                    up = false;
-                }
+                showPopupWindow(imageView);
             }
         });
 
@@ -281,29 +326,36 @@ public class SearchDoctor extends Fragment {
 
         private void tab3OnClick() {
             // TODO Auto-generated method stub
-            if (popupWindow3.isShowing()) {
-                popupWindow3.dismiss();
-            } else {
-                Drawable nav_up = null;
-                if(flag3)
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
-                    flag3=false;
-                }
-                else
-                {
-                    nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
-                    flag3=true;
-                }
-                nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-                mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
+            //药店关键字过滤信息
+            final String title[] = {"智能排序","离我最近","人气最高","评价最好"};
+            //加载布局
+            layout = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
+            //找到布局控件
+            listView = (ListView)layout.findViewById(R.id.lv_dialog);
+            //设置适配器
+            listView.setAdapter(new ArrayAdapter<String>(getActivity(),
+                    R.layout.more_text_setting,R.id.tv_text,title));
+            //实例化popupwindow
+            popupWindow3 = new PopupWindow(layout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //控制键盘是否可以获得焦点
+            popupWindow3.setFocusable(true);
+            popupWindow3.setAnimationStyle(R.style.mystyle);
+            popupWindow3.setBackgroundDrawable(new BitmapDrawable(null, ""));
+            WindowManager manager = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
 
-                popupWindow3.showAsDropDown(view.findViewById(R.id.main_div_line));
-                popupWindow3.setAnimationStyle(-1);
-                //背景变暗
-                darkView.startAnimation(animIn);
-                darkView.setVisibility(View.VISIBLE);
-            }
+            //获取xoff
+            int xpos = manager.getDefaultDisplay().getWidth()/2-popupWindow3.getWidth()/2;
+            //xoff,yoff基于anchor的左下角进行偏移
+            popupWindow3.showAsDropDown(mainTab3TV, xpos, 0);
+            //监听
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String str = title[position];
+                    popupWindow3.dismiss();
+                    Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         private void tab2OnClick() {
@@ -716,7 +768,7 @@ public class SearchDoctor extends Fragment {
             list.add(doc);
 //			temp.add(doc);
         }
-        doc_Adapter = new ArrayAdapter<Doctor>(getActivity(),android.R.layout.simple_expandable_list_item_1,list);
+        doc_Adapter = new TabDoctorAdapter(getActivity().getApplicationContext(),list);
         doc_list_view.setAdapter(doc_Adapter);
 
         doc_list_view.setOnItemClickListener(new OnItemClickListener(){
