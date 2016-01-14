@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Users {
     public static String sLoginUsername;
     public static String sLoginUserType;
-    public static UserInfo sLoginUser;
+    public static UserInfo sLoginUser = new UserInfo();
     public static boolean sOnline;
 
     //默认药店
@@ -21,4 +21,7 @@ public class Users {
 
     //所有医生列表
     public static ArrayList<DocPha> sAllDoctors = new ArrayList<DocPha>();
+
+    //当前连接的医生
+    public static String sCurConnectDoc = null;
 }

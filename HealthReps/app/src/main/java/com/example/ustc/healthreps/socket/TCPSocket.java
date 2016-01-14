@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -22,6 +24,7 @@ import java.util.Map.Entry;
 import android.util.Log;
 
 import com.example.ustc.healthreps.BaseActivity;
+import com.example.ustc.healthreps.database.annotation.ColumnName;
 import com.example.ustc.healthreps.model.DocPha;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.patient.ChatActivity;
@@ -29,7 +32,9 @@ import com.example.ustc.healthreps.patient.RegisterActivity;
 import com.example.ustc.healthreps.patient.State;
 import com.example.ustc.healthreps.repo.ChangePwdRepo;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
+import com.example.ustc.healthreps.repo.FileRepo;
 import com.example.ustc.healthreps.repo.LoginRepo;
+import com.example.ustc.healthreps.repo.PrelistRepo;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ErrorNo;
 import com.example.ustc.healthreps.serverInterface.FileInfo;
@@ -453,7 +458,19 @@ public class TCPSocket {
 	        //modPicFp_Dlg->onRecvControlMsg(y);
 		}
 	    else{
-	    	//Main_Dlg->OnRecvControlMsg(y);
+			//Main_Dlg->OnRecvControlMsg(y);
+			//连接医生消息
+			if(msg.getFlag() == Types.To_User||msg.getFlag() == Types.Off_Link)
+				DocPhaRepo.sDocPhaRepoControlmsgHandler.obtainMessage(0, msg).sendToTarget();
+
+			//清单发送之后处理结果
+			else if(msg.getFlag() == Types.PreList_Content && msg.isYesno())
+				PrelistRepo.sPrelistRepoControlmsgHandler.obtainMessage(0,msg).sendToTarget();
+
+			//文件发送结果
+			else if(msg.getFlag() == Types.FILESENDNOYES)
+				FileRepo.sFileRepoControlmsgHandler.obtainMessage(0,msg).sendToTarget();
+
 	    }       
 	}
 
@@ -690,12 +707,8 @@ public class TCPSocket {
 	//复制文件Copy
 	//Send_ControlMsg
 	public void sendControlMsg(ControlMsg msg) {
-		NetPack p = new NetPack();
-		p.size = NetPack.infoSize + ControlMsg.size;
-		p.setM_nFlag(Types.INFONOYES);
-		p.setnDataLen(ControlMsg.size);
+		NetPack p = new NetPack(-1,ControlMsg.size,Types.INFONOYES,msg.getControlMsgBytes());
 		p.CalCRC();
-		p.setM_buffer(msg.getBuf());
 		
 		sendPack(p);		
 	}
@@ -720,6 +733,36 @@ public class TCPSocket {
 		return true;
 	}
 
+	//copy文件
+	//CopyFile--边读边写
+	public void copyFile(String inputPath, String outputPath){
+		File inputFile = new File(inputPath);
+		File outputFile = new File(outputPath);
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			is = new FileInputStream(inputFile);
+			os = new FileOutputStream(outputFile);
+			//边读边写
+			int temp = 0;
+			while((temp = is.read()) != -1){
+				os.write(temp);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}finally {
+			try {
+				is.close();
+				os.close();
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
 	//请求文件列表
 	public void reqFileList(String mUsername, boolean send_recv, int fileType){
 		ReqFileInfo info = new ReqFileInfo();
@@ -736,6 +779,21 @@ public class TCPSocket {
 		pack.CalCRC();
 
 		Sockets.socket_center.sendPack(pack);
+	}
+
+	//请求连接
+	public void reqOffLink(String usrname, boolean reqOrOffLink){
+		ControlMsg msg = new ControlMsg();
+		msg.setUsername(usrname);
+		if(reqOrOffLink == true){
+			msg.setFlag(Types.To_User);
+		}
+		else {
+			msg.setFlag(Types.Off_Link);
+		}
+		msg.setType(1);
+
+		sendControlMsg(msg);
 	}
 
 }

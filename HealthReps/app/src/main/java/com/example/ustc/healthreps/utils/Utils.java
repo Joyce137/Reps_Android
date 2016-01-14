@@ -95,6 +95,11 @@ public class Utils {
 		return formatter.format(new Date());
 
 	}
+
+	// 获取当前日期和时间作为文件名
+	public static String getDataAndTime(){
+		return getDate()+"-"+getTime();
+	}
 	
 	//判断是否仅包括数字、下划线和字母
 	public static boolean onlyIncludingNumber_Letter(String str){
@@ -134,7 +139,7 @@ public class Utils {
 		String dataStr = fileNameArray[4];
 
 		//判断是否为时间串
-		if(Utils.filterUnNumber(dataStr)==dataStr && dataStr.length() == 8){
+		if(Utils.filterUnNumber(dataStr)== dataStr && dataStr.length() == 8){
 			return dataStr;
 		}
 		//如果不是，则使用现在日期
@@ -143,7 +148,7 @@ public class Utils {
 
 	//type(String)->int
 	public static int changeTypeToInt(String type){
-		if(type == "患者"){
+		if(type.equals("患者")){
 			return Types.USER_TYPE_PATIENT;
 		}
 		else if(type == "医生"){
@@ -167,4 +172,6 @@ public class Utils {
 		}
 		return true;
 	}
+
+
 }

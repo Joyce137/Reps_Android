@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -47,6 +49,8 @@ import com.example.ustc.healthreps.model.Doctor;
 import com.example.ustc.healthreps.model.FirstClassItem;
 import com.example.ustc.healthreps.model.SecondClassItem;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.repo.DocPhaRepo;
+import com.example.ustc.healthreps.serverInterface.NetPack;
 
 import org.w3c.dom.Text;
 
@@ -56,6 +60,9 @@ import org.w3c.dom.Text;
  * by hzy
  */
 public class SearchDoctor extends Fragment {
+
+    //接收处理结果
+    public static Handler sDoctorResultHandler = null;
 
     View view;
     private LocationClient locationClient = null;
@@ -97,6 +104,8 @@ public class SearchDoctor extends Fragment {
     private LinearLayout layout;
     private ListView listView;
 
+    private Doctor curDoctor;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -118,6 +127,35 @@ public class SearchDoctor extends Fragment {
         mainTab1TV.setOnClickListener(l);
         mainTab2TV.setOnClickListener(l);
         mainTab3TV.setOnClickListener(l);
+
+        sDoctorResultHandler = new android.os.Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                String data = (String) msg.obj;
+                onRecvDoctorResult(data);
+            }
+        };
+    }
+
+    //收到处理结果
+    public void onRecvDoctorResult(String data){
+
+        if(data.startsWith("y")) {
+            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
+//                i.setComponent(new ComponentName("com.example.ui",
+//                        "com.example.ui.DoctorSessionAty"));
+            i.putExtra("doctor_name", curDoctor.getDoctorName());
+            i.putExtra("grade_name", curDoctor.getGradeName());
+            startActivity(i);
+        }
+        else if(data.startsWith("n")){
+            Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
+        }
+
+        else if(data.startsWith("c")){
+            Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Toolbar
@@ -775,14 +813,10 @@ public class SearchDoctor extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                Doctor doctor = (Doctor) doc_Adapter.getItem(position);
-
-                Intent i = new Intent(getActivity().getApplicationContext(),DoctorSessionAty.class);
-//                i.setComponent(new ComponentName("com.example.ui",
-//                        "com.example.ui.DoctorSessionAty"));
-                i.putExtra("doctor_name", doctor.getDoctorName());
-                i.putExtra("grade_name", doctor.getGradeName());
-                startActivity(i);
+                curDoctor = (Doctor) doc_Adapter.getItem(position);
+                //建立连接
+                //new DocPhaRepo().connectDoctor(curDoctor.getDoctorName());
+                new DocPhaRepo().connectDoctor("doctor1");
             }
         });
     }

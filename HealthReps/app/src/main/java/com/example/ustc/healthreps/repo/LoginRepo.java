@@ -40,7 +40,7 @@ public class LoginRepo extends ReceiveSuper{
     public LoginRepo(){
         super();
 
-        sLoginHandler = new Handler() {
+        sLoginHandler =new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -80,7 +80,7 @@ public class LoginRepo extends ReceiveSuper{
         }
 
         //设置用户类型为药店
-        userType = Types.USER_TYPE_STORE;
+        userType = Types.USER_TYPE_PATIENT;
         Sockets.socket_center.sendUserinfo(username, crcPwd, userType, Types.USER_LOGIN_FLAG);
     }
 
@@ -120,6 +120,7 @@ public class LoginRepo extends ReceiveSuper{
             // 登录成功
             Users.sLoginUsername = y.getUsername();
             Users.sOnline = true;
+
             LoginActivity.sLoginResultHandler.obtainMessage(0, 0).sendToTarget();
         } else {
             // 1、登陆的时候 type = 1 密码和账号错误；type = 2 已经在线; type = 3 使用错了客户端; type = 4 审核未过

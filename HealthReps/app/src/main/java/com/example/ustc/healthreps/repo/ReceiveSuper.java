@@ -19,16 +19,16 @@ public class ReceiveSuper {
         // 添加网络驻主线程网络访问权限
         AndroidNetAccess.netAccess();
 
-        // 初始化socket// 初始化Socket
-//        if(!Sockets.socket_center.initSocket()){
-//            //Toast.makeText(this, "without network,init fail", Toast.LENGTH_LONG).show();
-////            Intent intent = new Intent(TestActivity.this,ErrorActivity.class);
-////            startActivity(intent);
-//            return;
-//        }
+        // 初始化socket
+        if(!Sockets.socket_center.initSocket()){
+//            Toast.makeText(this, "without network,init fail", Toast.LENGTH_LONG).show();
+//            Intent intent = new Intent(TestActivity.this,ErrorActivity.class);
+//            startActivity(intent);
+            return;
+        }
 
         // 启动接收线程
-        // startReceiveThread();
+        startReceiveThread();
     }
 
     //开启接收线程

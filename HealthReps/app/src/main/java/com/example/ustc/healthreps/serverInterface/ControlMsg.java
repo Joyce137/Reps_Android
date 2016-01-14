@@ -58,7 +58,7 @@ public class ControlMsg {
 	// 3.链接的时候 type = 0 代表返回消息; 1 代表请求消息; 2 代码服务器同意两者链接
 
 	public ControlMsg() {
-		username = "";
+		filename = "";
 		username = "";
 		flag = 0;
 		yesno = false;
@@ -66,16 +66,20 @@ public class ControlMsg {
 	}
 
 	public static int size = 100 + 16 + 2 + 2 + 4;
-	private byte[] buf = new byte[size];
 
 	// 构造并转化
 	public ControlMsg(String filename, String username, int flag,
-			boolean yesno, int type) {
+					  boolean yesno, int type) {
 		this.filename = filename;
 		this.username = username;
 		this.flag = flag;
 		this.yesno = yesno;
 		this.type = type;
+	}
+
+	//转化为byte数组
+	public byte[] getControlMsgBytes() {
+		byte[] buf = new byte[size];
 
 		byte temp[];
 		try {
@@ -100,6 +104,8 @@ public class ControlMsg {
 		// type
 		temp = Utils.toLH(type);
 		System.arraycopy(temp, 0, buf, 120, temp.length);
+
+		return buf;
 	}
 
 	// byte数组转化为类对象
@@ -138,10 +144,5 @@ public class ControlMsg {
 		type = Utils.vtolh(temp);
 
 		return new ControlMsg(filename, username, flag, yesno, type);
-	}
-
-	// 返回要发送的byte数组
-	public byte[] getBuf() {
-		return buf;
 	}
 };

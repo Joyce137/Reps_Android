@@ -23,6 +23,7 @@ import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.register.RegisterActivity;
 import com.example.ustc.healthreps.repo.User;
+import com.example.ustc.healthreps.repo.UserRepo;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.ReqMsgUserInfo;
@@ -54,7 +55,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //判断cookie是否有效,有效直接跳到主页面
+//        //判断cookie是否有效,有效直接跳到主页面
 //        Cookie cookie = repo.validCookie(cookieDao);
 //        if(cookie != null){
 //            Users.sLoginUsername = cookie.username;
@@ -68,15 +69,15 @@ public class LoginActivity extends Activity {
         // 初始化界面
         initView();
 
-//        // 接收消息
-//        sLoginResultHandler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                int resulttype = (int)msg.obj;
-//                handleLoginResult(resulttype);
-//            }
-//        };
+        // 接收消息
+        sLoginResultHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                int resulttype = (int)msg.obj;
+                handleLoginResult(resulttype);
+            }
+        };
     }
 
     private void initLayout() {
@@ -123,9 +124,9 @@ public class LoginActivity extends Activity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                //login();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                login();
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                startActivity(intent);
             }
         });
         mForgetPwd = (TextView) findViewById(R.id.forgotPwdText);
@@ -173,6 +174,9 @@ public class LoginActivity extends Activity {
                 //添加到cookie
 //                repo.addToCookie(cookieDao);
 
+                //请求详细信息
+                new UserRepo().reqUserInfo(Users.sLoginUsername,Users.sLoginUserType,false);
+
                 if (Looper.myLooper() == null) {
                     Looper.prepare();
                 }
@@ -214,8 +218,8 @@ public class LoginActivity extends Activity {
     public  void goToNextActivity(String userType){
         Intent intent = null;
 
-        if(userType == "患者"){
-            intent = new Intent(LoginActivity.this, TestActivity.class);
+        if(userType.equals("患者")){
+            intent = new Intent(LoginActivity.this, MainActivity.class);
         }
         else if (userType == "医生"){
             //医生界面

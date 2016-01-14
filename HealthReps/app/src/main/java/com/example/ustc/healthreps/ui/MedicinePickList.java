@@ -4,14 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.TabMedicListAdapter;
 import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.Medicine_Info_List;
+import com.example.ustc.healthreps.repo.PrelistContent;
+import com.example.ustc.healthreps.repo.PrelistRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +27,12 @@ import java.util.List;
  */
 
 public class MedicinePickList extends Activity {
+    public static Handler sPrelistResultHandler = null;
 
     private ListView lv;
     private List<Medicine> list = new ArrayList<Medicine>();
     private TabMedicListAdapter medicListAdapter;
+    private Button sendPrelistBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +42,42 @@ public class MedicinePickList extends Activity {
 
         initView();
 
+        sPrelistResultHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                String data = (String) msg.obj;
+                onRecvPrelistResult(data);
+            }
+        };
+    }
+
+    //处理清单结果
+    public void onRecvPrelistResult(String data){
+        Toast.makeText(this,data,Toast.LENGTH_SHORT).show();
+    }
+
+    //生成清单
+    public PrelistContent getPrelistContent(){
+        PrelistContent prelistContent = new PrelistContent();
+        prelistContent.feibie = "自费";
+        prelistContent.contentPost = "这是清单的备注......";
+
+        //药品列表
+        prelistContent.medicines = list;
+
+        return prelistContent;
     }
 
     public void initView(){
+        sendPrelistBtn = (Button)findViewById(R.id.sendPrelistBtn);
+        sendPrelistBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new PrelistRepo().sendPrelist(getPrelistContent());
+            }
+        });
+
         lv = (ListView)findViewById(R.id.lv_medic_info);
 
         ViewGroup tableTitle = (ViewGroup) findViewById(R.id.table_title);

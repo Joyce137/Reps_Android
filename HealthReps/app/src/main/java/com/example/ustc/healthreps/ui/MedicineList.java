@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,12 +34,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
-import com.example.ustc.healthreps.adapter.FirstClassAdapter;
-import com.example.ustc.healthreps.adapter.SecondClassAdapter;
 import com.example.ustc.healthreps.adapter.TabMedicineAdapter;
 import com.example.ustc.healthreps.database.impl.MedicineDaoImpl;
 import com.example.ustc.healthreps.model.FirstClassItem;
-import com.example.ustc.healthreps.database.entity.MedicineEntity;
 import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.Medicine_Info_List;
 import com.example.ustc.healthreps.model.SecondClassItem;
@@ -72,7 +68,7 @@ public class MedicineList extends Fragment {
     private ListView medic_list_view;
     private TabMedicineAdapter medic_Adapter;
 
-    List <Medicine> list = new ArrayList <Medicine>();
+    List <com.example.ustc.healthreps.model.Medicine> list = new ArrayList <com.example.ustc.healthreps.model.Medicine>();
     //弹出PopupWindow时背景变暗
     private View darkView;
 
@@ -324,38 +320,38 @@ public class MedicineList extends Fragment {
 
     private void initData() {
         //初始化药品信息
-        List <Medicine> list_m = new ArrayList <Medicine>();
-        list_m.add(new Medicine("阿司匹林","非处方药","解热镇痛药"));
-        list_m.add(new Medicine("尼莫地平片","处方药","缺血性脑血管病"));
+        List <com.example.ustc.healthreps.model.Medicine> list_m = new ArrayList <com.example.ustc.healthreps.model.Medicine>();
+        list_m.add(new com.example.ustc.healthreps.model.Medicine("阿司匹林","非处方药","解热镇痛药"));
+        list_m.add(new com.example.ustc.healthreps.model.Medicine("尼莫地平片","处方药","缺血性脑血管病"));
 
         final Medicine_Info_List minfo_list = new Medicine_Info_List();  //传递到药品清单的封装对象
-        final List<Medicine> list_medic = new ArrayList<Medicine>();     //传递到药品清单的封装对象的数据
+        final List<com.example.ustc.healthreps.model.Medicine> list_medic = new ArrayList<com.example.ustc.healthreps.model.Medicine>();     //传递到药品清单的封装对象的数据
 
         for(int i=0;i<list_m.size();i++){
-            Medicine med = list_m.get(i);
+            com.example.ustc.healthreps.model.Medicine med = list_m.get(i);
             list.add(med);
         }
 
         medic_Adapter = new TabMedicineAdapter(getActivity().getApplicationContext(),list);
         medic_list_view.setAdapter(medic_Adapter);
-        medic_list_view.setOnItemClickListener(new OnItemClickListener(){
+        medic_list_view.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 // TODO Auto-generated method stub
-                final Medicine medicine = (Medicine)medic_Adapter.getItem(position);
+                final com.example.ustc.healthreps.model.Medicine medicine = (com.example.ustc.healthreps.model.Medicine) medic_Adapter.getItem(position);
 
 
                 //自定义弹出药店数量对话框
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.CustomDialog);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
                 builder.setTitle("药品清单");
                 View v = LayoutInflater.from(getActivity().getApplication()).inflate(R.layout.medic_amount_dialog, null);
                 builder.setView(v);
 
-                Button btnAdd = (Button)v.findViewById(R.id.add);
-                Button btnSub = (Button)v.findViewById(R.id.sub);
-                final EditText etAmount = (EditText)v.findViewById(R.id.amount);
-                final TextView etName = (TextView)v.findViewById(R.id.medic_name);
+                Button btnAdd = (Button) v.findViewById(R.id.add);
+                Button btnSub = (Button) v.findViewById(R.id.sub);
+                final EditText etAmount = (EditText) v.findViewById(R.id.amount);
+                final TextView etName = (TextView) v.findViewById(R.id.medic_name);
 
                 etName.setText(medicine.getMedicName());
 
@@ -437,7 +433,7 @@ public class MedicineList extends Fragment {
                 //查询条件字符串
                 String queryCategoryStr = et_search_medicine.getText().toString().trim();
                 MedicineDaoImpl dao = new MedicineDaoImpl(getActivity().getApplicationContext());
-                ArrayList<MedicineEntity> list1 = dao.queryMedicinesByNameOrCategory(queryCategoryStr);
+                ArrayList<Medicine> list1 = dao.queryMedicinesByNameOrCategory(queryCategoryStr);
                 int x = list1.size();
             }
         });
