@@ -1,25 +1,24 @@
 package com.example.ustc.healthreps.threads;
-
-import java.io.IOException;
-import java.net.SocketException;
-
 import android.util.Log;
 
-import com.example.ustc.healthreps.socket.Sockets;
-import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.PackHead;
 import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.utils.Utils;
 
+import java.io.IOException;
 
-public class ReceiveThread extends Thread {
-	public String threadName = "ReceiveThread";
-
-	public ReceiveThread() {
+/**
+ * Created by CaoRuijuan on 1/24/16.
+ */
+//接收线程
+public class ReceiveThread extends Thread{
+	Object lock = new Object(); // static确保只有一把锁
+	public ReceiveThread(String threadName){
 		this.setName(threadName);
 	}
-
+	//    TCPSocket p = Sockets.socket_center; //从主线程中传过来
 	public boolean isTrue = true;
 	int maxSize = 10000;
 	byte[] recvBuf = new byte[maxSize];	//用来存储整个包
@@ -30,7 +29,6 @@ public class ReceiveThread extends Thread {
 	int retVal;						//read到的实际长度
 	int length = 0;					//包的总长度（包括包头）
 	int buffCounter = 0;			//buff指向recvbuf的偏移量
-
 	@Override
 	public void run() {
 		synchronized (this) {
@@ -49,17 +47,21 @@ public class ReceiveThread extends Thread {
 				try {
 					//read:返回的这个数组中的字节个数，缓冲区没有满，则返回真实的字节个数，到未尾时都返回-1
 					retVal = Sockets.socket_center.mSocket.getInputStream().read(buff,0,len);
+					System.out.println("----len-----"+len + "------retval------"+retVal);
+
 					//根据buff指针偏移量复制到recvbuf
-					System.arraycopy(buff,0,recvBuf,buffCounter,retVal);
-					//retVal = p.mSocket.getInputStream().read(recvBuf);
+					System.arraycopy(buff, 0, recvBuf, buffCounter, retVal);
 				} catch (IOException e) {
 					e.printStackTrace();
-					//socket异常
-					if(e instanceof SocketException){
-						Log.e("ReceiveThread","socket异常");
-						Sockets.socket_center.shutSocket();
+				} catch (Exception e){
+					if(retVal == -1){
+						try {
+							this.wait(1000);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+						continue;
 					}
-					break;
 				}
 
 				//缓冲区满了
@@ -183,4 +185,4 @@ public class ReceiveThread extends Thread {
 			}
 		}
 	}
-}
+};

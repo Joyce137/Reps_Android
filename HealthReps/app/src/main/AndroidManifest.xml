@@ -25,6 +25,7 @@
             android:label="@string/title_activity_medicine_pick_list" >
         </activity>
 
+        <activity android:name=".TestActivity"></activity>
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".ChangePwdActivity"></activity>
 
@@ -103,7 +104,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".ui.DoctorSessionAty" />
-        <activity android:name=".ui.MedicineList" />
         <activity android:name=".ui.RecordDetail" />
         <activity
             android:name=".ui.Picture_select"

@@ -46,7 +46,7 @@ public class LoginActivity extends Activity {
     LinearLayout linearLayout;
     FrameLayout frameLayout;
 
-    private LoginRepo repo =  new LoginRepo();
+    private LoginRepo repo;
     public static Handler sLoginResultHandler = null;
 //    private CookieDaoImpl cookieDao = new CookieDaoImpl(this);
 
@@ -78,6 +78,8 @@ public class LoginActivity extends Activity {
                 handleLoginResult(resulttype);
             }
         };
+
+        repo = new LoginRepo();
     }
 
     private void initLayout() {

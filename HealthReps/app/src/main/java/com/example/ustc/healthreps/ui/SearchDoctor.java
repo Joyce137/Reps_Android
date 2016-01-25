@@ -816,7 +816,7 @@ public class SearchDoctor extends Fragment {
                 curDoctor = (Doctor) doc_Adapter.getItem(position);
                 //建立连接
                 //new DocPhaRepo().connectDoctor(curDoctor.getDoctorName());
-                new DocPhaRepo().connectDoctor("doctor1");
+                new DocPhaRepo().connectDoctor("store1");
             }
         });
     }

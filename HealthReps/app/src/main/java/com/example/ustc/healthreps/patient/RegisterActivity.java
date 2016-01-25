@@ -86,7 +86,7 @@ public class RegisterActivity extends Activity {
 	 	mRegisterSocket.initSocket();
 		//启动接收线程
 		if(mReceiveThread == null){
-			mReceiveThread = new ReceiveThread();
+			mReceiveThread = new ReceiveThread("RecvThread");
 			mReceiveThread.start();
 		}
 				

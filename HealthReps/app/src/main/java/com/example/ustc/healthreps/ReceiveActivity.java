@@ -26,7 +26,7 @@ public class ReceiveActivity extends Activity{
 
         // 启动接收线程
         if (mReceiveThread == null) {
-            mReceiveThread = new ReceiveThread();
+            mReceiveThread = new ReceiveThread("ResvThread");
             mReceiveThread.start();
         }
     }

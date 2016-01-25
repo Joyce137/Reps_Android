@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.repo;
 
+import android.os.StrictMode;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.socket.Sockets;
@@ -27,14 +28,14 @@ public class ReceiveSuper {
             return;
         }
 
-        // 启动接收线程
-        startReceiveThread();
+//        // 启动接收线程
+//        startReceiveThread();
     }
 
     //开启接收线程
     public void startReceiveThread(){
         if (mReceiveThread == null) {
-            mReceiveThread = new ReceiveThread();
+            mReceiveThread = new ReceiveThread("Recv_thread");
             mReceiveThread.start();
         }
     }

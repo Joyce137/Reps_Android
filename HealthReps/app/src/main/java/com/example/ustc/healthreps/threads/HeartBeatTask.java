@@ -4,7 +4,6 @@ import java.util.TimerTask;
 
 import android.util.Log;
 
-import com.example.ustc.healthreps.BaseActivity;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
@@ -12,9 +11,9 @@ import com.example.ustc.healthreps.serverInterface.Types;
 
 //心跳包任务
 public class HeartBeatTask extends TimerTask{
-	//String jobName = "HeartBeatTask"; 
-	int m_beatTimes = BaseActivity.mBeatTimes;
-	TCPSocket mSocket = Sockets.socket_center;
+	//String jobName = "HeartBeatTask";
+
+	public static int mBeatTimes = 0;
 	
 	@Override
 	public void run() {
@@ -24,30 +23,30 @@ public class HeartBeatTask extends TimerTask{
 	
 	//心跳包执行动作
 	public void HeartBeatTimeProc(){
-		mSocket.sendHeartBeat();
+		Sockets.socket_center.sendHeartBeat();
 		//synchronized (lock) {
-			m_beatTimes++;
-			if(m_beatTimes <= 2){
+			mBeatTimes++;
+			if(mBeatTimes <= 2){
 					//m_connect_alert.setBackgroundColor(color.green);
-				System.out.println(m_beatTimes+"-----color.green");
-				if(m_beatTimes == 2){
-					mSocket.sendHeartBeat();
+				System.out.println(mBeatTimes+"-----color.green");
+				if(mBeatTimes == 2){
+					Sockets.socket_center.sendHeartBeat();
 				}
 			}
-			else if(m_beatTimes == 3 || m_beatTimes == 4){
+			else if(mBeatTimes == 3 || mBeatTimes == 4){
 				//m_connect_alert.setBackgroundColor(color.yellow);
-				System.out.println(m_beatTimes+"-----color.yellow");
-				mSocket.sendHeartBeat();
+				System.out.println(mBeatTimes+"-----color.yellow");
+				Sockets.socket_center.sendHeartBeat();
 			}
-			else if(m_beatTimes >= 5){
+			else if(mBeatTimes >= 5){
 				Users.sOnline = false;
 				//m_connect_alert.setBackgroundColor(color.red);
-				System.out.println(m_beatTimes + "-----color.red");
-				mSocket.shutSocket();
+				System.out.println(mBeatTimes + "-----color.red");
+				Sockets.socket_center.shutSocket();
 
-		        if (mSocket.initSocket(Types.center_Port, Types.version_IP))
+		        if (Sockets.socket_center.initSocket(Types.center_Port, Types.version_IP))
 		        {
-		        	mSocket.reLogin(BaseActivity.mLoginName);
+					Sockets.socket_center.reLogin(Users.sLoginUsername);
 		        }
 			}
 		//}

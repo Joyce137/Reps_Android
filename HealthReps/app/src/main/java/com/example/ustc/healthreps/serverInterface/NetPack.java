@@ -146,7 +146,7 @@ public class NetPack {
 			sum += m_buffer[i];
 		}
 		this.m_Crc = sum % 65536;
-		byte[] temp = Utils.toLH(m_Crc);
+		byte[] temp = Utils.shortToLH(m_Crc);
 		Log.e("CalCRC", "temp" + temp.length);
 		System.arraycopy(temp, 0, this.buf, 2, temp.length);
 	}

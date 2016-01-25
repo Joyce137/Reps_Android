@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,18 +22,25 @@ import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.HeartBeatTask;
 import com.example.ustc.healthreps.threads.ReceiveThread;
 import com.example.ustc.healthreps.utils.CRC4;
 import com.example.ustc.healthreps.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 /**
  * Created by CaoRuijuan on 12/17/15.
  */
 public class LoginRepo extends ReceiveSuper{
     public static Handler sLoginHandler = null;
+    public static int mBeatTimes = 0;
+    private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
+    private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
+    private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
+    public static Handler sAlertHandler;
 
     private byte[] crcPwd;      //加密后的密码
     private int userType;       //用户类型
@@ -48,6 +56,16 @@ public class LoginRepo extends ReceiveSuper{
                 onRecvLoginMessage(data);
             }
         };
+
+
+        //启动接收线程
+        if(mReceiveThread == null){
+            mReceiveThread = new ReceiveThread("Recv_Thread");
+            mReceiveThread.start();
+        }
+//        //待登录之后启动心跳包
+//        Sockets.socket_center.sendHeartBeat();
+//        startHeartBeat();
     }
     // 登录事件
     public void login(String username,String pwd,String type) {
@@ -121,6 +139,10 @@ public class LoginRepo extends ReceiveSuper{
             Users.sLoginUsername = y.getUsername();
             Users.sOnline = true;
 
+            //启动心跳包线程
+            Sockets.socket_center.sendHeartBeat();
+            startHeartBeat();
+
             LoginActivity.sLoginResultHandler.obtainMessage(0, 0).sendToTarget();
         } else {
             // 1、登陆的时候 type = 1 密码和账号错误；type = 2 已经在线; type = 3 使用错了客户端; type = 4 审核未过
@@ -129,6 +151,17 @@ public class LoginRepo extends ReceiveSuper{
             LoginActivity.sLoginResultHandler.obtainMessage(0, type).sendToTarget();
         }
         closeReceiveThread();
+    }
+
+    //心跳包设计
+    public void startHeartBeat(){
+        if(mHeatBeatTimer == null){
+            mHeatBeatTimer = new Timer();
+        }
+        if(mHeartBeatTask == null){
+            mHeartBeatTask = new HeartBeatTask();
+        }
+        mHeatBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
     }
 
     //关闭接收线程

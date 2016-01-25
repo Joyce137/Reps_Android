@@ -23,8 +23,6 @@ import java.util.Map.Entry;
 
 import android.util.Log;
 
-import com.example.ustc.healthreps.BaseActivity;
-import com.example.ustc.healthreps.database.annotation.ColumnName;
 import com.example.ustc.healthreps.model.DocPha;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.patient.ChatActivity;
@@ -86,16 +84,16 @@ public class TCPSocket {
 				return true;
 			else
 				return false;
+
+//			mSocket = new Socket(addr, DefaultPort);
+//
+//			return true;
 		} catch (UnknownHostException e) {
 			Log.e("InitSocket", "2");
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
 			Log.e("InitSocket", "3");
-			e.printStackTrace();
-			return false;
-		} catch (Exception e){
-			Log.e("InitSocket", "4");
 			e.printStackTrace();
 			return false;
 		}
@@ -127,19 +125,12 @@ public class TCPSocket {
 	
 	//ReLogin
 	public void reLogin(String username){
-		UserLogin user = new UserLogin();
-		user.setUsername(username);
-		user.setRecon(Types.USER_RECONNECT_FLAG);
-		user.setKey(new byte[20]);
+		UserLogin user = new UserLogin(username, "".getBytes(), 0, Types.USER_RECONNECT_FLAG);
 		
 		//NET_PACK
-		NetPack p = new NetPack();
-		p.size = NetPack.infoSize + UserLogin.size;
-		p.setM_nFlag(Types.LoginUP);
-		p.setnDataLen(UserLogin.size);
-		p.setM_buffer(user.getBuf());
-		p.CalCRC();
-		sendPack(p);
+		NetPack pack = new NetPack(-1,UserLogin.size,Types.LoginUP,user.getBuf());
+		pack.CalCRC();
+		sendPack(pack);
 	}
 
 	// 发送数据包sendPack
@@ -201,6 +192,7 @@ public class TCPSocket {
 
 	//SendHeartBeat - 发送心跳包
 	public boolean sendHeartBeat(){
+		mUsername = Users.sLoginUsername;
 		mUsername = "store1";
 		Log.e("HearBeat", "SendHeartBeat()");
 		if(mUsername.length() == 0){
@@ -387,8 +379,8 @@ public class TCPSocket {
 			//接收到的是心跳包
 			case Types.HeartBeat:
 	//			synchronized (lock) {
-					BaseActivity.mBeatTimes = 0;
-					System.out.println("--------0--------"+BaseActivity.mBeatTimes);
+					HeartBeatTask.mBeatTimes = 0;
+					System.out.println("--------0--------"+HeartBeatTask.mBeatTimes);
 	//			}
 				break;
 				
@@ -399,7 +391,7 @@ public class TCPSocket {
 				//重连成功
 				if(y.isYesno()){
 					Users.sOnline = true;
-					BaseActivity.mBeatTimes = 0;
+					LoginRepo.mBeatTimes = 0;
 					sendHeartBeat();
 				}
 				//该用户已在别处登陆，断线重连失败
@@ -407,7 +399,7 @@ public class TCPSocket {
 					Users.sOnline = false;
 					String reconAlert = "该用户已在别处登陆，断线重连失败，如需请重新登陆";
 					//重连失败，向根页面发消息
-					BaseActivity.sAlertHandler.obtainMessage(0, reconAlert)
+					LoginRepo.sAlertHandler.obtainMessage(0, reconAlert)
 							.sendToTarget();
 					
 					if(mHeatBeatTimer != null){
@@ -792,6 +784,7 @@ public class TCPSocket {
 			msg.setFlag(Types.Off_Link);
 		}
 		msg.setType(1);
+
 
 		sendControlMsg(msg);
 	}
