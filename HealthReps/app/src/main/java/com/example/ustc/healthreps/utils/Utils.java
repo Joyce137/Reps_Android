@@ -1,7 +1,22 @@
 package com.example.ustc.healthreps.utils;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.Types;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -88,6 +103,10 @@ public class Utils {
 		return formatter.format(new Date());
 	}
 
+	public static int getYear(){
+		return new Date().getYear();
+	}
+
 	// 获取当前时间
 	public static String getTime() {
 		// 时间
@@ -132,6 +151,16 @@ public class Utils {
 		return crcPwd;
 	}
 
+	//获取当前时间
+	public static String getCurrentTime()
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date curDate = new Date(System.currentTimeMillis());
+		String str = format.format(curDate);
+		System.out.println(str);
+		return str;
+	}
+
 	//获取现在时间
 	public static String getFileNameDate(String filename) {
 		//拆分
@@ -163,6 +192,21 @@ public class Utils {
 		return Types.USER_TYPE_STORE;
 	}
 
+	//type(int)->String
+	public static String changeTypeToString(int type) {
+		if (type == Types.USER_TYPE_PATIENT) {
+			return "患者";
+		} else if (type == Types.USER_TYPE_DOCTOR) {
+			return "医生";
+		} else if (type == Types.USER_TYPE_PHA) {
+			return "药师";
+		} else if (type == Types.USER_TYPE_STORE) {
+			return "药店";
+		} else {
+			return "药监局";
+		}
+	}
+
 	//判断某日期与当前日期的差值(是否一个月以内）
 	public static boolean checkValid(String date){
 		String now = getDate();
@@ -173,5 +217,167 @@ public class Utils {
 		return true;
 	}
 
+	//Q   判断用户名是否有效
+	public static boolean checkUsername(String NumberWord)
+	{
+		int[] anArray;
+		int[] bnArray;
+		int i,m;
+		int j=0,n=0,k=0;
+		while (true) {
+			String s = NumberWord;
+			bnArray=new int[s.length()];
+			anArray=new int[s.length()];
 
+			for(i=0;i<s.length();i++)
+			{
+				anArray[i]=(int) s.charAt(i);
+			}
+			//检查用户名中是否包含A~Z，a~z的字
+			for(i=0;i<s.length();i++)
+				if(anArray[i]<65||anArray[i]>90&anArray[i]<97
+						||anArray[i]>122)
+				{
+					bnArray[j]=anArray[i];
+					j++;
+
+				}
+			for(m=0;m<bnArray.length;m++)
+			{
+				if(bnArray[m]!=0&(bnArray[m]>47&bnArray[m]<58))
+					n++;
+				else if(bnArray[m]!=0&(bnArray[m]<48||bnArray[m]>57))
+					k++;
+			}
+			if(k>0)
+			{
+				//System.out.println("用户名非法，必须只含有数字和字母");
+				return false;
+			}
+			if(n==s.length())
+			{
+				//System.out.println("用户名非法，用户名不能全为数字");
+				return false;
+			}
+			if(j==0)
+			{
+				//System.out.println("用户名非法，用户名不能全为字母");
+				return false;
+			}
+			return true;
+		}
+	}
+	public static boolean checkEmail(String email)
+	{
+		String s=email;
+		int i,m;
+		//检测Email的长度
+		if(s.length()==0||s.length()>40)
+			return false;
+		else{
+			//检测"@"在字符串中的位置
+			for(i=0;i<s.length();i++)
+			{
+				System.out.println(s.charAt(i));
+				if(s.charAt(i)=='@')
+					break;
+			}
+			//检测‘.’在字符串中的位置
+			for(m=0;m<s.length();m++)
+			{
+				if(s.charAt(m)=='.')
+					break;
+			}
+			//判断Email地址中的'@'和'.'是否合法
+			if(i==0||i==s.length()-1||m-i<=1||m==s.length()-1)
+			{
+				System.out.println("Email地址不合法");
+				return false;
+			}
+			else
+				return true;
+		}
+
+	}
+	public static boolean checkNumber(String Number)
+	{
+		String s=Number;
+		int i=0,j=0;
+		//检查是否有除数字以外的字符
+		for(i=0;i<s.length();i++)
+		{
+			if(s.charAt(i)>='0'&&s.charAt(i)<='9')
+				j++;
+			else
+			{
+				System.out.println("账号名不合法");
+				return false;
+			}
+		}
+		//若字符串中不全是数字，则结果为false
+		if(j!=s.length())
+			return false;
+		return true;
+	}
+
+	//copy默认头像到手机headphoto路径下
+	public static String copyDefaultHeadPhoto(Context context){
+		int BUFFER_SIZE = 20000;
+		String imagePath = AppPath.getPathByFileType("headphoto");
+		AppPath.CheckAndMkdirPathExist(imagePath);
+		String imageFile = imagePath+"/defaultHeadPhoto.jpg";
+		try {
+			File f = new File(imageFile);
+			if (!f.exists()) {
+				//判断头像文件是否存在，若不存在则执行导入，否则直接返回
+				InputStream is = context.getResources().openRawResource(R.raw.ic_perimg); //欲导入的数据库
+				FileOutputStream fos = new FileOutputStream(imageFile);
+				byte[] buffer = new byte[BUFFER_SIZE];
+				int count;
+				while ((count = is.read(buffer)) > 0) {
+					fos.write(buffer, 0, count);
+				}
+				fos.close();
+				is.close();
+			}
+			return imageFile;
+		} catch (FileNotFoundException e) {
+			Log.e("Database", "File not found");
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("Database", "IO exception");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Try to return the absolute file path from the given Uri
+	 *
+	 * @param context
+	 * @param uri
+	 * @return the file path or null
+	 */
+	public static String getRealFilePath( final Context context, final Uri uri ) {
+		if ( null == uri ) return null;
+		final String scheme = uri.getScheme();
+		String data = null;
+		if ( scheme == null )
+			data = uri.getPath();
+		else if ( ContentResolver.SCHEME_FILE.equals( scheme ) ) {
+			data = uri.getPath();
+		} else if ( ContentResolver.SCHEME_CONTENT.equals( scheme ) ) {
+			Cursor cursor = context.getContentResolver().query( uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null );
+			if ( null != cursor ) {
+				if ( cursor.moveToFirst() ) {
+					int index = cursor.getColumnIndex( MediaStore.Images.ImageColumns.DATA );
+					if ( index > -1 ) {
+						data = cursor.getString( index );
+					}
+				}
+				cursor.close();
+			}
+		}
+		return data;
+	}
 }

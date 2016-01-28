@@ -19,6 +19,12 @@ android {
     }
 }
 
+repositories{
+    flatDir{
+        dirs 'libs' //就是你放aar的目录地址
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -30,4 +36,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/pinyin4j-2.5.0.jar')
+
+    //短信验证码sdk
+    compile name:'SMSSDK-2.0.1',ext:'aar'
 }

@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import android.util.Log;
 
+import com.example.ustc.healthreps.database.impl.UserDaoImpl;
 import com.example.ustc.healthreps.model.DocPha;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.patient.ChatActivity;
@@ -33,6 +34,7 @@ import com.example.ustc.healthreps.repo.DocPhaRepo;
 import com.example.ustc.healthreps.repo.FileRepo;
 import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.repo.PrelistRepo;
+import com.example.ustc.healthreps.repo.RegisterRepo;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ErrorNo;
 import com.example.ustc.healthreps.serverInterface.FileInfo;
@@ -193,7 +195,7 @@ public class TCPSocket {
 	//SendHeartBeat - 发送心跳包
 	public boolean sendHeartBeat(){
 		mUsername = Users.sLoginUsername;
-		mUsername = "store1";
+//		mUsername = "store1";
 		Log.e("HearBeat", "SendHeartBeat()");
 		if(mUsername.length() == 0){
 			return false;
@@ -343,6 +345,10 @@ public class TCPSocket {
 			//User Info
 			UserInfo userInfo = UserInfo.getMSG_USER_INFO(data.getM_buffer());
 			Users.sLoginUser = userInfo;
+			Users.sLoginUser.loginName = Users.sLoginUsername.getBytes();
+			Users.sLoginUser.password = Users.sLoginPassword.getBytes();
+			Users.sLoginUser.type = Utils.changeTypeToInt(Users.sLoginUserType);
+			Users.sISDetailUserInfo = true;
 		}
 
 		//请求所有医生信息
@@ -432,16 +438,17 @@ public class TCPSocket {
 		//注册
 		if(msg.getFlag() == Types.Reg_is){
 			//Reg_Dlg->OnrecvRegMessage(y); - 注册-向注册界面发消息
-			RegisterActivity.sRegisterHandler.obtainMessage(0, msg).sendToTarget();
+			RegisterRepo.sRegisterHandler.obtainMessage(0, msg).sendToTarget();
 		}
 		//修改信息
 		else if(msg.getFlag() == Types.Mod_Info){
 			//modInfo_Dlg->OnrecvRegMessage(y);
-			ChangePwdRepo.sChangePwdRepoHandler.obtainMessage(0,msg).sendToTarget();
+
 		}
 		//修改密码
 		else if(msg.getFlag() == Types.Mod_Pass){
 			//changePW_dlg->onRecvChangePWMessage(y);
+			ChangePwdRepo.sChangePwdRepoHandler.obtainMessage(0,msg).sendToTarget();
 		}
 		//修改图片
 		else if (msg.getFlag() == Types.MOD_FILE_TYPE_DOCPHA_STAMP

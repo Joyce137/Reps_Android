@@ -21,13 +21,13 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
     }
 
     //判断某用户是否在cookie表中
-    public boolean checkUsernameExist(String username){
+    public Cookie checkUsernameExistInCookie(String username){
         String selector = DBConstants.COOKIE_USERNAME + "=?";
         String[] selectorargs = new String[]{username};
         if(findEntity(selector,selectorargs).size() == 0)
-            return false;
+            return null;
         else
-            return true;
+            return findEntity(selector,selectorargs).get(0);
     }
 
     //添加新用户cookie
@@ -36,13 +36,13 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
         String pwdStr = new String(pwd);
         String typeStr = String.valueOf(type);
 
-        Cookie cookie = new Cookie(nameStr,pwdStr,typeStr,typeStr);
+        Cookie cookie = new Cookie(nameStr,pwdStr,typeStr);
         return insert(cookie);
     }
 
     //删除
     public boolean removeUserFromCookie(String username){
-        int id = getIDByColumnValue(DBConstants.DB_NAME_USER,username);
+        int id = getIDByColumnValue(DBConstants.COOKIE_USERNAME,username);
         if(id != -1)
             return delete(id);
         else

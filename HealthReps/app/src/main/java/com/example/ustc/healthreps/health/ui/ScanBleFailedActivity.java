@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.health;
+package com.example.ustc.healthreps.health.ui;
 
 import android.app.Activity;
 import android.os.Bundle;

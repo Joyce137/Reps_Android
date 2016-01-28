@@ -35,7 +35,6 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();// 消息对象数组
 	
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -64,7 +63,6 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 	 * 模拟加载消息历史，实际开发可以从数据库中读出
 	 */
 	private void initdata() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < COUNT; i++) {
 			ChatMsgEntity entity = new ChatMsgEntity();
 			entity.setDate(dataArray[i]);
@@ -84,7 +82,6 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 	}
 
 	private void init() {
-		// TODO Auto-generated method stub
 		mListView = (ListView) findViewById(R.id.listview);
 		mBtnSend = (Button) findViewById(R.id.btn_send);
 		mBtnSend.setOnClickListener(this);
@@ -121,7 +118,6 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 			case R.id.btn_send:// 发送按钮点击事件
 				send();
@@ -145,17 +141,14 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 	}
 	
 	private void other() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void back() {
-		// TODO Auto-generated method stub
 		finish();
 	}
 
 	private void send() {
-		// TODO Auto-generated method stub
 		String contString = mEditTextContent.getText().toString();
 		if (contString.length() > 0) {
 			ChatMsgEntity entity = new ChatMsgEntity();
@@ -168,5 +161,12 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			mEditTextContent.setText("");// 清空编辑框数据
 			mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 		}
+	}
+
+	private void recv(ChatMsgEntity entity){
+		entity.setMsgType(true);		//为收到的消息
+		mDataArrays.add(entity);
+		mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
+		mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 	}
 }

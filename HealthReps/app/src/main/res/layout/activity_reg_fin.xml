@@ -28,9 +28,10 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="注册成功"
+        android:text="正在注册..."
         android:textSize="30sp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:id="@+id/registerResult" />
     <Button
         android:id="@+id/loginIn"
         android:layout_width="fill_parent"

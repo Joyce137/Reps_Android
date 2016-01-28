@@ -94,4 +94,9 @@ public class Types {
 	public static final int ORDER_STATUS_CHUFANG = 0x0753;
 	public static final int ORDER_STATUS_CHECKED = 0x0754;
 
+	//排序类型
+	public static final int SORTTYPE_SMART = 0x0001;
+	public static final int SORTTYPE_CLOSE = 0x0002;
+	public static final int SORTTYPE_POPULAR = 0x0003;
+	public static final int SORTTYPE_COMMENT = 0x0004;
 }

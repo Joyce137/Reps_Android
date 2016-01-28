@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.health;
+package com.example.ustc.healthreps.health.view;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,35 +22,36 @@ public class MyThread extends Thread {
 
     @Override
     public void run() {
-        int totalScore =13;
+        int totalScore =50;
         int redcolor = 0xffF44336;
         int bluecolor = 0xff2196F3;
         int greencolor = 0xff64DD17;
         //  super.run();
-        int tempcolor=0xfffffff;
+        int tempcolor=0xff4caf50;
         Paint paint = new Paint();
-      //  paint.setColor(0xffF44336);
+        //  paint.setColor(0xffF44336);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        int red,green,blue;
         if (totalScore<=50)
         {
             tempcolor=redcolor+((bluecolor-redcolor)/50)*(totalScore);
-          /*  int red = (tempcolor & 0xff0000) >> 16;
-            int green = (tempcolor & 0x00ff00) >> 8;
-            int blue = (tempcolor & 0x0000ff);*/
-           // paint.setColor(Color.rgb(red, green, blue));
+            red = (tempcolor & 0xff0000) >> 16;
+            green = (tempcolor & 0x00ff00) >> 8;
+            blue = (tempcolor & 0x0000ff);
+            paint.setColor(Color.rgb(red, green, blue));
 
         }
 
         else {
             tempcolor=bluecolor+(greencolor-bluecolor)/50*(totalScore-50);
-           /* int red = (tempcolor & 0xff0000) >> 16;
-            int green = (tempcolor & 0x00ff00) >> 8;
-            int blue = (tempcolor & 0x0000ff);*/
-          //  paint.setColor(Color.rgb(red, green, blue));
+            red = (tempcolor & 0xff0000) >> 16;
+            green = (tempcolor & 0x00ff00) >> 8;
+            blue = (tempcolor & 0x0000ff);
+            paint.setColor(Color.rgb(red, green, blue));
         }
-        paint.setColor(tempcolor);
+        //  paint.setColor(tempcolor);
 
 
         Canvas canvas = null;
@@ -60,7 +61,7 @@ public class MyThread extends Thread {
         int screenWidth = canvas.getWidth();
         int screenHeight = canvas.getHeight();
         canvas.translate(screenWidth / 2, screenHeight / 3);
-        Log.d("MyThread", canvas.getWidth() / 2 + " " + canvas.getHeight() / 2);
+        //  Log.d("MyThread", canvas.getWidth() / 2 + " " + canvas.getHeight() / 2);
         Path path = new Path();
 
         path.moveTo(-screenWidth / 4, 0);

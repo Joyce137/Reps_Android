@@ -18,18 +18,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.database.entity.Cookie;
+import com.example.ustc.healthreps.database.entity.User;
 import com.example.ustc.healthreps.database.impl.CookieDaoImpl;
+import com.example.ustc.healthreps.database.impl.UserDaoImpl;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.register.RegisterActivity;
-import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.repo.UserRepo;
 import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.ReqMsgUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.HeartBeatTask;
+import com.example.ustc.healthreps.utils.AppManager;
 import com.example.ustc.healthreps.utils.Utils;
+
+import java.util.Timer;
 
 public class LoginActivity extends Activity {
 
@@ -48,27 +54,26 @@ public class LoginActivity extends Activity {
 
     private LoginRepo repo;
     public static Handler sLoginResultHandler = null;
-//    private CookieDaoImpl cookieDao = new CookieDaoImpl(this);
+    private CookieDaoImpl cookieDao;
+    private UserDaoImpl userDao;
+
+    String username,password,type;
+
+    //心跳包相关
+    private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
+    private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //添加到Activity集合
+//        AppManager.getInstance().addActivity(this);
 
-//        //判断cookie是否有效,有效直接跳到主页面
-//        Cookie cookie = repo.validCookie(cookieDao);
-//        if(cookie != null){
-//            Users.sLoginUsername = cookie.username;
-//            Users.sLoginUserType = cookie.getRealType();
-//            cookieDao.updateDate(0);
-//            goToNextActivity(Users.sLoginUserType);
-//        }
-
-        //初始化布局
-        initLayout();
-        // 初始化界面
-        initView();
-
+//        byte b[] = new byte[2];
+//        b[0] = -39;
+//        b[1] = -121;
+//        int x = Utils.vtolh(b);
         // 接收消息
         sLoginResultHandler = new Handler() {
             @Override
@@ -79,7 +84,46 @@ public class LoginActivity extends Activity {
             }
         };
 
-        repo = new LoginRepo();
+        if(repo == null)
+            repo = new LoginRepo();
+
+        //用户数据库
+        if(userDao == null)
+            userDao = new UserDaoImpl(this);
+
+        //cookie数据库
+        if(cookieDao == null)
+            cookieDao = new CookieDaoImpl(this);
+
+        //不是主动sign out时，检测cookie
+        if(!Users.sISSignout){
+            //判断cookie是否有效,有效直接跳到主页面
+            Cookie cookie = repo.validCookie(cookieDao);
+            if(cookie != null){
+                Users.sLoginUsername = cookie.username;
+                Users.sLoginPassword = cookie.pwd;
+                Users.sLoginUserType = cookie.getRealType();
+
+                //添加到用户数据库
+                User newUser = new User();
+                newUser.username = Users.sLoginUsername;
+                newUser.password = Users.sLoginPassword;
+                newUser.type = Users.sLoginUserType;
+                userDao.addNewUserToUser(newUser);
+
+                cookieDao.updateDate(1);
+
+                //请求详细信息
+                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
+                goToNextActivity(Users.sLoginUserType);
+            }
+        }
+
+        //初始化布局
+        initLayout();
+        // 初始化界面
+        initView();
+
     }
 
     private void initLayout() {
@@ -93,7 +137,6 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onKeyBoardStateChange(int state) {
-                // TODO Auto-generated method stub
                 switch (state) {
                     case InputMethodLayout.KEYBOARD_STATE_SHOW:
 
@@ -127,8 +170,6 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 login();
-//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                startActivity(intent);
             }
         });
         mForgetPwd = (TextView) findViewById(R.id.forgotPwdText);
@@ -153,15 +194,20 @@ public class LoginActivity extends Activity {
     }
 
    private void login(){
-       String username = mUsernametText.getText().toString().trim();
-       String pwd = mPwdText.getText().toString().trim();
-       String type = mChoosedType.getText().toString().trim();
+       username = mUsernametText.getText().toString().trim();
+       password = mPwdText.getText().toString().trim();
+       type = mChoosedType.getText().toString().trim();
        // 用户名和密码为空
-       if (username.length() == 0 || pwd.length() == 0) {
+       if (username.length() == 0 || password.length() == 0) {
            Toast.makeText(getApplicationContext(), "请输入用户名和密码",
                    Toast.LENGTH_SHORT).show();
-       } else {
-           repo.login(username, pwd, type);
+       }
+       else if(username.length()>20){
+           Toast.makeText(getApplicationContext(), "输入的用户名过长，<20",
+                   Toast.LENGTH_SHORT).show();
+       }
+       else {
+           repo.login(username, password, type);
        }
    }
 
@@ -171,10 +217,24 @@ public class LoginActivity extends Activity {
     public void handleLoginResult(int resultType){
         //0-登录成功；1-密码或账号错误；2-已经在线; 3-账号与客户端不匹配; type-审核未通过
         switch (resultType){
+            //socket初始化失败
+            case -1:
+                Toast.makeText(this, "网络故障，Socket初始化失败，请检查网络", Toast.LENGTH_LONG).show();
+                break;
             //登录成功
             case 0:
+                Users.sLoginUsername = username;
+                Users.sLoginPassword = password;
+                Users.sLoginUserType = type;
                 //添加到cookie
-//                repo.addToCookie(cookieDao);
+                repo.addToCookie(cookieDao);
+
+                //添加到user table
+                User newUser = new User();
+                newUser.username = Users.sLoginUsername;
+                newUser.password = Users.sLoginPassword;
+                newUser.type = Users.sLoginUserType;
+                userDao.addNewUserToUser(newUser);
 
                 //请求详细信息
                 new UserRepo().reqUserInfo(Users.sLoginUsername,Users.sLoginUserType,false);
@@ -233,7 +293,21 @@ public class LoginActivity extends Activity {
             //药监局
         }
 
+        //启动心跳包线程
+        Sockets.socket_center.sendHeartBeat();
+        startHeartBeat();
+
         startActivity(intent);
     }
 
+    //心跳包设计
+    public void startHeartBeat(){
+        if(mHeatBeatTimer == null){
+            mHeatBeatTimer = new Timer();
+        }
+        if(mHeartBeatTask == null){
+            mHeartBeatTask = new HeartBeatTask();
+        }
+        mHeatBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
+    }
 }

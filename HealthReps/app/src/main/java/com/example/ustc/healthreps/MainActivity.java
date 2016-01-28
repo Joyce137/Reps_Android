@@ -1,6 +1,10 @@
 package com.example.ustc.healthreps;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,15 +22,16 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.friends.MyFriendsActivity;
-import com.example.ustc.healthreps.health.DeviceListActivity;
-import com.example.ustc.healthreps.health.MyhealthActivity;
-import com.example.ustc.healthreps.health.ScanBleActivity;
-import com.example.ustc.healthreps.model.MedicStore;
+import com.example.ustc.healthreps.health.service.DeviceControlService;
+import com.example.ustc.healthreps.health.ui.MyhealthFragment;
+import com.example.ustc.healthreps.health.ui.ScanBleActivity;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.ui.FileDealActivity;
 import com.example.ustc.healthreps.ui.MedicineList;
 import com.example.ustc.healthreps.ui.SearchDoctor;
 import com.example.ustc.healthreps.ui.SearchMedicine;
+import com.example.ustc.healthreps.utils.AppManager;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout menu_my;
@@ -53,17 +58,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment fileFragment;
     private Fragment friendsFragment;
 
+    private TextView myNameTV;
+
     public static Context context;
+
+    //蓝牙相关
+    private final static String TAG = MainActivity.class
+            .getSimpleName();
+    byte[] scan;
+    public static String mDeviceName;
+    public static String mDeviceAddress;
+    byte[] sevenData, adjustDate;
+    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
+    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    //BLe控制服务
+    private ServiceConnection serCon;
+    DeviceControlService devConService;
+    public static String str01 = "0", str02 = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); //声明使用自定义标题
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle1);//自定义布局赋值
+
+        //添加到Activity集合
+//        AppManager.getInstance().addActivity(this);
 
         context = this.getApplicationContext();
 
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
+        final Intent intent = getIntent();
+        if (intent != null) {
+            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+            mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+            scan = intent.getByteArrayExtra("scan");
+            if (scan != null) {
+                str01 = String.valueOf(scan[19] & 0xff);
+                str02 = String.valueOf((scan[26] & 0xff) * 256 + (scan[25] & 0xff));
+            }
+            Log.d(TAG, "EXTRAS_DEVICE_NAME:" + mDeviceName + " EXTRAS_DEVICE_ADDRESS:" + mDeviceAddress);
+        }
+
+        //绑定服务
+        initService();
+        //注册广播接收器
+        // registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
         // 初始化控件
         initView();
@@ -73,10 +113,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (savedInstanceState == null) {
             initFragment(0);
         }
+
+        //检查程序是否为第一次运行
+        if (checkIsFirstRun()) {
+            Intent intDet = new Intent();
+            intDet.setClass(MainActivity.this, ScanBleActivity.class);
+            startActivity(intDet);
+        } else {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("share", MODE_PRIVATE);
+            String device_name = sharedPreferences.getString("DEVICE_NAME", "");
+            Log.d(TAG, device_name);
+            if (device_name.equals("")) {
+
+            }
+            else
+            {
+                mDeviceAddress=device_name;
+               /* devConService.mBluetoothLeService.scanLeDevice(true);
+                boolean isSAME=devConService.mBluetoothLeService.isSAME;*/
+              /*  str01=sharedPreferences.getString("NEW_HEARTRATE", "60");
+                str02=sharedPreferences.getString("NEW_STEPNUM","1000");*/
+                if (true)
+                {
+                    Log.d(TAG,"scan success!!");
+                    //   devConService.mBluetoothLeService.scanLeDevice(true);
+                }
+                else
+                {
+                    Log.d(TAG,"scan failed!!");
+                    Toast.makeText(MainActivity.this,"Sorry",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
-    private void initView() {
+    //检查程序是否为第一次运行
+    private boolean checkIsFirstRun() {
+        // 通过检查程序中的缓存文件判断程序是否是第一次运行
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences("share", MODE_PRIVATE);
+        boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
+        if (isFirstRun) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Log.d(TAG, "第一次运行");
+            Toast.makeText(MainActivity.this, "第一次运行！", Toast.LENGTH_LONG).show();
+            editor.putBoolean("isFirstRun", false);
+            editor.commit();
+
+
+        } else {
+            Log.d(TAG, "不是第一次运行！");
+            Toast.makeText(MainActivity.this, "不是第一次运行！", Toast.LENGTH_LONG).show();
+
+
+        }
+
+        return isFirstRun;
+    }
+
+    private void initService() {
+        serCon = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder service) {
+                devConService = ((DeviceControlService.LocalBinder) service).getService();
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+            }
+        };
+        Intent devConServiceIntent = new Intent(this, DeviceControlService.class);
+        boolean isbind = bindService(devConServiceIntent, serCon,
+                BIND_AUTO_CREATE);//绑定
+        if (isbind) {
+            Log.d(TAG, "bindService success!!");
+        } else {
+            Log.d(TAG, "bindService failed!!");
+        }
+    }
+    private void initView() {
         // 底部菜单5个Linearlayout
         menu_my = (LinearLayout) findViewById(R.id.ly_my);
         menu_doctor = (LinearLayout) findViewById(R.id.ly_doctor);
@@ -119,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (fragmentManager.getFragments() != null && fragmentManager.getFragments().size() > 0) {
             for (Fragment cf : fragmentManager.getFragments()) {
                 if(cf instanceof FileDealActivity
-                        || cf instanceof MyhealthActivity
+                        || cf instanceof MyhealthFragment
                         || cf instanceof SearchDoctor
                         || cf instanceof SearchMedicine
                         || cf instanceof MedicineList)
@@ -130,12 +246,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (index) {
             case 0:
 //                if (myFragment == null) {
-//                    myFragment = new MyhealthActivity();
+//                    myFragment = new MyhealthFragment();
 //                    transaction.add(R.id.frame_content, myFragment);
 //                } else {
 //                    transaction.show(myFragment);
 //                }
-                myFragment = new MyhealthActivity();
+                myFragment = new MyhealthFragment();
                 transaction.add(R.id.frame_content, myFragment);
                 break;
 
@@ -218,33 +334,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             //个人设置
             case R.id.myInfo:
-                Log.d("MyhealthActivity", "action_share");
+                Log.d("MyhealthFragment", "action_share");
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, SetActivity.class);
                 startActivity(intent);
                 break;
 
-            //
+            //我的设备
+            case R.id.scan:
+                intent = new Intent();
+                intent.setClass(MainActivity.this, ScanBleActivity.class);
+                startActivity(intent);
+                break;
+
+            //专属药店
+            case R.id.myStore:
+
+                break;
+
+            //私人医生
+            case R.id.myDoctor:
+
+                break;
+
+            //加好友
             case R.id.changeInput:
                 intent = new Intent();
                 intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.scan:
-                 intent = new Intent();
-                intent.setClass(MainActivity.this, ScanBleActivity.class);
+
+            //注销登录
+            case R.id.signOutSetting:
+                Users.sISSignout = true;
+                intent = new Intent();
+                intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
 
+            //退出
             case R.id.exit:
-                intent =new Intent();
-                intent.setClass(MainActivity.this,DeviceListActivity.class);
-                startActivity(intent);
+                AllThreads.sReceiveThread = null;
+                AllThreads.sHeartBeatTask = null;
+                AllThreads.sHeatBeatTimer = null;
+                AllThreads.sSendFileThread = null;
+                AppManager.getInstance().exit();
+                android.os.Process.killProcess(android.os.Process.myPid());
+                break;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void restartBotton() {
         // ImageView置为灰色
@@ -293,6 +434,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serCon);//解除绑定，否则会报异常
     }
 }
 

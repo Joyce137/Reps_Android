@@ -16,7 +16,6 @@ public class RecordDetail extends Activity {
 	
 	
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.record_detail);
@@ -25,7 +24,6 @@ public class RecordDetail extends Activity {
 	}
 
 	private void init() {
-		// TODO Auto-generated method stub
 
 		Intent intent = getIntent();
 		String rTime = intent.getStringExtra("record_time");

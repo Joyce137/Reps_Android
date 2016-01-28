@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.TabMedicineAdapter;
+import com.example.ustc.healthreps.database.DBConstants;
 import com.example.ustc.healthreps.database.impl.MedicineDaoImpl;
 import com.example.ustc.healthreps.model.FirstClassItem;
 import com.example.ustc.healthreps.model.Medicine;
@@ -42,6 +43,7 @@ import com.example.ustc.healthreps.model.Medicine_Info_List;
 import com.example.ustc.healthreps.model.SecondClassItem;
 import com.example.ustc.healthreps.model.SelectPicPopupWindow;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.repo.SearchInfo;
 
 /*
  * 药店列表项点开后，进行该药品清单界面
@@ -128,7 +130,6 @@ public class MedicineList extends Fragment {
         }
 
         private void tab3OnClick() {
-            // TODO Auto-generated method stub
             if(flag3){
                 Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
                 nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
@@ -178,7 +179,6 @@ public class MedicineList extends Fragment {
         }
 
         private void tab2OnClick() {
-            // TODO Auto-generated method stub
             if(flag2){
                 Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
                 nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
@@ -231,6 +231,9 @@ public class MedicineList extends Fragment {
                     nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
                     mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
                     Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+
+                    //按科室查询
+                    searchMedicineByCategory(str);
                 }
             });
         }
@@ -338,7 +341,6 @@ public class MedicineList extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                // TODO Auto-generated method stub
                 final com.example.ustc.healthreps.model.Medicine medicine = (com.example.ustc.healthreps.model.Medicine) medic_Adapter.getItem(position);
 
 
@@ -430,11 +432,11 @@ public class MedicineList extends Fragment {
         searchImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+//                String text1 = "正在查询，请稍候......";
+//                Toast.makeText(getActivity().getApplication(), text1, Toast.LENGTH_SHORT).show();
                 //查询条件字符串
                 String queryCategoryStr = et_search_medicine.getText().toString().trim();
-                MedicineDaoImpl dao = new MedicineDaoImpl(getActivity().getApplicationContext());
-                ArrayList<Medicine> list1 = dao.queryMedicinesByNameOrCategory(queryCategoryStr);
-                int x = list1.size();
+                seachMedicineByInput(queryCategoryStr);
             }
         });
 
@@ -449,7 +451,7 @@ public class MedicineList extends Fragment {
         animOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out_anim);
 
         ViewGroup tableTitle = (ViewGroup) view.findViewById(R.id.table_title);
-        tableTitle.setBackgroundColor(Color.rgb(65, 105, 225));
+        tableTitle.setBackgroundColor(Color.GREEN);
     }
 
     //处理点击结果
@@ -462,5 +464,38 @@ public class MedicineList extends Fragment {
             mainTab1TV.setText(selectedName);
         else if(flag == 2)
             mainTab2TV.setText(selectedName);
+    }
+
+    //模糊查询
+    public void seachMedicineByInput(String searchStr){
+        MedicineDaoImpl dao = new MedicineDaoImpl(getActivity().getApplicationContext());
+        ArrayList<Medicine> medicineList = dao.queryMedicinesByNameOrCategory(searchStr);
+        int x = medicineList.size();
+        String text = "查询到：" + x + "条记录";
+        Toast.makeText(getActivity().getApplication(), text, Toast.LENGTH_LONG).show();
+        refreshMedicineList(medicineList);
+    }
+
+    //按科室查询
+    public void searchMedicineByCategory(String catagory){
+        MedicineDaoImpl dao = new MedicineDaoImpl(getActivity().getApplicationContext());
+
+        SearchInfo info = new SearchInfo();
+        info.drugStoreCategory = catagory;
+        ArrayList<Medicine> medicineList = dao.queryMedicineBySearch(info);
+        int x = medicineList.size();
+        String text = "查询到：" + x + "条记录";
+        Toast.makeText(getActivity().getApplication(), text, Toast.LENGTH_LONG).show();
+        refreshMedicineList(medicineList);
+    }
+
+    //刷新列表
+    public void refreshMedicineList(ArrayList<Medicine> medicineList){
+        list.clear();
+        for(Medicine medicine : medicineList){
+            list.add(medicine);
+        }
+        medic_Adapter = new TabMedicineAdapter(getActivity().getApplicationContext(),list);
+        medic_list_view.setAdapter(medic_Adapter);
     }
 }

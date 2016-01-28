@@ -243,7 +243,7 @@ public class SearchDoctor extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CityList.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
         toolbar=(Toolbar)view.findViewById(R.id.id_toolbar) ;
@@ -363,7 +363,19 @@ public class SearchDoctor extends Fragment {
         }
 
         private void tab3OnClick() {
-            // TODO Auto-generated method stub
+            Drawable nav_up = null;
+
+            if(flag3)
+            {
+                nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
+                flag3=false;
+            }
+            else
+            {
+                nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
+                flag3=true;
+            }
+
             //药店关键字过滤信息
             final String title[] = {"智能排序","离我最近","人气最高","评价最好"};
             //加载布局
@@ -397,7 +409,6 @@ public class SearchDoctor extends Fragment {
         }
 
         private void tab2OnClick() {
-            // TODO Auto-generated method stub
             if (popupWindow2.isShowing()) {
                 popupWindow2.dismiss();
             }
@@ -426,7 +437,6 @@ public class SearchDoctor extends Fragment {
         }
 
         private void tab1OnClick() {
-            // TODO Auto-generated method stub
             if (popupWindow1.isShowing()) {
                 popupWindow1.dismiss();
             } else {
@@ -455,7 +465,6 @@ public class SearchDoctor extends Fragment {
     }
 
     private void initPopup() {
-        // TODO Auto-generated method stub
         popupWindow1 = new PopupWindow(getActivity());
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
@@ -695,7 +704,6 @@ public class SearchDoctor extends Fragment {
     }
 
     private void initData() {
-        // TODO Auto-generated method stub
         firstList1 = new ArrayList<FirstClassItem>();
         //1
         ArrayList<SecondClassItem> list11 = new ArrayList<SecondClassItem>();
@@ -834,6 +842,9 @@ public class SearchDoctor extends Fragment {
 
         animIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in_anim);
         animOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out_anim);
+
+        ViewGroup tableTitle = (ViewGroup) view.findViewById(R.id.table_title);
+        tableTitle.setBackgroundColor(Color.GREEN);
     }
 
     //刷新右侧ListView

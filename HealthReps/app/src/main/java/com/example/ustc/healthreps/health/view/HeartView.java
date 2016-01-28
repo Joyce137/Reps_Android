@@ -1,4 +1,4 @@
-package com.example.ustc.healthreps.health;
+package com.example.ustc.healthreps.health.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

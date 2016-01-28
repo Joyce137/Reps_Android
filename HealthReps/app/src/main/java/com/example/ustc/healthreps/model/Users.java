@@ -10,9 +10,12 @@ import java.util.ArrayList;
  */
 public class Users {
     public static String sLoginUsername;
+    public static String sLoginPassword;
     public static String sLoginUserType;
     public static UserInfo sLoginUser = new UserInfo();
+    public static boolean sISDetailUserInfo = false;
     public static boolean sOnline;
+    public static boolean sISSignout = false;
 
     //默认药店
     public static String sDefaultStore = null;
@@ -24,4 +27,6 @@ public class Users {
 
     //当前连接的医生
     public static String sCurConnectDoc = null;
+
+    public static UserInfo sRegisterUser = new UserInfo();  //正注册的用户
 }

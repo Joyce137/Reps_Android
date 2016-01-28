@@ -54,7 +54,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 		mMenuView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
 				int height = mMenuView.findViewById(R.id.pop_layout).getTop();
 				int y=(int) event.getY();
 				if(event.getAction()==MotionEvent.ACTION_UP){
@@ -68,7 +67,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 	}
 
 	private void init() {
-		// TODO Auto-generated method stub
 		btn_sub = (Button)mMenuView.findViewById(R.id.sub);
 		btn_add = (Button)mMenuView.findViewById(R.id.add);
 		edt_amount = (EditText) mMenuView.findViewById(R.id.amount);
@@ -79,7 +77,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 		btn_sub.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				int num = Integer.parseInt(edt_amount.getText().toString());
 				if(0 == num){
 					edt_amount.setText("0");
@@ -94,7 +91,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 		btn_add.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				int num = Integer.parseInt(edt_amount.getText().toString());
 				edt_amount.setText(String.valueOf(++num));
 			}
@@ -104,7 +100,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 		btn_sumbit.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				String medName = tv_medName.getText().toString();
 				String num = edt_amount.getText().toString();
 

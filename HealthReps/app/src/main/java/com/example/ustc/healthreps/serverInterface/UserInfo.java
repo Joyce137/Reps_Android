@@ -1,6 +1,9 @@
 package com.example.ustc.healthreps.serverInterface;
 
+import com.example.ustc.healthreps.database.entity.User;
 import com.example.ustc.healthreps.utils.Utils;
+
+import java.io.UnsupportedEncodingException;
 
 //MSG_USER_INFO	 ---用户信息
 public class UserInfo {
@@ -26,7 +29,8 @@ public class UserInfo {
 	public byte[] ID_Num = new byte[20];
 	public byte[] yibao_Num = new byte[20];
 	public byte[] pastDiseaseHistory = new byte[200];
-	public String imagePath;
+	public String imagePath = "";
+	public String email;
 
 	public static int size = 5 + 5 + 2 + 4 + 20 + 25 + 25 + 50 + 4 + 4 + 100
 			+ 100 + 100 + 4 + 4 + 20 + 12 + 15 + 15 + 15 + 20 + 20 + 200 + 3;
@@ -91,29 +95,29 @@ public class UserInfo {
 	// 将byte数组转化为类对象
 	public static UserInfo getMSG_USER_INFO(byte[] buf) {
 		UserInfo p = new UserInfo();
-		byte[] temp = null;
 		// sex
-		System.arraycopy(buf, 0, temp, 0, 5);
-		p.sex = temp;
+		System.arraycopy(buf, 0, p.sex, 0, 5);
+
 		// age
-		System.arraycopy(buf, 5, temp, 0, 5);
-		p.age = temp;
+		System.arraycopy(buf, 5, p.age, 0, 5);
+
 		// status
 		byte[] temp_int = new byte[4];
 		System.arraycopy(buf, 12, temp_int, 0, 4);
 		p.status = Utils.vtolh(temp_int);
+
+		byte temp20[] = new byte[20];
 		// zhicheng
-		System.arraycopy(buf, 16, temp, 0, 20);
-		p.zhicheng = temp;
+		System.arraycopy(buf, 16, p.zhicheng, 0, 20);
+
 		// realName
-		System.arraycopy(buf, 36, temp, 0, 25);
-		p.realName = temp;
+		System.arraycopy(buf, 36, p.realName, 0, 25);
 		// loginName
-		System.arraycopy(buf, 61, temp, 0, 25);
-		p.loginName = temp;
+		System.arraycopy(buf, 61, p.loginName, 0, 25);
+
 		// keshi
-		System.arraycopy(buf, 86, temp, 0, 50);
-		p.keshi = temp;
+		System.arraycopy(buf, 86, p.keshi, 0, 50);
+
 		// type
 		temp_int = new byte[4];
 		System.arraycopy(buf, 136, temp_int, 0, 4);
@@ -122,15 +126,16 @@ public class UserInfo {
 		temp_int = new byte[4];
 		System.arraycopy(buf, 140, temp_int, 0, 4);
 		p.cw = Utils.vtolh(temp_int);
+
 		// address
-		System.arraycopy(buf, 144, temp, 0, 100);
-		p.address = temp;
+		System.arraycopy(buf, 144, p.address, 0, 100);
+
 		// shopName
-		System.arraycopy(buf, 244, temp, 0, 100);
-		p.shopName = temp;
+		System.arraycopy(buf, 244, p.shopName, 0, 100);
+
 		// doc_pha_address
-		System.arraycopy(buf, 344, temp, 0, 100);
-		p.doc_pha_address = temp;
+		System.arraycopy(buf, 344, p.doc_pha_address, 0, 100);
+
 		// vip
 		temp_int = new byte[4];
 		System.arraycopy(buf, 444, temp_int, 0, 4);
@@ -140,30 +145,107 @@ public class UserInfo {
 		System.arraycopy(buf, 448, temp_int, 0, 4);
 		p.off = Utils.vtolh(temp_int);
 		// phone
-		System.arraycopy(buf, 452, temp, 0, 20);
-		p.phone = temp;
+		System.arraycopy(buf, 452, p.phone, 0, 20);
+
 		// pharmacist
-		System.arraycopy(buf, 472, temp, 0, 12);
-		p.defaultStore = temp;
+		System.arraycopy(buf, 472, p.defaultStore, 0, 12);
+
+
 		// password
-		System.arraycopy(buf, 484, temp, 0, 15);
-		p.password = temp;
+		System.arraycopy(buf, 484, p.password, 0, 15);
+
 		// dianzhang
-		System.arraycopy(buf, 499, temp, 0, 15);
-		p.dianzhang = temp;
-		// caozuoyuan
-		System.arraycopy(buf, 514, temp, 0, 15);
-		p.caozuoyuan = temp;
+		System.arraycopy(buf, 499, p.dianzhang, 0, 15);
+
+ 		// caozuoyuan
+		System.arraycopy(buf, 514, p.caozuoyuan, 0, 15);
+
 		// ID_Num
-		System.arraycopy(buf, 529, temp, 0, 20);
-		p.ID_Num = temp;
+		System.arraycopy(buf, 529, p.ID_Num, 0, 20);
+
 		// yibao_Num
-		System.arraycopy(buf, 549, temp, 0, 20);
-		p.yibao_Num = temp;
+		System.arraycopy(buf, 549, p.yibao_Num, 0, 20);
+
 		// pastDiseaseHistory
-		System.arraycopy(buf, 569, temp, 0, 200);
-		p.pastDiseaseHistory = temp;
+		System.arraycopy(buf, 569, p.pastDiseaseHistory, 0, 200);
 
 		return p;
+	}
+
+	//将UserInfo转化为User
+	public User changeUserInfoToUser(){
+		User user = new User();
+		try {
+			user.username = new String(loginName,"GBK");
+			user.sex = new String(sex,"GBK");
+			user.age = new String(age,"GBK");
+			switch (status){
+				case 0:
+					user.status = "离线";
+					break;
+				case 1:
+					user.status = "在线";
+					break;
+				case 3:
+					user.status = "忙碌";
+					break;
+				default:
+					user.status = "未知";
+					break;
+			}
+			user.zhicheng = new String(zhicheng,"GBK");
+			user.realname = new String(realName,"GBK");
+			user.keshi = new String(keshi,"GBK");
+			user.type = Utils.changeTypeToString(type);
+			switch (cw){
+				case 0:
+					user.cw = "中药";
+					break;
+				case 1:
+					user.cw = "西药";
+					break;
+				default:
+					user.cw = "未知";
+					break;
+			}
+			user.address = new String(address,"GBK");
+			user.shopname = new String(shopName,"GBK");
+			user.docpha_address = new String(doc_pha_address,"GBK");
+			switch (vip){
+				case 0:
+					user.vip = "是";
+					break;
+				case 1:
+					user.vip = "否";
+					break;
+				default:
+					user.vip = "未知";
+					break;
+			}
+			switch (off){
+				case 0:
+					user.off = "不接收离线文件";
+					break;
+				case 1:
+					user.off = "接收离线文件";
+					break;
+				default:
+					user.off = "未知";
+					break;
+			}
+			user.phone = new String(phone,"GBK");
+			user.defaultstore = new String(defaultStore,"GBK");
+			user.password = new String(password,"GBK");
+			user.dianzhang = new String(dianzhang,"GBK");
+			user.caozuoyuan = new String(caozuoyuan,"GBK");
+			user.ID_num = new String(ID_Num,"GBK");
+			user.yibao_num = new String(yibao_Num,"GBK");
+			user.selfintroduction = new String(pastDiseaseHistory,"GBK");
+			user.imagepath = imagePath;
+			user.email = email;
+		}catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		return user;
 	}
 }

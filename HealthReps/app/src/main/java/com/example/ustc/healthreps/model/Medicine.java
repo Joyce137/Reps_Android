@@ -74,6 +74,8 @@ public class Medicine implements Serializable {
     }
 
     public String getMedicName() {
+        if(MedicName == null)
+            return name;
         return MedicName;
     }
 
@@ -82,6 +84,8 @@ public class Medicine implements Serializable {
     }
 
     public String getMedicCategroy() {
+        if(MedicCategroy == null)
+            return category;
         return MedicCategroy;
     }
 
@@ -90,6 +94,8 @@ public class Medicine implements Serializable {
     }
 
     public String getMedicBehavior() {
+        if(MedicBehavior == null)
+            return disease;
         return MedicBehavior;
     }
 

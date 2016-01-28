@@ -73,7 +73,8 @@
                     android:background="@null"
                     android:hint="请输入查找内容"
                     android:textColorHint="@color/holo_green_dark"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="@color/black"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -29,25 +29,21 @@ public class TabDoctorAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return list.size();
     }
 
     @Override
     public Object getItem(int arg0) {
-        // TODO Auto-generated method stub
         return list.get(arg0);
     }
 
     @Override
     public long getItemId(int arg0) {
-        // TODO Auto-generated method stub
         return arg0;
     }
 
     @Override
     public View getView(int pos, View view, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Doctor doctor = (Doctor) this.getItem(pos);
         ViewHolder viewHolder;
         if(view == null)
@@ -74,11 +70,11 @@ public class TabDoctorAdapter extends BaseAdapter{
         viewHolder.mDocGrade.setTextColor(Color.BLACK);
         viewHolder.mDochosname.setTextColor(Color.BLACK);
 
-        int size = (int) viewHolder.mDocName.getTextSize() + 3;
-        viewHolder.mDocName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        viewHolder.mDocDep.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        viewHolder.mDocGrade.setTextSize(TypedValue.COMPLEX_UNIT_PX, size-1);
-        viewHolder.mDochosname.setTextSize(TypedValue.COMPLEX_UNIT_PX, size-1);
+//        int size = (int) viewHolder.mDocName.getTextSize() + 3;
+//        viewHolder.mDocName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+//        viewHolder.mDocDep.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+//        viewHolder.mDocGrade.setTextSize(TypedValue.COMPLEX_UNIT_PX, size-1);
+//        viewHolder.mDochosname.setTextSize(TypedValue.COMPLEX_UNIT_PX, size-1);
 
         return view;
     }

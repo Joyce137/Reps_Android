@@ -91,6 +91,9 @@ public class CityList extends Activity {
                         .getItem(position).toString();
                 Setting.Save2SharedPreferences(CityList.this, "city",
                         cityModel);
+
+                CurLocation.city = cityModel;
+
                 Intent intent = new Intent();
                 intent.putExtra("city", cityModel);
                 setResult(2, intent);
@@ -104,6 +107,9 @@ public class CityList extends Activity {
                 String cityModel = city_locate_state.getText().toString();
                 Setting.Save2SharedPreferences(CityList.this, "city",
                         cityModel);
+
+                CurLocation.city = cityModel;
+
                 Intent intent = new Intent();
                 intent.putExtra("city", cityModel);
                 setResult(2, intent);
@@ -164,6 +170,9 @@ public class CityList extends Activity {
         switch (resultCode) {
             case RESULT_OK:
                 String city=data.getStringExtra("city");
+
+                CurLocation.city = city;
+
                 Intent intent =new Intent();
                 intent.putExtra("city",city);
                 setResult(2,intent);
@@ -274,6 +283,9 @@ public class CityList extends Activity {
             if(cityModel!=null) {
                 Setting.Save2SharedPreferences(CityList.this, "city",
                         cityModel.getCityName());
+
+                CurLocation.city = cityModel.getCityName();
+
                 Intent intent =new Intent();
                 intent.putExtra("city",cityModel.getCityName());
                 setResult(2,intent);

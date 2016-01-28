@@ -12,6 +12,7 @@ import com.example.ustc.healthreps.database.DBManagerForNew;
 import com.example.ustc.healthreps.database.annotation.ColumnName;
 import com.example.ustc.healthreps.database.annotation.PrimaryKey;
 import com.example.ustc.healthreps.database.annotation.TableName;
+import com.example.ustc.healthreps.model.Medicine;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -26,6 +27,11 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
     private Context context;
     private DBManagerForNew dbManagerForNew;
     private DBManagerForExist dbManagerForExist;
+
+    public SQLiteDatabase getDb() {
+        return db;
+    }
+
     private SQLiteDatabase db;
 
     public DaoSupportImpl(Context context, String dbName, boolean isExist) {
@@ -116,7 +122,7 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
             ColumnName columnName = item.getAnnotation(ColumnName.class);
             if (columnName != null) {
                 String key = columnName.value();
-                String value;
+                String value = null;
                 try {
                     //赋予私有项权限
                     item.setAccessible(true);
@@ -129,7 +135,11 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
                             continue;
                     }
 
-                    value = item.get(entity).toString();
+                    if(item.get(entity) != null)
+                    {
+                        value = item.get(entity).toString();
+                    }
+
                     values.put(key, value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -195,6 +205,8 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
             if (columnName != null) {
                 String key = columnName.value();
                 int columnIndex = cursor.getColumnIndex(key);
+                if(columnIndex == -1)
+                    continue;
                 String value = cursor.getString(columnIndex);
                 PrimaryKey primaryKey = item.getAnnotation(PrimaryKey.class);
                 try {
@@ -258,4 +270,22 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
         }
         return -1;
     }
+
+    @Override
+    public ArrayList<DBEntity> executeSql(String[] columns,String sqlStr) {
+        ArrayList<DBEntity> list = new ArrayList<DBEntity>();
+        sqlStr = "select *" + " from " + DBConstants.TABLE_Medicine + sqlStr;
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery(sqlStr,null);
+
+        if (cursor != null && cursor.getCount() > 0)
+            while(cursor.moveToNext()) {
+                DBEntity entity = getInstance();
+                fillField(cursor, entity);
+                list.add(entity);
+            }
+        db.endTransaction();
+        return list;
+    }
+
 }

@@ -26,15 +26,15 @@ public class ReceiveThread extends Thread{
 	boolean pack_err = false;
 	boolean isPackageHead = true;
 	int len = Types.HEADPACK;		//read时单个包的read长度
-	int retVal;						//read到的实际长度
+	int retVal = 0;						//read到的实际长度
 	int length = 0;					//包的总长度（包括包头）
 	int buffCounter = 0;			//buff指向recvbuf的偏移量
 	@Override
 	public void run() {
-		synchronized (this) {
+		synchronized (lock) {
 			Log.e("ReceiveMessageThread", "run() ");
 
-			while (isTrue) {
+			while (true) {
 
 				synchronized (this) {
 					try {
@@ -53,7 +53,8 @@ public class ReceiveThread extends Thread{
 					System.arraycopy(buff, 0, recvBuf, buffCounter, retVal);
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (Exception e){
+				}
+				catch (Exception e){
 					if(retVal == -1){
 						try {
 							this.wait(1000);

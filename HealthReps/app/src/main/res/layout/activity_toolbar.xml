@@ -7,4 +7,11 @@
     app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:layout_scrollFlags="scroll|enterAlways">
 
+    <TextView
+        android:id="@+id/mytitle1Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20dp"/>
+
 </android.support.v7.widget.Toolbar>

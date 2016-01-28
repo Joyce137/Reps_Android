@@ -3,15 +3,19 @@ package com.example.ustc.healthreps.repo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ustc.healthreps.LoginActivity;
 import com.example.ustc.healthreps.patient.RegisterActivity;
+import com.example.ustc.healthreps.register.RegisterActivityFin;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.serverInterface.UserInfo;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.ReceiveThread;
 import com.example.ustc.healthreps.threads.SendFileThread;
 import com.example.ustc.healthreps.utils.CRC4;
 
@@ -28,12 +32,8 @@ public class RegisterRepo extends ReceiveSuper {
     private int m_dlgType = REG_INFO_TYPE;
 
     public RegisterRepo(){
+
         super();
-        //启动发文件线程
-        if(mSendFileThread == null){
-            mSendFileThread = new SendFileThread();
-            mSendFileThread.start();
-        }
         sRegisterHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -42,12 +42,29 @@ public class RegisterRepo extends ReceiveSuper {
                 onRecvRegMessage(data);
             }
         };
+        //socket初始化成功
+        if(socketSuccess){
+            //启动接收线程
+            if(AllThreads.sReceiveThread == null){
+                AllThreads.sReceiveThread = new ReceiveThread("Recv_Thread");
+                AllThreads.sReceiveThread.start();
+            }
+
+            //启动发文件线程
+            if(mSendFileThread == null){
+                mSendFileThread = new SendFileThread();
+                mSendFileThread.start();
+            }
+        }
+        else {
+            LoginActivity.sLoginResultHandler.obtainMessage(0, -1).sendToTarget();
+        }
     }
 
     //登录
-    public void register(User user) {
-        sendHeadImage(user.userName,user.imagePath);
-        sendTextInfo(user);
+    public void register(UserInfo userInfo) {
+        sendHeadImage(userInfo.loginName.toString(),userInfo.imagePath);
+        sendTextInfo(userInfo);
     }
         //发头像
     private void sendHeadImage(String userName, String imagePath) {
@@ -57,33 +74,8 @@ public class RegisterRepo extends ReceiveSuper {
     }
 
         //发文本
-    private void sendTextInfo(User userText) {
-        UserInfo user = new UserInfo();
-        try{
-            user.realName = userText.realName.getBytes("GBK");
-            user.loginName = userText.userName.getBytes();
-
-            byte[] strPwd = new byte[100];
-            strPwd = userText.password.getBytes();
-            CRC4 crc4 = new CRC4();
-            crc4.Encrypt(strPwd, Types.AES_KEY.getBytes());
-            user.password = strPwd;
-
-            user.sex = userText.sex.getBytes();
-            user.age = userText.age.getBytes();
-            user.defaultStore = userText.defaultStore.getBytes();
-            user.vip = userText.vip;
-            user.phone = userText.phoneNumber.getBytes();
-            user.address = userText.address.getBytes("GBK");
-            user.type = Types.USER_TYPE_PATIENT;
-            user.ID_Num = userText.idCardNumber.getBytes();
-            user.yibao_Num = userText.yibaoCardNumber.getBytes();
-            user.pastDiseaseHistory = userText.selfIntroduction.getBytes("GBK");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        NetPack pack = new NetPack(-1, UserInfo.size, m_dlgType == REG_INFO_TYPE?Types.Reg_Center:Types.Mod_Info, user.getMSG_USER_INFOBytes());
+    private void sendTextInfo(UserInfo userInfo) {
+        NetPack pack = new NetPack(-1, UserInfo.size, m_dlgType == REG_INFO_TYPE?Types.Reg_Center:Types.Mod_Info, userInfo.getMSG_USER_INFOBytes());
         pack.CalCRC();
         Sockets.socket_center.sendPack(pack);
     }
@@ -100,13 +92,13 @@ public class RegisterRepo extends ReceiveSuper {
                 regResult = msg.getType();
             }
             //发送消息到注册界面
-            RegisterActivity.sRegResultHandler.obtainMessage(0, regResult).sendToTarget();
+            RegisterActivityFin.sRegisterResultHandler.obtainMessage(0, regResult).sendToTarget();
 
             //关闭发送文件线程
             closeSendFileThread();
 
             //关闭接收线程
-            closeReceiveThread();
+//            closeReceiveThread();
 
             Looper.loop();
         }

@@ -47,6 +47,7 @@ import com.example.ustc.healthreps.gps.GPSService;
 import com.example.ustc.healthreps.model.FirstClassItem;
 import com.example.ustc.healthreps.model.MedicStore;
 import com.example.ustc.healthreps.model.SecondClassItem;
+import com.example.ustc.healthreps.model.Users;
 
 /*
  * 问药功能模块主界面
@@ -125,56 +126,97 @@ public class SearchMedicine extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CityList.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
         toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
 
         imageView = (ImageView) view.findViewById(R.id.iv_toolbar_set);
         imageView.setOnClickListener(new View.OnClickListener() {
-            boolean up = false;
 
             @Override
             public void onClick(View view) {
-                LayoutInflater layoutInflater;
-                View popup;
-                layoutInflater = LayoutInflater.from(getActivity());
-                popup = layoutInflater.inflate(R.layout.activity_toolbar_menu, null);
-                popupWindow = new PopupWindow(popup, ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, false);
-                if (!up) {
-                    popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+                showPopupWindow(imageView);
+            }
+        });
+    }
 
-                    menu1 = (TextView) popup.findViewById(R.id.tv_menu_01);
-                    menu1.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity(), "私人医生...", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+    //Toolbar
+    LinearLayout layout_popup;
+    private String title[] = {"搜索设备","专属药店","私人医生","添加好友","个人设置"};
+    private ListView listView_popup;
+    public void showPopupWindow(View parent){
+        //加载布局
+        layout_popup = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
+        //找到布局控件
+        listView_popup = (ListView)layout_popup.findViewById(R.id.lv_dialog);
+        //设置适配器
+        listView_popup.setAdapter(new ArrayAdapter<String>(getActivity(),
+                R.layout.more_text_setting, R.id.tv_text, title));
+        //实例化popupwindow
+        popupWindow = new PopupWindow(layout_popup, ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, false);
 
-                    menu2 = (TextView) popup.findViewById(R.id.tv_menu_02);
-                    menu2.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity().getApplicationContext(), "专属药店...", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        //popupWindow = new PopupWindow(layout,370,570);
+        //控制键盘是否可以获得焦点
+        popupWindow.setFocusable(true);
+        popupWindow.setAnimationStyle(R.style.mystyle);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
+        WindowManager manager = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
 
-                    menu3 = (TextView) popup.findViewById(R.id.tv_menu_03);
-                    menu3.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity(), "个人设置...", Toast.LENGTH_SHORT).show();
+        //获取xoff
+        int xpos = manager.getDefaultDisplay().getWidth()/2-popupWindow.getWidth()/2;
+        //xoff,yoff基于anchor的左下角进行偏移
+        popupWindow.showAsDropDown(parent, xpos, 0);
+        //监听
+        listView_popup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String str = null;
+
+                popupWindow.dismiss();
+                switch (position) {
+                    case 0:
+                        str = "搜索设备";
+                        //不是我们组的功能^-^
+                        break;
+                    case 1:
+                        str = "专属药店";
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
+                        if (fm.getFragments() != null && fm.getFragments().size() > 0) {
+                            for (Fragment cf : fm.getFragments()) {
+                                ft.remove(cf);
+                            }
                         }
-                    });
-                    popupWindow.showAsDropDown(imageView);
-                    popupWindow.update();
-                    up = true;
-                } else {
-                    popupWindow.dismiss();
-                    up = false;
+                        SearchMedicine smfragment = new SearchMedicine();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("flag", 1);   //flag=1,表示对SearchMedic来说已经设置过默认药店
+                        smfragment.setArguments(bundle);
+                        ft.replace(R.id.frame_content, smfragment);
+                        ft.addToBackStack(null);
+                        ft.commit();
+
+                        Users.sDefaultStore = "xxx";
+                        break;
+                    case 2:
+                        str = "私人医生";
+                        //不是我们组的功能^-^
+                        break;
+                    case 3:
+                        str = "添加好友";
+                        //不是我们组的功能^-^
+                        break;
+                    case 4:
+                        str = "个人设置";
+                        Intent intent4 = new Intent(view.getContext(), PersonSetting.class);
+                        view.getContext().startActivity(intent4);
+                        break;
                 }
+
+                Toast.makeText(getActivity().getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -281,7 +323,6 @@ public class SearchMedicine extends Fragment {
         }
 
         private void tab3OnClick() {
-                // TODO Auto-generated method stub
                 if(flag3){
                     Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_up_black);
                     nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
@@ -384,7 +425,6 @@ public class SearchMedicine extends Fragment {
             }
 
         private void tab1OnClick() {
-            // TODO Auto-generated method stub
             if (popupWindow1.isShowing()) {
                 popupWindow1.dismiss();
             } else {
@@ -413,8 +453,6 @@ public class SearchMedicine extends Fragment {
     }
 
     private void initPopup() {
-        // TODO Auto-generated method stub
-
         //popupWindow1为“附近”信息
         popupWindow1 = new PopupWindow(getActivity());
 
@@ -502,7 +540,6 @@ public class SearchMedicine extends Fragment {
     }
 
     private void initData() {
-        // TODO Auto-generated method stub
 		/*
 		 * 初始化附近城市信息，后期该信息从数据库中获取
 		 */
@@ -629,7 +666,7 @@ public class SearchMedicine extends Fragment {
         animOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out_anim);
 
         ViewGroup tableTitle = (ViewGroup) view.findViewById(R.id.table_title);
-        tableTitle.setBackgroundColor(Color.rgb(65, 105, 225));
+        tableTitle.setBackgroundColor(Color.GREEN);
     }
 
     //刷新右侧ListView

@@ -41,7 +41,6 @@ public class AddRelativeLayout extends RelativeLayout implements OnClickListener
 		initView();
 	}
 	private void initView() {
-		// TODO Auto-generated method stub
 		ib_pic = (ImageButton) findViewById(R.id.ib1);
 		ib_file = (ImageButton) findViewById(R.id.ib2);
 		ib_audio = (ImageButton) findViewById(R.id.ib3);
@@ -58,7 +57,6 @@ public class AddRelativeLayout extends RelativeLayout implements OnClickListener
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				et_sendmess.setText("已发送……");
 				Intent intent = new Intent(getContext(),Picture_select.class);
                 getContext().startActivity(intent);
@@ -82,7 +80,6 @@ public class AddRelativeLayout extends RelativeLayout implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch(v.getId()){
 			case R.id.btn_other:
 				// 隐藏表情选择框

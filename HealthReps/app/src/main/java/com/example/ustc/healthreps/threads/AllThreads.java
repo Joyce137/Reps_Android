@@ -8,4 +8,8 @@ public class AllThreads {
 	//心跳包定时器
 	public static Timer sHeatBeatTimer;
 	public static HeartBeatTask sHeartBeatTask;
+
+
+	public static ReceiveThread1 sReceiveThread1;
+	public static HandlerThread sHandlerThread;
 }

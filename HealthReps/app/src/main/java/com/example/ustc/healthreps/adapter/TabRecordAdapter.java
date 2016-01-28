@@ -31,25 +31,21 @@ public class TabRecordAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return list.size();
 	}
 
 	@Override
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
 		return list.get(arg0);
 	}
 
 	@Override
 	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
 		return arg0;
 	}
 
 	@Override
 	public View getView(int pos, View view, ViewGroup parent) {
-		// TODO Auto-generated method stub
 		FileRecord record = (FileRecord) this.getItem(pos);
 		ViewHolder viewHolder;
 		if(view == null)

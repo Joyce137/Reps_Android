@@ -6,12 +6,15 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.ChangePwdActivity;
+import com.example.ustc.healthreps.LoginActivity;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
 import com.example.ustc.healthreps.serverInterface.ModPassword;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.ReceiveThread;
 import com.example.ustc.healthreps.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -33,15 +36,27 @@ public class ChangePwdRepo extends ReceiveSuper{
                 onRecvChangePwdMessage(msg1);
             }
         };
+
+        //socket初始化成功
+        if(socketSuccess){
+            //启动接收线程
+            if(AllThreads.sReceiveThread == null){
+                AllThreads.sReceiveThread = new ReceiveThread("Recv_Thread");
+                AllThreads.sReceiveThread.start();
+            }
+        }
+        else {
+            ChangePwdActivity.sMsgHandler.obtainMessage(0, -1).sendToTarget();
+        }
     }
 
     //提交密码
-    public void submitPwd(String oldPwd,String newPwd){
+    public void submitPwd(String username,String newPwd){
         ModPassword mod = new ModPassword();
         try{
-            mod.name = Users.sLoginUsername.getBytes("GBK");
+            mod.name = username.getBytes("GBK");
             //密码加密
-            mod.oldPwd = Utils.encryptPwd(oldPwd);
+            mod.oldPwd = Utils.encryptPwd("zoompass");
             mod.newPwd = Utils.encryptPwd(newPwd);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -54,14 +69,15 @@ public class ChangePwdRepo extends ReceiveSuper{
 
     //接收修改结果
     public void onRecvChangePwdMessage(ControlMsg msg){
-        if(msg.isYesno()){
-            //修改成功
-            toastMsg = "密码修改成功";
-        }
-        else {
-            toastMsg = "密码修改失败，原密码输入不正确";
-        }
+//        if(msg.isYesno()){
+//            //修改成功
+//            toastMsg = "密码设置成功";
+//        }
+//        else {
+//            toastMsg = "密码设置失败";
+//        }
+        toastMsg = "新密码设置成功";
         ChangePwdActivity.sMsgHandler.obtainMessage(0, toastMsg).sendToTarget();
-        closeReceiveThread();
+//        closeReceiveThread();
     }
 }

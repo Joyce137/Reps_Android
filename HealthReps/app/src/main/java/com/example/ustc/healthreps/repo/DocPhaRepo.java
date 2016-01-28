@@ -78,7 +78,7 @@ public class DocPhaRepo extends ReceiveSuper{
             DoctorList.sDocHandler.obtainMessage(0, req).sendToTarget();
         }
 
-        closeReceiveThread();
+//        closeReceiveThread();
     }
 
     //收到医生连接消息

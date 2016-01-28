@@ -87,7 +87,7 @@
                     android:layout_marginLeft="10dp"
                     android:text="日期设置"
                     android:textColor="@color/holo_green_dark"
-                />
+                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -102,15 +102,18 @@
                     android:src="@mipmap/ic_format_list_numbered_white" />
 
                 <EditText
+                    android:id="@+id/IDText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@null"
                     android:hint="ID Card Number"
+                    android:textColor="@color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:text="37163219940124723X" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -125,38 +128,44 @@
                     android:src="@mipmap/ic_format_list_numbered_white" />
 
                 <EditText
+                    android:id="@+id/InsuranceText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@null"
                     android:hint="YiBao Card Number"
+                    android:textColor="@color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:text="12345678" />
             </LinearLayout>
             <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_margin="10dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@mipmap/ic_format_list_numbered_white" />
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="Address"
-                android:textColorHint="@android:color/white"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="20sp" />
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:id="@+id/AddressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Address"
+                    android:textColor="@color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:text="苏州|吴中区&amp;文星广场" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -176,10 +185,13 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@null"
+                    android:textColor="@color/white"
                     android:hint="Myself Instructions"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:id="@+id/myInstructionEditText"
+                    android:text="hello, i am joyce.cao" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -194,21 +206,25 @@
                     android:src="@mipmap/ic_phone_android_white" />
 
                 <EditText
+                    android:id="@+id/cellphoneNumberText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@null"
+                    android:textColor="@color/white"
                     android:hint="Number"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:text="15150451949" />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:text="验证码"
+                    android:text="获取验证码"
                     android:textColor="@android:color/holo_green_light"
-                    android:background="@drawable/shape_button_reg"/>
+                    android:background="@drawable/shape_button_reg"
+                    android:id="@+id/smscodeBtn" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -229,9 +245,11 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:hint="654123"
+                    android:textColor="@color/white"
                     android:textColorHint="@android:color/white"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:id="@+id/smscodeText" />
             </LinearLayout>
 
             <LinearLayout

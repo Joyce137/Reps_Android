@@ -27,12 +27,10 @@ public class InputMethodLayout extends LinearLayout {
 
     public InputMethodLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // TODO Auto-generated constructor stub
     }
 
     public InputMethodLayout(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
     }
 
 

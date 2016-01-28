@@ -23,7 +23,8 @@
         android:layout_marginTop="15dp"
         android:src="@mipmap/ic_perimg"
         app:civ_border_color="@android:color/white"
-        app:civ_border_width="2dp">
+        app:civ_border_width="2dp"
+        android:id="@+id/headPhoto">
 
     </de.hdodenhof.circleimageview.CircleImageView>
 
@@ -49,15 +50,17 @@
                 android:src="@mipmap/ic_person_white" />
 
             <EditText
+                android:id="@+id/usernameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="Username"
+                android:hint="Username(0-20)"
                 android:textColorHint="@android:color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="joyce137" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,6 +76,7 @@
                 android:src="@mipmap/ic_email_white" />
 
             <EditText
+                android:id="@+id/EmailText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -81,7 +85,8 @@
                 android:hint="Email"
                 android:textColorHint="@android:color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="1010@123.com" />
 
 
         </LinearLayout>
@@ -100,6 +105,7 @@
 
 
             <EditText
+                android:id="@+id/PasswordText1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -108,7 +114,8 @@
                 android:hint="Password"
                 android:textColorHint="@android:color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="1q123444" />
 
 
         </LinearLayout>
@@ -126,6 +133,7 @@
 
 
             <EditText
+                android:id="@+id/PasswordText2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -133,7 +141,8 @@
                 android:background="@null"
                 android:hint="Password"
                 android:textColorHint="@android:color/white"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="1q123444" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
@@ -148,6 +157,7 @@
                 android:src="@mipmap/ic_person_white" />
 
             <EditText
+                android:id="@+id/RealnameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -156,7 +166,8 @@
                 android:hint="Realname"
                 android:textColorHint="@android:color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="cakgoos" />
         </LinearLayout>
     </LinearLayout>
 

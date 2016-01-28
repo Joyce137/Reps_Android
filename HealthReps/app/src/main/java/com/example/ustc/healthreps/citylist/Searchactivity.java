@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.*;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.helper.ContactsHelper;
 import com.example.ustc.healthreps.model.Contacts;
 
@@ -56,6 +57,9 @@ public class Searchactivity extends Activity {
                 final Contacts cityModel = ContactsHelper.mSearchContacts.get(position);
     			Setting.Save2SharedPreferences(Searchactivity.this, "city",
     					cityModel.getName());
+
+                CurLocation.city = cityModel.getName();
+
                 Intent intent =new Intent();
                 intent.putExtra("city",cityModel.getName());
                 setResult(RESULT_OK,intent);

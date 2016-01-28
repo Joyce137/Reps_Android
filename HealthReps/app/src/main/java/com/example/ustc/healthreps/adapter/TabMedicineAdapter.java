@@ -29,25 +29,21 @@ public class TabMedicineAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return list.size();
     }
 
     @Override
     public Object getItem(int arg0) {
-        // TODO Auto-generated method stub
         return list.get(arg0);
     }
 
     @Override
     public long getItemId(int arg0) {
-        // TODO Auto-generated method stub
         return arg0;
     }
 
     @Override
     public View getView(int pos, View view, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Medicine medicine = (Medicine) this.getItem(pos);
         ViewHolder viewHolder;
         if(view == null)
@@ -71,10 +67,10 @@ public class TabMedicineAdapter extends BaseAdapter{
         viewHolder.mMedicCategory.setTextColor(Color.BLACK);
         viewHolder.mMedicBehavior.setTextColor(Color.BLACK);
 
-        int size = (int) viewHolder.mMedicName.getTextSize() + 3;
-        viewHolder.mMedicName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        viewHolder.mMedicCategory.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        viewHolder.mMedicBehavior.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+//        int size = (int) viewHolder.mMedicName.getTextSize() + 3;
+//        viewHolder.mMedicName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+//        viewHolder.mMedicCategory.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+//        viewHolder.mMedicBehavior.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
         return view;
     }

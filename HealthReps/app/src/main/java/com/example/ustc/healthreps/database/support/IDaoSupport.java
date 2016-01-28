@@ -35,4 +35,9 @@ public interface IDaoSupport<DBEntity> {
 
     //通过某列value得到主键_id
     int getIDByColumnValue(String columnName, String value);
+
+
+    //执行sql语句
+    ArrayList<DBEntity> executeSql(String[] columns,String sql);
+
 }

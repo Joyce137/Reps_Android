@@ -45,9 +45,6 @@ public class RecordFragment extends Fragment implements OnItemClickListener{
 	}
 
 	private void init() {
-		// TODO Auto-generated method stub
-		
-		
 		List <FileRecord> list_record = new ArrayList <FileRecord>();
 		list_record.add(new FileRecord("2015/12/12","万寿堂","王医生","状况良好","已看"));
 		list_record.add(new FileRecord("2015/12/13","阳光药店","张医生","状况未知","已预约"));
@@ -64,7 +61,6 @@ public class RecordFragment extends Fragment implements OnItemClickListener{
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// TODO Auto-generated method stub
 		FileRecord record = (FileRecord) adapter.getItem(position);
 
 		Intent i = new Intent(getActivity(),RecordDetail.class);

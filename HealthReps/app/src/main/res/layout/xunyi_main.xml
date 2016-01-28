@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/tuan_tab_linear_background"
-            android:paddingBottom="0.5dp"
+            android:paddingBottom="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0.5dp"
             android:paddingTop="0dp" >
@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/tuan_tab_linear_background"
-            android:paddingBottom="0.5dp"
+            android:paddingBottom="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0.5dp"
             android:paddingTop="0dp" >
@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/tuan_tab_linear_background"
-            android:paddingBottom="0.5dp"
+            android:paddingBottom="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0.5dp"
             android:paddingTop="0dp" >

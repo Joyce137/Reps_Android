@@ -43,7 +43,6 @@ public class MedicStore {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return getStoreName()+"   "+getStoreCategroy()+"    "+getStroeZone();
 	}
 	

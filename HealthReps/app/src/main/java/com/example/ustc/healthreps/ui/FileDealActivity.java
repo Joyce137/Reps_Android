@@ -4,18 +4,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 
 import com.example.ustc.healthreps.R;
-import com.example.ustc.healthreps.health.MyhealthActivity;
 
 /*
  * 文件管理类，包含消息和记录两项
@@ -66,7 +63,6 @@ public class FileDealActivity extends Fragment {
 	}
 
 	private void initview() {
-		// TODO Auto-generated method stub
 		btn_message = (Button)view.findViewById(R.id.btn_message);
 		btn_record = (Button)view.findViewById(R.id.btn_record);
 		btn_message.setOnClickListener(onClicker);
@@ -76,7 +72,6 @@ public class FileDealActivity extends Fragment {
 	private OnClickListener onClicker = new OnClickListener(){
 		@Override
 		public void onClick(View view) {
-			// TODO Auto-generated method stub
 			switch (view.getId()){
 			case R.id.btn_message:
 				btn_message.setTextColor(Color.parseColor("#df3031"));

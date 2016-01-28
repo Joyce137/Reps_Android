@@ -118,8 +118,7 @@
                     android:background="@null"
                     android:textColor="@color/black"
                     android:hint="Username"
-                    android:textSize="20sp"
-                    android:text="joyce"/>
+                    android:textSize="20sp" />
             </LinearLayout>
 
 
@@ -144,8 +143,7 @@
                     android:textColor="@color/black"
                     android:hint="Password"
                     android:textSize="20sp"
-                    android:password="true"
-                    android:text="zoompass"/>
+                    android:password="true" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout

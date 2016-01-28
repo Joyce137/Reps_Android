@@ -22,8 +22,11 @@ import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.HandlerThread;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
+import com.example.ustc.healthreps.threads.LockRecv;
 import com.example.ustc.healthreps.threads.ReceiveThread;
+import com.example.ustc.healthreps.threads.ReceiveThread1;
 import com.example.ustc.healthreps.utils.CRC4;
 import com.example.ustc.healthreps.utils.Utils;
 
@@ -37,9 +40,7 @@ import java.util.Timer;
 public class LoginRepo extends ReceiveSuper{
     public static Handler sLoginHandler = null;
     public static int mBeatTimes = 0;
-    private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
-    private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
-    private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
+//    private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
     public static Handler sAlertHandler;
 
     private byte[] crcPwd;      //加密后的密码
@@ -57,15 +58,18 @@ public class LoginRepo extends ReceiveSuper{
             }
         };
 
-
-        //启动接收线程
-        if(mReceiveThread == null){
-            mReceiveThread = new ReceiveThread("Recv_Thread");
-            mReceiveThread.start();
+        //socket初始化成功
+        if(socketSuccess){
+            //启动接收线程
+            if(AllThreads.sReceiveThread == null){
+                AllThreads.sReceiveThread = new ReceiveThread("Recv_Thread");
+                AllThreads.sReceiveThread.start();
+            }
         }
-//        //待登录之后启动心跳包
-//        Sockets.socket_center.sendHeartBeat();
-//        startHeartBeat();
+        else {
+            LoginActivity.sLoginResultHandler.obtainMessage(0, -1).sendToTarget();
+        }
+
     }
     // 登录事件
     public void login(String username,String pwd,String type) {
@@ -105,9 +109,10 @@ public class LoginRepo extends ReceiveSuper{
     //判断cookie是否有效
     public Cookie validCookie(CookieDaoImpl cookieDao){
         ArrayList<Cookie> list = cookieDao.findAll();
-        Cookie cookie = list.get(0);
-        String cookieDate = cookie.cookieDate;
         if(list.size() != 0){
+            Cookie cookie = list.get(0);
+            String cookieDate = cookie.cookieDate;
+
             //第一条时间已超过一个月
             if(Utils.checkValid(cookieDate)){
                 cookieDao.delete(1);
@@ -121,8 +126,11 @@ public class LoginRepo extends ReceiveSuper{
 
     //添加到cookie
     public void addToCookie(CookieDaoImpl cookieDao){
-        if(!cookieDao.checkUsernameExist(Users.sLoginUsername)){
+        if(cookieDao.checkUsernameExistInCookie(Users.sLoginUsername) == null){
             cookieDao.addNewUserToCookie(Users.sLoginUsername,crcPwd,userType);
+        }
+        else{
+            cookieDao.updateDate(1);
         }
     }
 
@@ -139,10 +147,6 @@ public class LoginRepo extends ReceiveSuper{
             Users.sLoginUsername = y.getUsername();
             Users.sOnline = true;
 
-            //启动心跳包线程
-            Sockets.socket_center.sendHeartBeat();
-            startHeartBeat();
-
             LoginActivity.sLoginResultHandler.obtainMessage(0, 0).sendToTarget();
         } else {
             // 1、登陆的时候 type = 1 密码和账号错误；type = 2 已经在线; type = 3 使用错了客户端; type = 4 审核未过
@@ -150,19 +154,9 @@ public class LoginRepo extends ReceiveSuper{
             int type = y.getType();
             LoginActivity.sLoginResultHandler.obtainMessage(0, type).sendToTarget();
         }
-        closeReceiveThread();
+//        closeReceiveThread();
     }
 
-    //心跳包设计
-    public void startHeartBeat(){
-        if(mHeatBeatTimer == null){
-            mHeatBeatTimer = new Timer();
-        }
-        if(mHeartBeatTask == null){
-            mHeartBeatTask = new HeartBeatTask();
-        }
-        mHeatBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
-    }
 
     //关闭接收线程
     @Override

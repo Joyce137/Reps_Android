@@ -36,10 +36,10 @@ public class Cookie {
         cookieDate = Utils.getDate();
     }
 
-    public Cookie(String username,String pwd, String type, String cookieDate){
+    public Cookie(String username,String pwd, String type){
         this.username = username;
         this.pwd = pwd;
-        this.cookieDate = cookieDate;
+        this.cookieDate = Utils.getDate();
         this.type = type;
     }
 
@@ -53,16 +53,16 @@ public class Cookie {
 
     //返回真实的类型
     public String getRealType(){
-        if(type == String.valueOf(Types.USER_TYPE_PATIENT)) {
+        if(type.equals(String.valueOf(Types.USER_TYPE_PATIENT))) {
             return "患者";
         }
-        else if (type == String.valueOf(Types.USER_TYPE_DOCTOR)) {
+        else if (type.equals(String.valueOf(Types.USER_TYPE_DOCTOR))) {
             return "医生";
         }
-        else if (type == String.valueOf(Types.USER_TYPE_PHA)) {
+        else if (type.equals(String.valueOf(Types.USER_TYPE_PHA))) {
             return "药师";
         }
-        else if (type == String.valueOf(Types.USER_TYPE_STORE)) {
+        else if (type.equals(String.valueOf(Types.USER_TYPE_STORE))) {
             return "药监局";
         }
         else {

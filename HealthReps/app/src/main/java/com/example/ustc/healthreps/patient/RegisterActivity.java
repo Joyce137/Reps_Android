@@ -1,7 +1,5 @@
 package com.example.ustc.healthreps.patient;
 
-import java.io.UnsupportedEncodingException;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,18 +13,14 @@ import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.repo.RegisterRepo;
-import com.example.ustc.healthreps.repo.User;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.socket.TCPSocket;
 import com.example.ustc.healthreps.serverInterface.ControlMsg;
-import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.Types;
-import com.example.ustc.healthreps.serverInterface.UserInfo;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.ReceiveThread;
 import com.example.ustc.healthreps.threads.SendFileThread;
 import com.example.ustc.healthreps.utils.AndroidNetAccess;
-import com.example.ustc.healthreps.utils.CRC4;
 import com.example.ustc.healthreps.utils.Utils;
 
 /**
@@ -50,7 +44,6 @@ public class RegisterActivity extends Activity {
 	int vip;
 
 	private RegisterRepo registerRepo = new RegisterRepo();
-	private User userText = new User();
 	
 	//View
 	private EditText mUsernameText,mRealNameText,mPwdText,mConfirmPwdText;
@@ -120,7 +113,7 @@ public class RegisterActivity extends Activity {
 			return;
 		}
 		//注册
-		registerRepo.register(userText);
+//		registerRepo.register(userText);
 	}
 	//处理注册结果
 	public void handleRegisterResult(int resultType){

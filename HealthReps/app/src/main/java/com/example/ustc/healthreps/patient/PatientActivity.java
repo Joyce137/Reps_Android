@@ -245,7 +245,6 @@ public class PatientActivity extends ActivityGroup {
 
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {
-						// TODO Auto-generated method stub
 						if (arg1 == DialogInterface.BUTTON_POSITIVE) {
 							arg0.cancel();
 						} else if (arg1 == DialogInterface.BUTTON_NEGATIVE) {
