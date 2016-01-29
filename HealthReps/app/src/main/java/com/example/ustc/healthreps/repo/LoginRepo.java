@@ -127,7 +127,8 @@ public class LoginRepo extends ReceiveSuper{
     //添加到cookie
     public void addToCookie(CookieDaoImpl cookieDao){
         if(cookieDao.checkUsernameExistInCookie(Users.sLoginUsername) == null){
-            cookieDao.addNewUserToCookie(Users.sLoginUsername,crcPwd,userType);
+//            cookieDao.addNewUserToCookie(Users.sLoginUsername,crcPwd,userType);
+            cookieDao.addNewUserToCookie();
         }
         else{
             cookieDao.updateDate(1);

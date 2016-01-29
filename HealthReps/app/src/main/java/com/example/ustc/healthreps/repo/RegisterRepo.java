@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class RegisterRepo extends ReceiveSuper {
     public static Handler sRegisterHandler = null;
-    private SendFileThread mSendFileThread = AllThreads.sSendFileThread;
+//    private SendFileThread mSendFileThread = AllThreads.sSendFileThread;
 
     public static final int REG_INFO_TYPE = 0x0003;
     private int m_dlgType = REG_INFO_TYPE;
@@ -51,9 +51,9 @@ public class RegisterRepo extends ReceiveSuper {
             }
 
             //启动发文件线程
-            if(mSendFileThread == null){
-                mSendFileThread = new SendFileThread();
-                mSendFileThread.start();
+            if(AllThreads.sSendFileThread == null){
+                AllThreads.sSendFileThread = new SendFileThread();
+                AllThreads.sSendFileThread.start();
             }
         }
         else {
@@ -106,9 +106,9 @@ public class RegisterRepo extends ReceiveSuper {
 
     //关闭发文件线程
     public void closeSendFileThread(){
-        mSendFileThread.isTrue = false;
-        mSendFileThread.interrupt();
-        mSendFileThread = null;
+        AllThreads.sSendFileThread.isTrue = false;
+        AllThreads.sSendFileThread.interrupt();
+        AllThreads.sSendFileThread = null;
     }
 
     //关闭接收线程

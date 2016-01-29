@@ -142,12 +142,12 @@ public class SearchDoctor extends Fragment {
     public void onRecvDoctorResult(String data){
 
         if(data.startsWith("y")) {
-            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
-//                i.setComponent(new ComponentName("com.example.ui",
-//                        "com.example.ui.DoctorSessionAty"));
-            i.putExtra("doctor_name", curDoctor.getDoctorName());
-            i.putExtra("grade_name", curDoctor.getGradeName());
-            startActivity(i);
+//            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
+////                i.setComponent(new ComponentName("com.example.ui",
+////                        "com.example.ui.DoctorSessionAty"));
+//            i.putExtra("doctor_name", curDoctor.getDoctorName());
+//            i.putExtra("grade_name", curDoctor.getGradeName());
+//            startActivity(i);
         }
         else if(data.startsWith("n")){
             Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
@@ -155,6 +155,12 @@ public class SearchDoctor extends Fragment {
 
         else if(data.startsWith("c")){
             Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
+//                i.setComponent(new ComponentName("com.example.ui",
+//                        "com.example.ui.DoctorSessionAty"));
+            i.putExtra("doctor_name", curDoctor.getDoctorName());
+            i.putExtra("grade_name", curDoctor.getGradeName());
+            startActivity(i);
         }
     }
 
@@ -824,7 +830,7 @@ public class SearchDoctor extends Fragment {
                 curDoctor = (Doctor) doc_Adapter.getItem(position);
                 //建立连接
                 //new DocPhaRepo().connectDoctor(curDoctor.getDoctorName());
-                new DocPhaRepo().connectDoctor("store1");
+                new DocPhaRepo().connectDoctor("doctor1");
             }
         });
     }

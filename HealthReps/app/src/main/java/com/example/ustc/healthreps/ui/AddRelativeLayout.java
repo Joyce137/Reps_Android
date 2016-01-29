@@ -11,6 +11,12 @@ import android.widget.RelativeLayout;
 import android.view.View.OnClickListener;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.SendFileThread;
+import com.example.ustc.healthreps.utils.Utils;
 
 public class AddRelativeLayout extends RelativeLayout implements OnClickListener{
 
@@ -53,18 +59,26 @@ public class AddRelativeLayout extends RelativeLayout implements OnClickListener
 		view = findViewById(R.id.rl_other);
 
 		//打开图片
-		ib_pic.setOnClickListener(new OnClickListener(){
+		ib_pic.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				et_sendmess.setText("已发送……");
-				Intent intent = new Intent(getContext(),Picture_select.class);
-                getContext().startActivity(intent);
+				Intent intent = new Intent(getContext(), Picture_select.class);
+				getContext().startActivity(intent);
 				view.setVisibility(View.GONE);
 
 			}
 		});
+
+		ib_file.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+//				sendFile();
+			}
+		});
 	}
+
 
 	/**
 	 * 隐藏表情选择框

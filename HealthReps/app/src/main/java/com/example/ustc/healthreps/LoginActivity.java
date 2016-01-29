@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,15 +26,10 @@ import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.repo.LoginRepo;
 import com.example.ustc.healthreps.register.RegisterActivity;
 import com.example.ustc.healthreps.repo.UserRepo;
-import com.example.ustc.healthreps.serverInterface.LoginBackInfo;
-import com.example.ustc.healthreps.serverInterface.NetPack;
-import com.example.ustc.healthreps.serverInterface.ReqMsgUserInfo;
-import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
-import com.example.ustc.healthreps.utils.AppManager;
-import com.example.ustc.healthreps.utils.Utils;
+
 
 import java.util.Timer;
 
@@ -62,6 +58,10 @@ public class LoginActivity extends Activity {
     //心跳包相关
     private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
     private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
+
+    private LinearLayout loginLayout;
+
+    boolean yes = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,35 +95,38 @@ public class LoginActivity extends Activity {
         if(cookieDao == null)
             cookieDao = new CookieDaoImpl(this);
 
-        //不是主动sign out时，检测cookie
-        if(!Users.sISSignout){
-            //判断cookie是否有效,有效直接跳到主页面
-            Cookie cookie = repo.validCookie(cookieDao);
-            if(cookie != null){
-                Users.sLoginUsername = cookie.username;
-                Users.sLoginPassword = cookie.pwd;
-                Users.sLoginUserType = cookie.getRealType();
-
-                //添加到用户数据库
-                User newUser = new User();
-                newUser.username = Users.sLoginUsername;
-                newUser.password = Users.sLoginPassword;
-                newUser.type = Users.sLoginUserType;
-                userDao.addNewUserToUser(newUser);
-
-                cookieDao.updateDate(1);
-
-                //请求详细信息
-                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
-                goToNextActivity(Users.sLoginUserType);
-            }
-        }
-
         //初始化布局
         initLayout();
         // 初始化界面
         initView();
+        //不是主动sign out时，检测cookie
+        if(Users.sISSignout){
+            //判断cookie是否有效,有效直接跳到主页面
+            Cookie cookie = repo.validCookie(cookieDao);
+            if(cookie != null){
+                loginLayout.setVisibility(View.INVISIBLE);
+                Users.sLoginUsername = cookie.username;
+                Users.sLoginPassword = cookie.pwd;
+                Users.sLoginUserType = cookie.getRealType();
+//                yes= true;
+                repo.login(Users.sLoginUsername,Users.sLoginPassword,Users.sLoginUserType);
 
+//                //添加到用户数据库
+//                User newUser = new User();
+//                newUser.username = Users.sLoginUsername;
+//                newUser.password = Users.sLoginPassword;
+//                newUser.type = Users.sLoginUserType;
+//                userDao.addNewUserToUser(newUser);
+//
+//                cookieDao.updateDate(1);
+//
+//                //请求详细信息
+//                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
+////                goToNextActivity(Users.sLoginUserType);
+            }
+        }
+//        if(yes)
+//            repo.login(Users.sLoginUsername,Users.sLoginPassword,Users.sLoginUserType);
     }
 
     private void initLayout() {
@@ -159,6 +162,7 @@ public class LoginActivity extends Activity {
     }
 
     private void initView() {
+        loginLayout = (LinearLayout) findViewById(R.id.myloginLayout);
 
         mUsernametText = (EditText) findViewById(R.id.usernameText);
         mPwdText = (EditText) findViewById(R.id.pwdText);
@@ -242,6 +246,7 @@ public class LoginActivity extends Activity {
                 if (Looper.myLooper() == null) {
                     Looper.prepare();
                 }
+
                 goToNextActivity(Users.sLoginUserType);
                 Looper.loop();
                 break;

@@ -9,6 +9,7 @@ import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.P2PInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.ui.DoctorSessionAty;
 import com.example.ustc.healthreps.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -49,6 +50,6 @@ public class ChatRepo extends ReceiveSuper{
     //接收消息
     public void onRecvChatMsg(NetPack pack){
         P2PInfo info = P2PInfo.getP2PInfo(pack.getM_buffer());
-        ChatActivity.sChatHandler.obtainMessage(0, info).sendToTarget();
+        DoctorSessionAty.sChatHandler.obtainMessage(0, info).sendToTarget();
     }
 }

@@ -59,7 +59,7 @@ public class Types {
 	public static final int CheckChufang = 0x0713; // 药剂师审核通过后 发送给服务器的消息
 													// 也用Do_Control_Msg结构体
 	public static final int Req_AllPharmacist = 0x0714; // 请求所有药剂师
-	public static final int Req_AllDoctors = 0x0747; // 请求所有医生
+	public static final int Req_AllDoctors = 0x0902; // 请求所有医生
 	public static final int Req_AllSTORES = 0x0751; // 请求所有药店
 
 	// 文件相关
@@ -76,7 +76,7 @@ public class Types {
 	public static final int FILE_TYPE_PIC_REG_SMALL = 0x0735; // 小窗口请求资质图片
 	public static final int FILE_TYPE_PRES_CHECK_REJECT = 0x0736; // 审核后 拒绝的处方
 
-	public static final int FILE_TYPE_CHAT_PICTURE = 0x0737; // 普通会话发送的图片
+	public static final int FILE_TYPE_CHAT_PICTURE = 0x0901; // 普通会话发送的图片
 
 	public static final int FILE_TYPE_PIC_REG = 0x0718; // 用户注册资质图片
 	public static final int FILE_TYPE_PRES_CHECK = 0x0720; // 审核后处方
@@ -90,9 +90,12 @@ public class Types {
 	public static final int MOD_FILE_TYPE_USER_FP = 0x072c; // 用户指纹
 	public static final int MOD_FILE_TYPE_DOCPHA_STAMP = 0x072d;
 
-	public static final int ORDER_STATUS_PRELIST = 0x0752;
-	public static final int ORDER_STATUS_CHUFANG = 0x0753;
-	public static final int ORDER_STATUS_CHECKED = 0x0754;
+	public static final int ORDER_STATUS_PRELIST = 0x0903;//订单状态：只是prelist，还没有生成处方图片
+	public static final int ORDER_STATUS_CHUFANG = 0x0904;//订单状态：已生成处方图片，但是待第三方药师审核
+	public static final int ORDER_STATUS_CHECKED = 0x0905;//订单状态：已完成处方图片且已审核，或由药店的本地药师审核
+
+	public static final int CHUFANG_GENERATE_TO_PATIENT = 0x0906;//医生给手机app患者用户生成的处方，服务器收到后需要转成清单
+	public static final int CHUFANG_GENERATE_TO_STORE = 0x0907;//医生给药店用户生成的处方
 
 	//排序类型
 	public static final int SORTTYPE_SMART = 0x0001;

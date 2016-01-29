@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.ui;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,8 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -21,12 +24,23 @@ import android.widget.TextView;
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.ChatMsgViewAdapter;
 import com.example.ustc.healthreps.model.ChatMsgEntity;
+import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.repo.ChatRepo;
+import com.example.ustc.healthreps.serverInterface.P2PInfo;
+import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.threads.AllThreads;
+import com.example.ustc.healthreps.threads.SendFileThread;
+import com.example.ustc.healthreps.utils.Utils;
 
 public class DoctorSessionAty extends Activity implements OnClickListener{
 
+	public static Handler sChatHandler = null;
+	private ChatRepo repo;
+
 	private Button mBtnSend; // 发送btn
 	private Button mBtnBack; // 返回btn
-//	private Button mBtnOther;// 弹出图片、文件、视频、音频btn
+	private Button mBtnOther;// 弹出图片、文件、视频、音频btn
 	
 	private EditText mEditTextContent;   //发送文字
 	private TextView mEditTextName,mEditTextDep;
@@ -41,9 +55,42 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.doctor_session);
 
+		sChatHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				P2PInfo info = (P2PInfo) msg.obj;
+				showMsg(info);
+			}
+		};
+
+		if(repo == null)
+			repo = new ChatRepo();
+
 		init();
 		initdata();
 		mListView.setSelection(mAdapter.getCount() - 1);
+	}
+
+	//显示消息
+	public void showMsg(P2PInfo info){
+		String name1 = "",msg1 = "",toUsername = "";
+		try {
+			name1 = new String(info.username,"GBK");
+			toUsername = new String(info.toUsername,"GBK");
+			msg1 = new String(info.info,"GBK");
+		}catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+
+		ChatMsgEntity entity = new ChatMsgEntity();
+		entity.setName(name1);
+		entity.setDate(getDate());
+		entity.setMessage(msg1);
+		entity.setMsgType(true);
+		mDataArrays.add(entity);
+		mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
+		mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 	}
 
 	private String[] msgArray = new String[] { "hi", "hi", "who?", "me",
@@ -87,8 +134,8 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 		mBtnSend.setOnClickListener(this);
 		mBtnBack = (Button) findViewById(R.id.btn_back11);
 		mBtnBack.setOnClickListener(this);
-//		mBtnOther = (Button) findViewById(R.id.btn_other);
-//		mBtnOther.setOnClickListener(this);
+		mBtnOther = (Button) findViewById(R.id.btn_other);
+		mBtnOther.setOnClickListener(this);
 		
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		
@@ -101,8 +148,7 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 
 		mEditTextName.setText(dName);
 		mEditTextDep.setText(gName);
-		
-		
+
 	}
 
 	
@@ -126,8 +172,22 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 				back();// 结束,实际开发中，可以返回主界面
 				break;
 			case R.id.btn_other://弹出图片、文件、音频、视频选择
-				other();
+//				other();
+				sendFile();
+				break;
 		}
+	}
+
+	public void sendFile(){
+		//启动发文件线程
+		if(AllThreads.sSendFileThread == null){
+			AllThreads.sSendFileThread = new SendFileThread();
+			AllThreads.sSendFileThread.start();
+		}
+		String filePath = Utils.copyDefaultHeadPhoto(this);
+		String fileName = Users.sLoginUsername+".jpg";
+		//m_picPath = "/sdcard2/1.jpg";
+		Sockets.socket_center.sendFile(filePath, fileName, Types.FILE_TYPE_CHAT_PICTURE);
 	}
 
 	@Override
@@ -161,6 +221,7 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			mEditTextContent.setText("");// 清空编辑框数据
 			mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 		}
+		repo.sendMsg("doctor1",contString);
 	}
 
 	private void recv(ChatMsgEntity entity){
@@ -168,5 +229,18 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 		mDataArrays.add(entity);
 		mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
 		mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		closeSendFileThread();
+	}
+
+	//关闭发文件线程
+	public void closeSendFileThread(){
+		AllThreads.sSendFileThread.isTrue = false;
+		AllThreads.sSendFileThread.interrupt();
+		AllThreads.sSendFileThread = null;
 	}
 }

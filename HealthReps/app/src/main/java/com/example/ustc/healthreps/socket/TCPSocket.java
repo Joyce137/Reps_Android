@@ -30,6 +30,7 @@ import com.example.ustc.healthreps.patient.ChatActivity;
 import com.example.ustc.healthreps.patient.RegisterActivity;
 import com.example.ustc.healthreps.patient.State;
 import com.example.ustc.healthreps.repo.ChangePwdRepo;
+import com.example.ustc.healthreps.repo.ChatRepo;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
 import com.example.ustc.healthreps.repo.FileRepo;
 import com.example.ustc.healthreps.repo.LoginRepo;
@@ -51,6 +52,7 @@ import com.example.ustc.healthreps.serverInterface.UserLogin;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
 import com.example.ustc.healthreps.threads.SendFileThread;
+import com.example.ustc.healthreps.ui.DoctorSessionAty;
 import com.example.ustc.healthreps.utils.AppPath;
 import com.example.ustc.healthreps.utils.Utils;
 
@@ -425,7 +427,7 @@ public class TCPSocket {
 				break;
 			//聊天信息
 			case Types.ForwardInfo:
-				ChatActivity.sChatHandler.obtainMessage(0, data).sendToTarget();
+				ChatRepo.sChatHandler.obtainMessage(0, data).sendToTarget();
 				break;
 			default:
 				break;

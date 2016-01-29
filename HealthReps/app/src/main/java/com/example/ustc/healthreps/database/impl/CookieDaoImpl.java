@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.ustc.healthreps.database.DBConstants;
 import com.example.ustc.healthreps.database.support.DaoSupportImpl;
 import com.example.ustc.healthreps.database.entity.Cookie;
+import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.utils.Utils;
 
 import java.util.ArrayList;
@@ -28,6 +29,12 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
             return null;
         else
             return findEntity(selector,selectorargs).get(0);
+    }
+
+    //添加新用户cookie
+    public boolean addNewUserToCookie(){
+        Cookie cookie = new Cookie(Users.sLoginUsername,Users.sLoginPassword,Users.sLoginUserType);
+        return insert(cookie);
     }
 
     //添加新用户cookie

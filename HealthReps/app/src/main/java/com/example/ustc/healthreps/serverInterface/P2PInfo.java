@@ -26,19 +26,15 @@ public class P2PInfo {
 	//byte[]->P2PInfo
 	public static P2PInfo getP2PInfo(byte[] buf){
 		P2PInfo p = new P2PInfo();
-		byte[] temp = null;
 
 		//username
-		System.arraycopy(buf,0,temp,0,12);
-		p.username = temp;
+		System.arraycopy(buf,0,p.username,0,12);
 
 		//toUsername
-		System.arraycopy(buf,12,temp,0,12);
-		p.toUsername = temp;
+		System.arraycopy(buf,12,p.toUsername,0,12);
 
 		//info
-		System.arraycopy(buf,24,temp,0,200);
-		p.info = temp;
+		System.arraycopy(buf,24,p.info,0,200);
 
 		return p;
 	}
