@@ -16,6 +16,9 @@ public interface IDaoSupport<DBEntity> {
     //删---根据自增主键
     boolean delete(int id);
 
+    //清空
+    void clear();
+
     //改
     boolean update(DBEntity entity);
 

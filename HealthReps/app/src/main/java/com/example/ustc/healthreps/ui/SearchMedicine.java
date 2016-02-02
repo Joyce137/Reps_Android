@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.ui;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -40,14 +43,22 @@ import com.baidu.location.LocationClientOption;
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.FirstClassAdapter;
 import com.example.ustc.healthreps.adapter.SecondClassAdapter;
+import com.example.ustc.healthreps.adapter.TabMedicineAdapter;
 import com.example.ustc.healthreps.adapter.TabStoreAdapter;
 import com.example.ustc.healthreps.citylist.CityList;
 import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.gps.GPSService;
+import com.example.ustc.healthreps.model.Doctor;
 import com.example.ustc.healthreps.model.FirstClassItem;
 import com.example.ustc.healthreps.model.MedicStore;
+import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.SecondClassItem;
 import com.example.ustc.healthreps.model.Users;
+import com.example.ustc.healthreps.serverInterface.SearchUser;
+import com.example.ustc.healthreps.serverInterface.SearchUserInfo;
+import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.utils.Utils;
 
 /*
  * 问药功能模块主界面
@@ -55,6 +66,9 @@ import com.example.ustc.healthreps.model.Users;
  * by hzy
  */
 public class SearchMedicine extends Fragment {
+    //接收药店消息
+    public static Handler sMedicineHandler = null;
+
     View view;
     MedicineList smfragment = null;
     private LocationClient locationClient = null;
@@ -94,6 +108,7 @@ public class SearchMedicine extends Fragment {
 
     //智能排序
     private TextView smart_sort,nearest_sort,hot_sort,best_sort;
+    private String district = "附近", address = "";
 
     @Nullable
     @Override
@@ -116,6 +131,49 @@ public class SearchMedicine extends Fragment {
         mainTab1TV.setOnClickListener(l);
         mainTab2TV.setOnClickListener(l);
         mainTab3TV.setOnClickListener(l);
+
+        sMedicineHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                SearchUserInfo result = (SearchUserInfo)msg.obj;
+                insertIntoList(result);
+            }
+        };
+    }
+
+    //将得到的结果插入到list中
+    public void insertIntoList(SearchUserInfo searchUserInfo){
+        //显示在列表中的实体
+        String storeName = "";
+        String storeCategroy = "";
+        String stroeZone = "";
+        String loginName = "";
+
+        try {
+            storeName = new String(searchUserInfo.shopName,"GBK").trim();
+            storeCategroy = new String(searchUserInfo.companyName,"GBK").trim();
+            stroeZone = String.valueOf(searchUserInfo.distance).trim();
+            loginName = new String(searchUserInfo.loginName,"GBK").trim();
+
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+
+        if(storeName.length() == 0)
+            storeName = "test";
+        if(storeCategroy.length() == 0)
+            storeCategroy = "test";
+        if(stroeZone.length() == 0)
+            stroeZone = "test";
+        if(loginName.length() == 0)
+            loginName = "store1";
+
+        MedicStore medicStore = new MedicStore(storeName,storeCategroy,stroeZone);
+        medicStore.loginName = loginName;
+
+        list.add(medicStore);
+        store_Adapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
     }
 
     //Toolbar
@@ -154,7 +212,7 @@ public class SearchMedicine extends Fragment {
         listView_popup.setAdapter(new ArrayAdapter<String>(getActivity(),
                 R.layout.more_text_setting, R.id.tv_text, title));
         //实例化popupwindow
-        popupWindow = new PopupWindow(layout_popup, ViewGroup.LayoutParams.WRAP_CONTENT,
+        popupWindow = new PopupWindow(layout_popup, 350,
                 ViewGroup.LayoutParams.WRAP_CONTENT, false);
 
         //popupWindow = new PopupWindow(layout,370,570);
@@ -198,11 +256,13 @@ public class SearchMedicine extends Fragment {
                         ft.addToBackStack(null);
                         ft.commit();
 
-                        Users.sDefaultStore = "xxx";
+                        Users.sDefaultStore = "store1";
+                        Sockets.socket_center.sendBindStoreDoctorInfo(true);
                         break;
                     case 2:
                         str = "私人医生";
-                        //不是我们组的功能^-^
+                        Users.sDefaultDoctor = "doctor1";
+                        Sockets.socket_center.sendBindStoreDoctorInfo(false);
                         break;
                     case 3:
                         str = "添加好友";
@@ -369,6 +429,7 @@ public class SearchMedicine extends Fragment {
                         mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
 
                         Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                        handleResult(3, 0, 0, str);
                     }
                 });
             }
@@ -420,6 +481,7 @@ public class SearchMedicine extends Fragment {
                         nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
                         mainTab2TV.setCompoundDrawables(null, null, nav_up, null);
                         Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                        handleResult(2, 0, 0, str);
                     }
                 });
             }
@@ -491,6 +553,9 @@ public class SearchMedicine extends Fragment {
         leftLV1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //设置选择
+                district = firstList1.get(position).getName();
+
                 //二级数据
                 List<SecondClassItem> list2 = firstList1.get(position).getSecondList();
                 //如果没有二级类，则直接跳转
@@ -547,18 +612,21 @@ public class SearchMedicine extends Fragment {
         //1
         ArrayList<SecondClassItem> list11 = new ArrayList<SecondClassItem>();
         list11.add(new SecondClassItem(111, "附近"));
-        list11.add(new SecondClassItem(112, "500米"));
-        list11.add(new SecondClassItem(113, "1000米"));
-        list11.add(new SecondClassItem(114, ">1000米"));
+        list11.add(new SecondClassItem(112, "500千米"));
+        list11.add(new SecondClassItem(113, "1000千米"));
+        list11.add(new SecondClassItem(114, "2000千米"));
+        list11.add(new SecondClassItem(114, "10000千米"));
+        list11.add(new SecondClassItem(114, ">10000千米"));
         firstList1.add(new FirstClassItem(1, "附近", list11));
         //2
         ArrayList<SecondClassItem> list12 = new ArrayList<SecondClassItem>();
         list12.add(new SecondClassItem(121, "左岸商业街"));
         list12.add(new SecondClassItem(122, "博览中心"));
+        list12.add(new SecondClassItem(123, "仁爱路"));
         list12.add(new SecondClassItem(123, "娄葑镇"));
         list12.add(new SecondClassItem(124, "湖东邻里中心"));
         list12.add(new SecondClassItem(125, "李公堤"));
-        list12.add(new SecondClassItem(126, "独墅湖大学城"));
+        list12.add(new SecondClassItem(126, "仁爱路"));
         list12.add(new SecondClassItem(127, "跨塘"));
         list12.add(new SecondClassItem(128, "斜塘老街"));
         list12.add(new SecondClassItem(129, "唯亭"));
@@ -608,22 +676,25 @@ public class SearchMedicine extends Fragment {
 
 
         //初始化药店信息
-        List<MedicStore> list_store = new ArrayList<MedicStore>();
-        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
-
-        for(int i=0;i<list_store.size();i++)
-        {
-            MedicStore mstore = list_store.get(i);
-            list.add(mstore);
-        }
+        SearchUser allUser = new SearchUser(Types.USER_TYPE_STORE);
+        Sockets.socket_center.sendSearchUser(allUser);
+//        List<MedicStore> list_store = new ArrayList<MedicStore>();
+//        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
+//        for(int i=0;i<list_store.size();i++)
+//        {
+//            MedicStore mstore = list_store.get(i);
+//            list.add(mstore);
+//        }
 
         store_Adapter = new TabStoreAdapter(getActivity(),list);
         store_list_view.setAdapter(store_Adapter);
-        store_list_view.setOnItemClickListener(new OnItemClickListener(){
+        store_list_view.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                MedicStore mstore = (MedicStore)store_Adapter.getItem(position);
+                MedicStore mstore = (MedicStore) store_Adapter.getItem(position);
+                String loginNamethis = list.get(position).loginName;
+                Users.sCurStore = loginNamethis;
 
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -633,7 +704,7 @@ public class SearchMedicine extends Fragment {
                     }
                 }
 
-                if(smfragment == null){
+                if (smfragment == null) {
                     smfragment = new MedicineList();
                     Bundle bundle = new Bundle();
                     bundle.putString("store_name", mstore.getStoreName());
@@ -642,12 +713,22 @@ public class SearchMedicine extends Fragment {
                     ft.replace(R.id.frame_content, smfragment);
                     ft.addToBackStack(null);
                     ft.commit();
-                }
-                else{
+                } else {
                     ft.show(smfragment);
                     ft.commit();
                 }
 
+            }
+        });
+
+        store_list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String loginNamethis = list.get(position).loginName;
+                Users.sDefaultStore = loginNamethis;
+                Sockets.socket_center.sendBindStoreDoctorInfo(true);
+                Toast.makeText(getActivity().getApplicationContext(), "默认药店已设为" + loginNamethis, Toast.LENGTH_LONG).show();
+                return true;
             }
         });
 
@@ -679,6 +760,10 @@ public class SearchMedicine extends Fragment {
 
     //处理点击结果
     private void handleResult(int flag,int firstId, int secondId,String selectedName){
+        list.clear();
+        store_Adapter = new TabStoreAdapter(getActivity().getApplicationContext(),list);
+        store_list_view.setAdapter(store_Adapter);
+
         //String text = "first id:" + firstId + ",second id:" + secondId;
         String text = "你选择的是：" + selectedName;
         Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT).show();
@@ -687,5 +772,43 @@ public class SearchMedicine extends Fragment {
             mainTab1TV.setText(selectedName);
         else if(flag == 2)
             mainTab2TV.setText(selectedName);
+        else if(flag == 3)
+            mainTab3TV.setText(selectedName);
+
+        SearchUser searchUser = new SearchUser();
+        try {
+            searchUser.type = Types.USER_TYPE_STORE;
+            //tab1Str
+            String tab1Str = mainTab1TV.getText().toString().trim();
+            if(tab1Str.equals("附近") || tab1Str.endsWith("千米")){
+                if(tab1Str.equals("附近"))
+                    searchUser.distance = 40000;
+                else {
+                    address = tab1Str.substring(0,selectedName.length()-2);
+                    if(address.startsWith(">"))
+                        searchUser.distance = 40000;
+                    else
+                        searchUser.distance = Integer.parseInt(address);
+                }
+            }
+            else {
+                address = district + tab1Str;
+                searchUser.district = address.getBytes("GBK");
+            }
+
+            //tab2Str
+            String tab2Str = mainTab2TV.getText().toString().trim();
+            if(tab2Str.equals("全部药店"))
+                tab2Str = "";
+            searchUser.companyName = tab2Str.getBytes("GBK");
+
+            //tab3Str
+            String tab3Str = mainTab3TV.getText().toString().trim();
+            searchUser.sortType = Utils.changeSortMethodToInt(tab3Str);
+
+            Sockets.socket_center.sendSearchUser(searchUser);
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
     }
 }

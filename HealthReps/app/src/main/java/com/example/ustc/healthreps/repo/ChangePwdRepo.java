@@ -55,8 +55,8 @@ public class ChangePwdRepo extends ReceiveSuper{
         ModPassword mod = new ModPassword();
         try{
             mod.name = username.getBytes("GBK");
-            //密码加密
-            mod.oldPwd = Utils.encryptPwd("zoompass");
+            //密码
+            mod.oldPwd = Utils.encryptPwd("123456");
             mod.newPwd = Utils.encryptPwd(newPwd);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

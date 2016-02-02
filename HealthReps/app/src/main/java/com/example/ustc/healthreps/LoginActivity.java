@@ -29,6 +29,7 @@ import com.example.ustc.healthreps.repo.UserRepo;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.HeartBeatTask;
+import com.example.ustc.healthreps.utils.Utils;
 
 
 import java.util.Timer;
@@ -56,12 +57,10 @@ public class LoginActivity extends Activity {
     String username,password,type;
 
     //心跳包相关
-    private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
+    private Timer mHeartBeatTimer = AllThreads.sHeatBeatTimer;
     private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
 
     private LinearLayout loginLayout;
-
-    boolean yes = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,6 @@ public class LoginActivity extends Activity {
         //添加到Activity集合
 //        AppManager.getInstance().addActivity(this);
 
-//        byte b[] = new byte[2];
-//        b[0] = -39;
-//        b[1] = -121;
-//        int x = Utils.vtolh(b);
         // 接收消息
         sLoginResultHandler = new Handler() {
             @Override
@@ -100,7 +95,7 @@ public class LoginActivity extends Activity {
         // 初始化界面
         initView();
         //不是主动sign out时，检测cookie
-        if(Users.sISSignout){
+        if(!Users.sISSignout){
             //判断cookie是否有效,有效直接跳到主页面
             Cookie cookie = repo.validCookie(cookieDao);
             if(cookie != null){
@@ -108,25 +103,11 @@ public class LoginActivity extends Activity {
                 Users.sLoginUsername = cookie.username;
                 Users.sLoginPassword = cookie.pwd;
                 Users.sLoginUserType = cookie.getRealType();
-//                yes= true;
-                repo.login(Users.sLoginUsername,Users.sLoginPassword,Users.sLoginUserType);
 
-//                //添加到用户数据库
-//                User newUser = new User();
-//                newUser.username = Users.sLoginUsername;
-//                newUser.password = Users.sLoginPassword;
-//                newUser.type = Users.sLoginUserType;
-//                userDao.addNewUserToUser(newUser);
-//
-//                cookieDao.updateDate(1);
-//
-//                //请求详细信息
-//                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
-////                goToNextActivity(Users.sLoginUserType);
+                repo.login(Users.sLoginUsername, Users.sLoginPassword, Users.sLoginUserType);
+                textView.setText("cookie登录中...");
             }
         }
-//        if(yes)
-//            repo.login(Users.sLoginUsername,Users.sLoginPassword,Users.sLoginUserType);
     }
 
     private void initLayout() {
@@ -227,9 +208,13 @@ public class LoginActivity extends Activity {
                 break;
             //登录成功
             case 0:
-                Users.sLoginUsername = username;
-                Users.sLoginPassword = password;
-                Users.sLoginUserType = type;
+                if(username != null)
+                    Users.sLoginUsername = username;
+                if(password != null)
+                    Users.sLoginPassword = password;
+                if(type != null)
+                    Users.sLoginUserType = type;
+
                 //添加到cookie
                 repo.addToCookie(cookieDao);
 
@@ -241,14 +226,10 @@ public class LoginActivity extends Activity {
                 userDao.addNewUserToUser(newUser);
 
                 //请求详细信息
-                new UserRepo().reqUserInfo(Users.sLoginUsername,Users.sLoginUserType,false);
-
-                if (Looper.myLooper() == null) {
-                    Looper.prepare();
-                }
+                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
 
                 goToNextActivity(Users.sLoginUserType);
-                Looper.loop();
+
                 break;
             //登录失败
             default:
@@ -305,14 +286,16 @@ public class LoginActivity extends Activity {
         startActivity(intent);
     }
 
-    //心跳包设计
+    //开启心跳包
     public void startHeartBeat(){
-        if(mHeatBeatTimer == null){
-            mHeatBeatTimer = new Timer();
+        if(mHeartBeatTimer == null){
+            mHeartBeatTimer = new Timer();
         }
         if(mHeartBeatTask == null){
             mHeartBeatTask = new HeartBeatTask();
         }
-        mHeatBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
+        mHeartBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
     }
+
+
 }

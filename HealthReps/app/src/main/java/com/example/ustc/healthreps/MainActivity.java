@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //问药
             case 2:
-                if(Users.sDefaultStore != null){      //设置过默认药店
+                if(Users.sDefaultStore.length() > 0){      //设置过默认药店
                     Toast.makeText(getApplication(), "你已经设置过默认药店", Toast.LENGTH_SHORT).show();
                     medicineFragment = new MedicineList();
                     transaction.add(R.id.frame_content, medicineFragment);
@@ -367,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //注销登录
             case R.id.signOutSetting:
                 Users.sISSignout = true;
+                this.finish();
                 intent = new Intent();
                 intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -378,7 +379,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 AllThreads.sHeartBeatTask = null;
                 AllThreads.sHeatBeatTimer = null;
                 AllThreads.sSendFileThread = null;
-                AppManager.getInstance().exit();
+//                AppManager.getInstance().exit();
+                System.exit(0);
                 android.os.Process.killProcess(android.os.Process.myPid());
                 break;
             default:
@@ -440,7 +442,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serCon);//解除绑定，否则会报异常
+
+        //停止心跳包
+//        stopHeartBeat();
     }
+
+    //停止心跳包
+    public void stopHeartBeat(){
+        if(AllThreads.sHeatBeatTimer != null){
+            AllThreads.sHeatBeatTimer.cancel();
+            AllThreads.sHeatBeatTimer = null;
+        }
+        if(AllThreads.sHeartBeatTask != null){
+            AllThreads.sHeartBeatTask.cancel();
+            AllThreads.sHeartBeatTask = null;
+        }
+    }
+
 }
 
 

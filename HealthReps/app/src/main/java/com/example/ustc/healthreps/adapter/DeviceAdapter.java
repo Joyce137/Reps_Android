@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ustc.healthreps.R;
+import com.example.ustc.healthreps.health.ui.ScanBleActivity;
 import com.example.ustc.healthreps.model.DeviceBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by HBL on 2015/11/21.
+ * Created by HBL on 2015/12/19.
  */
-public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
-
+public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder>{
     List<DeviceBean> devicesBeans = new ArrayList<DeviceBean>();
     private Context context;
 
@@ -37,15 +37,15 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         DeviceBean p = devicesBeans.get(position);
         holder.nameText.setText(p.getName());
         holder.addressText.setText(p.getAddress());
-        //holder.mImageView.setImageDrawable();
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               /* Context context = v.getContext();
-                Intent intent = new Intent(context, FriendsDetailActivity.class);
-                context.startActivity(intent);*/
-            }
-        });
+        holder.mContext = context;
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                   Context context = v.getContext();
+//                   Intent intent = new Intent(context, FriendsDetailActivity.class);
+//                   context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override
@@ -54,19 +54,25 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     }
 
     // 重写的自定义ViewHolder
-    public static class ViewHolder
+    public  class ViewHolder
             extends RecyclerView.ViewHolder {
         public TextView nameText;
         public TextView addressText;
-        public final View mView;
 
-        public ViewHolder(View v) {
+        public Context mContext;
+        public ViewHolder(final View v) {
             super(v);
-            mView = v;
+
             nameText = (TextView) v.findViewById(R.id.scan_device_name);
             addressText=(TextView)v.findViewById(R.id.scan_device_address);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DeviceBean bean=new DeviceBean(nameText.getText().toString(),addressText.getText().toString());
 
-
+                    ((ScanBleActivity)mContext).startActivity(v,bean);
+                }
+            });
         }
     }
 }

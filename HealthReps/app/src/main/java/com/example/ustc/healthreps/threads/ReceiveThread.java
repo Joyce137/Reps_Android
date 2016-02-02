@@ -53,16 +53,17 @@ public class ReceiveThread extends Thread{
 					System.arraycopy(buff, 0, recvBuf, buffCounter, retVal);
 				} catch (IOException e) {
 					e.printStackTrace();
+					continue;
 				}
 				catch (Exception e){
-					if(retVal == -1){
-						try {
-							this.wait(1000);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-						continue;
-					}
+//					if(retVal == -1){
+//						try {
+//							this.wait(1000);
+//						} catch (InterruptedException e1) {
+//							e1.printStackTrace();
+//						}
+//					}
+					continue;
 				}
 
 				//缓冲区满了
@@ -85,10 +86,11 @@ public class ReceiveThread extends Thread{
 							//是开始
 							if (ph.getM_Start() == Types.PACK_START_FLAG) {
 								//解析包头中显示的包内容长度
-								buffCounter = retVal;	//移动buff指针
+								buffCounter += retVal;	//移动buff指针
 								len = ph.getnDataLen();	//下一个要接收的包的长度
 								isPackageHead = false;	//不是包头了
 								length = length + retVal;	//此包的总长度
+								continue;
 							}
 							else {
 								//不是开始
@@ -105,13 +107,14 @@ public class ReceiveThread extends Thread{
 								pack_err = true;
 								//总长度清零
 								length = 0;
+								continue;
 							}
 						}
 						else {
 							//不是包头，包内容
 							//读到的包的总长度
 							length = length + retVal;
-
+							System.out.println("----length-----"+length + "------retval------"+retVal);
 							NetPack data = NetPack.getNET_PACKInfo(recvBuf);
 							if (data.VerifyCRC() == data.getM_Crc()) {
 								// 交给RecvPack处理
@@ -125,10 +128,13 @@ public class ReceiveThread extends Thread{
 								//指针重新指向0
 								//buff = recvBuf;
 								buffCounter = 0;
+								length = 0;
 
 								//下一个还接收包头
 								len = Types.HEADPACK;
 								isPackageHead = true;
+
+								continue;
 							} else {
 								//包校验有问题
 								// 将recvBuf清空
@@ -142,6 +148,7 @@ public class ReceiveThread extends Thread{
 								len = 2;
 								pack_err = true;
 								length = 0;
+								continue;
 							}
 						}
 					}
@@ -161,6 +168,7 @@ public class ReceiveThread extends Thread{
 							isPackageHead = true;
 							pack_err = false;
 							length = 2;
+							continue;
 						} else {
 							//不是开始,留一位recvBuf[1]-recvBuf[0]
 							byte ch = recvBuf[1];
@@ -171,17 +179,19 @@ public class ReceiveThread extends Thread{
 							len = 1;
 							length = 1;
 							//buff = recvBuf[1];
-							buffCounter = 1;
+							buffCounter += 1;
 							pack_err = true;
+							continue;
 						}
 					}
 				}
 				else{
 					//继续接收
 					//buff = buff + retVal;
-					buffCounter = buffCounter + retVal;
+					buffCounter += retVal;
 					len = len - retVal;
 					length = length + retVal;
+					continue;
 				}
 			}
 		}

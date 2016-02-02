@@ -50,7 +50,12 @@ public class MyInforFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_myinfor, container, false);
 
-        getActivity().registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        try{
+            getActivity().registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        }catch(IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
         //打开数据库
         bleDataDao = new BleDataDaoImpl(getActivity().getApplicationContext());
 
@@ -207,5 +212,16 @@ public class MyInforFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            getActivity().getApplicationContext().unregisterReceiver(mGattUpdateReceiver);//解除绑定，否则会报异常
+        } catch(IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
     }
 }

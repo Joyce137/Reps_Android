@@ -40,8 +40,8 @@ public class SendFileThread extends Thread{
                     switch(msg.what) {
                     case Types.MY_MSG:
                     	PostFileInfo p = (PostFileInfo) msg.obj;
-                    	String filename = new String(p.filename);
-                    	String filepath = new String(p.filepath);
+                    	String filename = new String(p.filename).trim();
+                    	String filepath = new String(p.filepath).trim();
                     	int type = p.type;
                     	if(!Sockets.socket_center.sendFile(filepath, filename, type)){
                     		Log.e("sendFile", "发送文件失败");

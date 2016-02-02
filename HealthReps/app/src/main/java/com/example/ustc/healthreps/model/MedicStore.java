@@ -2,12 +2,13 @@ package com.example.ustc.healthreps.model;
 
 public class MedicStore {
 
+	public String loginName;
 	private String StoreName;
 	private String StoreCategroy;
 	private String StroeZone;
 
 	public  MedicStore(){
-
+		super();
 	}
 
 	public MedicStore(String StoreName,String StoreCategroy,String StroeZone){

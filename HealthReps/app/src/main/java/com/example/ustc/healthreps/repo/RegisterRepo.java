@@ -63,18 +63,35 @@ public class RegisterRepo extends ReceiveSuper {
 
     //登录
     public void register(UserInfo userInfo) {
-        sendHeadImage(userInfo.loginName.toString(),userInfo.imagePath);
+        userInfo.type = Types.USER_TYPE_PATIENT;
+        String loginName="", imagePath="";
+        try {
+            loginName = new String(userInfo.loginName,"GBK").trim();
+            imagePath = userInfo.imagePath.trim();
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+        sendHeadImage(loginName,imagePath);
         sendTextInfo(userInfo);
     }
         //发头像
     private void sendHeadImage(String userName, String imagePath) {
         String fileName = userName+".jpg";
         //m_picPath = "/sdcard2/1.jpg";
+//        imagePath = "/1.jpg";
         Sockets.socket_center.sendFile(imagePath, fileName, Types.FILE_TYPE_PIC_REG);
+
+        //关闭发送文件线程
+        closeSendFileThread();
     }
 
         //发文本
     private void sendTextInfo(UserInfo userInfo) {
+        //对password进行加密
+        CRC4 crc = new CRC4();
+        byte b[] = Types.AES_KEY.getBytes();
+        crc.Encrypt(userInfo.password, b);
+
         NetPack pack = new NetPack(-1, UserInfo.size, m_dlgType == REG_INFO_TYPE?Types.Reg_Center:Types.Mod_Info, userInfo.getMSG_USER_INFOBytes());
         pack.CalCRC();
         Sockets.socket_center.sendPack(pack);
@@ -86,21 +103,17 @@ public class RegisterRepo extends ReceiveSuper {
         if(msg.getFlag() == Types.Reg_is){
             if (msg.isYesno())
             {
-                regResult = 0;
+                regResult = 7;
             }
             else{
                 regResult = msg.getType();
             }
+
             //发送消息到注册界面
             RegisterActivityFin.sRegisterResultHandler.obtainMessage(0, regResult).sendToTarget();
 
-            //关闭发送文件线程
-            closeSendFileThread();
-
             //关闭接收线程
 //            closeReceiveThread();
-
-            Looper.loop();
         }
     }
 

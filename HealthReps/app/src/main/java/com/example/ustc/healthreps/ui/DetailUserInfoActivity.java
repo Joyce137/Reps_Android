@@ -46,19 +46,19 @@ public class DetailUserInfoActivity extends Activity{
 
     public void initData(){
         try{
-            tv_username.setText(new String(Users.sLoginUser.loginName,"GBK"));
-            tv_sex.setText(new String(Users.sLoginUser.sex,"GBK"));
-            tv_age.setText(new String(Users.sLoginUser.age,"GBK"));
+            tv_username.setText(new String(Users.sLoginUser.loginName,"GBK").trim());
+            tv_sex.setText(new String(Users.sLoginUser.sex,"GBK").trim());
+            tv_age.setText(new String(Users.sLoginUser.age,"GBK").trim());
             tv_type.setText(Utils.changeTypeToString(Users.sLoginUser.type));
-            tv_zhicheng.setText(new String(Users.sLoginUser.zhicheng,"GBK"));
-            tv_realname.setText(new String(Users.sLoginUser.realName,"GBK"));
-            tv_keshi.setText(new String(Users.sLoginUser.keshi,"GBK"));
-            tv_phone.setText(new String(Users.sLoginUser.phone,"GBK"));
-            tv_defaultStore.setText(new String(Users.sLoginUser.defaultStore,"GBK"));
-            tv_id.setText(new String(Users.sLoginUser.ID_Num,"GBK"));
-            tv_yibao.setText(new String(Users.sLoginUser.yibao_Num,"GBK"));
-            tv_introduction.setText(new String(Users.sLoginUser.pastDiseaseHistory,"GBK"));
-            tv_address.setText(new String(Users.sLoginUser.address,"GBK"));
+            tv_zhicheng.setText(new String(Users.sLoginUser.zhicheng,"GBK").trim());
+            tv_realname.setText(new String(Users.sLoginUser.realName,"GBK").trim());
+            tv_keshi.setText(new String(Users.sLoginUser.keshi,"GBK").trim());
+            tv_phone.setText(new String(Users.sLoginUser.phone,"GBK").trim());
+            tv_defaultStore.setText(new String(Users.sLoginUser.defaultStore,"GBK").trim());
+            tv_id.setText(new String(Users.sLoginUser.ID_Num,"GBK").trim());
+            tv_yibao.setText(new String(Users.sLoginUser.yibao_Num,"GBK").trim());
+            tv_introduction.setText(new String(Users.sLoginUser.pastDiseaseHistory,"GBK").trim());
+            tv_address.setText(new String(Users.sLoginUser.address,"GBK").trim());
         }catch (UnsupportedEncodingException e){
             e.printStackTrace();
         }

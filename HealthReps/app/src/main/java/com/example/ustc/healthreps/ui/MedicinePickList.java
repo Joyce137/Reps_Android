@@ -59,12 +59,9 @@ public class MedicinePickList extends Activity {
 
     //生成清单
     public PrelistContent getPrelistContent(){
-        PrelistContent prelistContent = new PrelistContent();
-        prelistContent.feibie = "自费";
-        prelistContent.contentPost = "这是清单的备注......";
-
-        //药品列表
-        prelistContent.medicines = list;
+        String feibie = "自费";
+        String contentPost = "这是清单的备注......";
+        PrelistContent prelistContent = new PrelistContent(list,feibie,contentPost);
 
         return prelistContent;
     }

@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.adapter;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import android.content.Context;
@@ -11,7 +12,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.ustc.healthreps.R;
-import com.example.ustc.healthreps.model.FileRecord;
+import com.example.ustc.healthreps.model.PrelistName;
+import com.example.ustc.healthreps.repo.PrelistContent;
+import com.example.ustc.healthreps.serverInterface.PreList;
+import com.example.ustc.healthreps.utils.Utils;
 
 /*
  * 文件管理之记录界面listview适配器
@@ -20,10 +24,10 @@ import com.example.ustc.healthreps.model.FileRecord;
  */
 public class TabRecordAdapter extends BaseAdapter {
 
-	private List<FileRecord> list;
+	private List<PreList> list;
 	private  LayoutInflater inflater;
 	
-	public TabRecordAdapter(FragmentActivity fragmentActivity,List<FileRecord> list){
+	public TabRecordAdapter(FragmentActivity fragmentActivity,List<PreList> list){
 		this.list = list;
 		inflater = LayoutInflater.from(fragmentActivity);
 	}
@@ -46,7 +50,7 @@ public class TabRecordAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int pos, View view, ViewGroup parent) {
-		FileRecord record = (FileRecord) this.getItem(pos);
+		PreList record = (PreList) this.getItem(pos);
 		ViewHolder viewHolder;
 		if(view == null)
 		{
@@ -62,10 +66,21 @@ public class TabRecordAdapter extends BaseAdapter {
 		{
 			viewHolder = (ViewHolder) view.getTag();
 		}
-		viewHolder.mTextTime.setText(record.getTime());
-		viewHolder.mTextStore.setText(record.getMstore()+"-"+record.getDoctor());
-		viewHolder.mTextRecord.setText(record.getRecord());
-		viewHolder.mTextFlag.setText(record.getFlag());
+
+		viewHolder.mTextTime.setText(record.prelistName.date);
+		viewHolder.mTextStore.setText(record.prelistName.doctorName);
+		String prelistContentStr = "";
+
+		try {
+			prelistContentStr = new String(record.content,"GBK");
+		}catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		if(prelistContentStr.length() > 5){
+			prelistContentStr = prelistContentStr.substring(0,5)+"...";
+		}
+		viewHolder.mTextRecord.setText(prelistContentStr);
+		viewHolder.mTextFlag.setText(Utils.getStatus(record.status));
 		return view;
 	}
 	public static class ViewHolder{

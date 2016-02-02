@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.ui;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.ChatMsgViewAdapter;
@@ -31,11 +33,12 @@ import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.threads.SendFileThread;
+import com.example.ustc.healthreps.utils.AppPath;
 import com.example.ustc.healthreps.utils.Utils;
 
 public class DoctorSessionAty extends Activity implements OnClickListener{
 
-	public static Handler sChatHandler = null;
+	public static Handler sChatHandler = null, sConectionStatusHandler = null;
 	private ChatRepo repo;
 
 	private Button mBtnSend; // 发送btn
@@ -64,6 +67,15 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			}
 		};
 
+		sConectionStatusHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				String data = (String) msg.obj;
+				handleConnectionStatus(data);
+			}
+		};
+
 		if(repo == null)
 			repo = new ChatRepo();
 
@@ -72,13 +84,22 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 		mListView.setSelection(mAdapter.getCount() - 1);
 	}
 
+	//显示连接状况
+	public void handleConnectionStatus(String data){
+		//对方断开连接
+		if(data.startsWith("offc")){
+			Toast.makeText(getApplicationContext(),data.substring(4),Toast.LENGTH_SHORT).show();
+			this.finish();
+		}
+	}
+
 	//显示消息
 	public void showMsg(P2PInfo info){
 		String name1 = "",msg1 = "",toUsername = "";
 		try {
-			name1 = new String(info.username,"GBK");
-			toUsername = new String(info.toUsername,"GBK");
-			msg1 = new String(info.info,"GBK");
+			name1 = new String(info.username,"GBK").trim();
+			toUsername = new String(info.toUsername,"GBK").trim();
+			msg1 = new String(info.info,"GBK").trim();
 		}catch (UnsupportedEncodingException e){
 			e.printStackTrace();
 		}
@@ -184,10 +205,17 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			AllThreads.sSendFileThread = new SendFileThread();
 			AllThreads.sSendFileThread.start();
 		}
-		String filePath = Utils.copyDefaultHeadPhoto(this);
-		String fileName = Users.sLoginUsername+".jpg";
-		//m_picPath = "/sdcard2/1.jpg";
-		Sockets.socket_center.sendFile(filePath, fileName, Types.FILE_TYPE_CHAT_PICTURE);
+//		String filePath = Utils.copyDefaultHeadPhoto(this);
+		String filePath = "/1.jpg";
+//		String filePath = "/sdcard2/1.jpg";
+		File file = new File(filePath);
+		if(file.exists()&&file.isFile()&&file.canRead()){
+			String fileName = Users.sLoginUsername+Utils.getDataAndTime()+".jpg";
+			Sockets.socket_center.sendFile(filePath, fileName, Types.FILE_TYPE_CHAT_PICTURE);
+		}
+		else {
+			Toast.makeText(getApplicationContext(),"文件不存在或不合法,请重新选择",Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -222,13 +250,6 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 		}
 		repo.sendMsg("doctor1",contString);
-	}
-
-	private void recv(ChatMsgEntity entity){
-		entity.setMsgType(true);		//为收到的消息
-		mDataArrays.add(entity);
-		mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
-		mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
 	}
 
 	@Override

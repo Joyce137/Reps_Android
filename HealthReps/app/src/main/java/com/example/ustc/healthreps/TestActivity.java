@@ -32,7 +32,7 @@ public class TestActivity extends Activity {
     private Button recvBtn,testBtn,deleteBtn;
     public static Handler sTestActivityHandler = null;
     private ReceiveThread mReceiveThread = AllThreads.sReceiveThread;
-    private Timer mHeatBeatTimer = AllThreads.sHeatBeatTimer;
+    private Timer mHeartBeatTimer = AllThreads.sHeatBeatTimer;
     private HeartBeatTask mHeartBeatTask = AllThreads.sHeartBeatTask;
 
     //心跳包相关
@@ -84,13 +84,13 @@ public class TestActivity extends Activity {
 //    Timer heatBeatTimer;
 //    //启动心跳包线程
 //    public void startHeartBeatThread (){
-//        if(mHeatBeatTimer == null){
-//            mHeatBeatTimer = new Timer();
+//        if(mHeartBeatTimer == null){
+//            mHeartBeatTimer = new Timer();
 //        }
 //        if(mHeartBeatTask == null){
 //            mHeartBeatTask = new HeartBeatTask();
 //        }
-//        mHeatBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
+//        mHeartBeatTimer.schedule(mHeartBeatTask, 1000, 5000);
 //    }
 
 //    public void initView1(){

@@ -24,7 +24,7 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
     //判断某用户是否在cookie表中
     public Cookie checkUsernameExistInCookie(String username){
         String selector = DBConstants.COOKIE_USERNAME + "=?";
-        String[] selectorargs = new String[]{username};
+        String[] selectorargs = new String[]{username.trim()};
         if(findEntity(selector,selectorargs).size() == 0)
             return null;
         else
@@ -40,7 +40,7 @@ public class CookieDaoImpl extends DaoSupportImpl<Cookie>{
     //添加新用户cookie
     public boolean addNewUserToCookie(String username,byte[] pwd, int type){
         String nameStr = username;
-        String pwdStr = new String(pwd);
+        String pwdStr = new String(pwd).trim();
         String typeStr = String.valueOf(type);
 
         Cookie cookie = new Cookie(nameStr,pwdStr,typeStr);

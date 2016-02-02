@@ -120,12 +120,12 @@ public class ControlMsg {
 			// filename
 			byte[] tempStr100 = new byte[100];
 			System.arraycopy(buf, 0, tempStr100, 0, 100);
-			filename = new String(tempStr100, "GBK");
+			filename = new String(tempStr100, "GBK").trim();
 
 			// username
 			byte[] tempStr15 = new byte[15];
 			System.arraycopy(buf, 100, tempStr15, 0, 15);
-			username = new String(tempStr15, "GBK");
+			username = new String(tempStr15, "GBK").trim();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

@@ -176,9 +176,9 @@ public class UserInfo {
 	public User changeUserInfoToUser(){
 		User user = new User();
 		try {
-			user.username = new String(loginName,"GBK");
-			user.sex = new String(sex,"GBK");
-			user.age = new String(age,"GBK");
+			user.username = new String(loginName,"GBK").trim();
+			user.sex = new String(sex,"GBK").trim();
+			user.age = new String(age,"GBK").trim();
 			switch (status){
 				case 0:
 					user.status = "离线";
@@ -193,9 +193,9 @@ public class UserInfo {
 					user.status = "未知";
 					break;
 			}
-			user.zhicheng = new String(zhicheng,"GBK");
-			user.realname = new String(realName,"GBK");
-			user.keshi = new String(keshi,"GBK");
+			user.zhicheng = new String(zhicheng,"GBK").trim();
+			user.realname = new String(realName,"GBK").trim();
+			user.keshi = new String(keshi,"GBK").trim();
 			user.type = Utils.changeTypeToString(type);
 			switch (cw){
 				case 0:
@@ -208,9 +208,9 @@ public class UserInfo {
 					user.cw = "未知";
 					break;
 			}
-			user.address = new String(address,"GBK");
-			user.shopname = new String(shopName,"GBK");
-			user.docpha_address = new String(doc_pha_address,"GBK");
+			user.address = new String(address,"GBK").trim();
+			user.shopname = new String(shopName,"GBK").trim();
+			user.docpha_address = new String(doc_pha_address,"GBK").trim();
 			switch (vip){
 				case 0:
 					user.vip = "是";
@@ -233,14 +233,14 @@ public class UserInfo {
 					user.off = "未知";
 					break;
 			}
-			user.phone = new String(phone,"GBK");
-			user.defaultstore = new String(defaultStore,"GBK");
-			user.password = new String(password,"GBK");
-			user.dianzhang = new String(dianzhang,"GBK");
-			user.caozuoyuan = new String(caozuoyuan,"GBK");
-			user.ID_num = new String(ID_Num,"GBK");
-			user.yibao_num = new String(yibao_Num,"GBK");
-			user.selfintroduction = new String(pastDiseaseHistory,"GBK");
+			user.phone = new String(phone,"GBK").trim();
+			user.defaultstore = new String(defaultStore,"GBK").trim();
+			user.password = new String(password,"GBK").trim();
+			user.dianzhang = new String(dianzhang,"GBK").trim();
+			user.caozuoyuan = new String(caozuoyuan,"GBK").trim();
+			user.ID_num = new String(ID_Num,"GBK").trim();
+			user.yibao_num = new String(yibao_Num,"GBK").trim();
+			user.selfintroduction = new String(pastDiseaseHistory,"GBK").trim();
 			user.imagepath = imagePath;
 			user.email = email;
 		}catch (UnsupportedEncodingException e){

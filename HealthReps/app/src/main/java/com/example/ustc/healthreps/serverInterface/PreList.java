@@ -1,9 +1,15 @@
 package com.example.ustc.healthreps.serverInterface;
 
+import com.example.ustc.healthreps.model.PrelistName;
+import com.example.ustc.healthreps.repo.PrelistContent;
 import com.example.ustc.healthreps.utils.Utils;
 
+import java.io.Serializable;
+
 //PreList  ---预购清单文件
-public class PreList {
+public class PreList implements Serializable {
+	private static final long serialVersionUID = -7060210544600464481L;
+
 	public byte[] patient = new byte[12]; // 病人姓名
 	public byte[] sex = new byte[5];
 	public byte[] age = new byte[5];
@@ -23,6 +29,9 @@ public class PreList {
 	//char creatorName[15];
 	public byte[] creatorName = new byte[15];
 	public int status;		//清单状态
+
+	public PrelistContent prelistContent;
+	public PrelistName prelistName;
 
 	public static int size = 12 + 5 + 5 + 25 + 10 + 100 + 800 + 12 + 12 + 12
 			+ 15 + 50 + 100 + 10 + 4 + 15 + 1 + 4;
@@ -75,49 +84,37 @@ public class PreList {
 	// 将byte数组转化为类对象
 	public static PreList getPreList(byte[] buf) {
 		PreList p = new PreList();
-		byte[] temp = null;
 		// patient
-		System.arraycopy(buf, 0, temp, 0, 12);
-		p.patient = temp;
+		System.arraycopy(buf, 0, p.patient, 0, 12);
 		// sex
-		System.arraycopy(buf, 12, temp, 0, 5);
-		p.sex = temp;
+		System.arraycopy(buf, 12, p.sex, 0, 5);
 		// age
-		System.arraycopy(buf, 17, temp, 0, 5);
-		p.age = temp;
+		System.arraycopy(buf, 17, p.age, 0, 5);
 		// ID
-		System.arraycopy(buf, 22, temp, 0, 25);
-		p.ID = temp;
+		System.arraycopy(buf, 22, p.ID, 0, 25);
 		// feibie
-		System.arraycopy(buf, 47, temp, 0, 10);
-		p.feibie = temp;
+		System.arraycopy(buf, 47, p.feibie, 0, 10);
 		// address
-		System.arraycopy(buf, 57, temp, 0, 100);
-		p.address = temp;
+		System.arraycopy(buf, 57, p.address, 0, 100);
 		// content
-		System.arraycopy(buf, 157, temp, 0, 800);
-		p.content = temp;
+		System.arraycopy(buf, 157, p.content, 0, 800);
 		// shop
-		System.arraycopy(buf, 957, temp, 0, 12);
-		p.shop = temp;
+		System.arraycopy(buf, 957, p.shop, 0, 12);
+
 		// doctor
-		System.arraycopy(buf, 969, temp, 0, 12);
-		p.doctor = temp;
+		System.arraycopy(buf, 969, p.doctor, 0, 12);
+
 		// pharmacist
-		System.arraycopy(buf, 981, temp, 0, 12);
-		p.pharmacist = temp;
+		System.arraycopy(buf, 981, p.pharmacist, 0, 12);
+
 		// phone
-		System.arraycopy(buf, 993, temp, 0, 15);
-		p.phone = temp;
+		System.arraycopy(buf, 993, p.phone, 0, 15);
 		// selfreport
-		System.arraycopy(buf, 1008, temp, 0, 50);
-		p.selfreport = temp;
+		System.arraycopy(buf, 1008, p.selfreport, 0, 50);
 		// filename
-		System.arraycopy(buf, 1058, temp, 0, 100);
-		p.filename = temp;
+		System.arraycopy(buf, 1058, p.filename, 0, 100);
 		// date
-		System.arraycopy(buf, 1158, temp, 0, 10);
-		p.date = temp;
+		System.arraycopy(buf, 1158, p.date, 0, 10);
 
 		//creatorType
 		byte[] temp4 = new byte[4];
@@ -125,8 +122,7 @@ public class PreList {
 		p.creatorType = Utils.vtolh(temp4);
 
 		//creatorName
-		System.arraycopy(buf,1172,temp,0,15);
-		p.creatorName = temp;
+		System.arraycopy(buf,1172,p.creatorName,0,15);
 
 		//status
 		System.arraycopy(buf,1188,temp4,0,4);

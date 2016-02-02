@@ -78,8 +78,8 @@ public class DoctorList extends Activity implements OnItemClickListener {
 		DocPha doctor = adapter.getItem(position);
 
 		Intent i = new Intent();
-		i.setComponent(new ComponentName("com.joyce.reps",
-				"com.joyce.reps.patient.DoctorSessionAty"));
+//		i.setComponent(new ComponentName("com.joyce.reps",
+//				"com.joyce.reps.patient.DoctorSessionAty"));
 		i.putExtra("doctor_name", doctor.realname);
 		i.putExtra("grade_name", doctor.zhicheng);
 		startActivity(i);

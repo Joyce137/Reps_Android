@@ -41,7 +41,7 @@ public class RegisterActivityPh extends AppCompatActivity {
 
     private int mYear,mMonth,mDay;//后面可以封装到住户注册的类里面
 //    private boolean isSendedSMSCode = false;    //是否发验证码
-    boolean smartSMSCode = false;
+    boolean smartSMSCode = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class RegisterActivityPh extends AppCompatActivity {
             public void onClick(View view) {
                 String smscodeStr = mSMScodeEditText.getText().toString().trim();
                 if(check(Users.sRegisterUser)!=null){
-                    if(smscodeStr.length()==0){
+                    if(!smartSMSCode && smscodeStr.length()==0){
                         Toast.makeText(getApplication(),"请输入短信验证码",Toast.LENGTH_LONG).show();
                     }
                     else{
@@ -111,8 +111,11 @@ public class RegisterActivityPh extends AppCompatActivity {
                             intent.setClass(RegisterActivityPh.this, RegisterActivityFin.class);
                             startActivity(intent);
                         }
-                        //验证（短信验证码)
-                        SMSSDK.submitVerificationCode("86", cellphoneNumber.getText().toString().trim(), mSMScodeEditText.getText().toString().trim());
+                        else{
+                            //验证（短信验证码)
+                            SMSSDK.submitVerificationCode("86", cellphoneNumber.getText().toString().trim(), mSMScodeEditText.getText().toString().trim());
+                        }
+
                     }
                 }
             }
@@ -211,6 +214,7 @@ public class RegisterActivityPh extends AppCompatActivity {
         //检查地址是否为空
         EditText Address=(EditText)findViewById(R.id.AddressText);
         String t_address=Address.getText().toString().trim();
+//        String t_address = "";
         if(t_address.length()==0)
         {
             Toast.makeText(getApplication(),"地址不能为空",Toast.LENGTH_LONG).show();
@@ -246,7 +250,10 @@ public class RegisterActivityPh extends AppCompatActivity {
     }
 
     public String getAge(){
-        return String.valueOf(Utils.getYear() - mYear);
+        int thisYear = Utils.getYear();
+        int myAge = thisYear-mYear;
+        String myAgeStr = String.valueOf(myAge);
+        return myAgeStr;
     }
 
     //验证短信验证码

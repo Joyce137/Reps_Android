@@ -288,4 +288,8 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
         return list;
     }
 
+    @Override
+    public void clear() {
+        db.delete(getTableName(),null,null);
+    }
 }

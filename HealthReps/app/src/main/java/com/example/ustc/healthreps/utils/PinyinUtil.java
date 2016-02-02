@@ -271,8 +271,8 @@ public class PinyinUtil {
 			return;
 		}
 
-		pinyinBaseUnit.setOriginalString(new String(originalString));
-		pinyinBaseUnit.setPinyin(new String(pinyin));
+		pinyinBaseUnit.setOriginalString(new String(originalString).trim());
+		pinyinBaseUnit.setPinyin(new String(pinyin).trim());
 		int pinyinLength = pinyin.length();
 		StringBuffer numBuffer = new StringBuffer();
 		numBuffer.delete(0, numBuffer.length());
@@ -282,7 +282,7 @@ public class PinyinUtil {
 			numBuffer.append(ch);
 		}
 
-		pinyinBaseUnit.setNumber(new String(numBuffer.toString()));
+		pinyinBaseUnit.setNumber(new String(numBuffer.toString()).trim());
 		numBuffer.delete(0, numBuffer.length());
 
 		return;

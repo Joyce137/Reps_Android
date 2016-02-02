@@ -17,6 +17,7 @@ public class Doctor {
 		this.hospitalName = hospitalName;
 	}
 
+	public String loginName;
 	private String doctorName;
 	private String departmentName;
 	private String gradeName;

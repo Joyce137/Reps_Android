@@ -57,7 +57,8 @@ public class AppPath {
                 for (int i = 0; i < count; i++) {
                     File file = files[i];
 
-                    if(file.getName() == filename){
+                    String curFilename = file.getName();
+                    if(curFilename.equals(filename)){
                         return file.getPath();
                     }
                     items.add(file.getName());

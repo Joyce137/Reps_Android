@@ -42,7 +42,7 @@ public class HeartBeatTask extends TimerTask{
 				Users.sOnline = false;
 				//m_connect_alert.setBackgroundColor(color.red);
 				System.out.println(mBeatTimes + "-----color.red");
-//				Sockets.socket_center.shutSocket();
+				Sockets.socket_center.shutSocket();
 
 		        if (Sockets.socket_center.initSocket())
 		        {
@@ -51,4 +51,7 @@ public class HeartBeatTask extends TimerTask{
 			}
 		//}
 	}
+
+	//停止定时器
+
 }

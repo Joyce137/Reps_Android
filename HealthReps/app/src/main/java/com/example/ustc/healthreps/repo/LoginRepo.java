@@ -77,6 +77,7 @@ public class LoginRepo extends ReceiveSuper{
 
         startReceiveThread();
         // 密码加密
+
         String str = pwd;
         crcPwd = str.getBytes();
         for (int i = 0; i < crcPwd.length; i++)
@@ -114,7 +115,7 @@ public class LoginRepo extends ReceiveSuper{
             String cookieDate = cookie.cookieDate;
 
             //第一条时间已超过一个月
-            if(Utils.checkValid(cookieDate)){
+            if(!Utils.checkValid(cookieDate)){
                 cookieDao.delete(1);
             }
             //有效，则返回用户名
@@ -126,8 +127,10 @@ public class LoginRepo extends ReceiveSuper{
 
     //添加到cookie
     public void addToCookie(CookieDaoImpl cookieDao){
-        if(cookieDao.checkUsernameExistInCookie(Users.sLoginUsername) == null){
+        if(cookieDao.checkUsernameExistInCookie(Users.sLoginUsername.trim()) == null){
 //            cookieDao.addNewUserToCookie(Users.sLoginUsername,crcPwd,userType);
+            //先清空后插入
+            cookieDao.clear();
             cookieDao.addNewUserToCookie();
         }
         else{
@@ -146,6 +149,7 @@ public class LoginRepo extends ReceiveSuper{
         if (yesno) {
             // 登录成功
             Users.sLoginUsername = y.getUsername();
+            Users.sLoginUserType = Utils.changeTypeToString(y.getType());
             Users.sOnline = true;
 
             LoginActivity.sLoginResultHandler.obtainMessage(0, 0).sendToTarget();

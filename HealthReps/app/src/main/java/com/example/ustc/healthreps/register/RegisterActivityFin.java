@@ -59,7 +59,7 @@ public class RegisterActivityFin extends AppCompatActivity {
             case -1:
                 type = "网络故障，Socket初始化失败，请检查网络";
                 break;
-            case 0:
+            case 7:
                 type = "注册成功！";
                 Users.sISSignout = true;
                 break;
@@ -70,10 +70,16 @@ public class RegisterActivityFin extends AppCompatActivity {
                 type = "头像上传失败！";
                 break;
             default:
+                type = "未知错误";
                 break;
+        }
+
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
         }
         Toast.makeText(getApplicationContext(), type, Toast.LENGTH_SHORT).show();
         regResultTV.setText(type);
+        Looper.loop();
     }
 
     public void initView(){

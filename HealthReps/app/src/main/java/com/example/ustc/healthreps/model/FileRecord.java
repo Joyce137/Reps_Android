@@ -18,7 +18,7 @@ public class FileRecord {
 		this.record = record;
 		this.flag = flag;
 	}
-	
+
 	public String getTime() {
 		return time;
 	}
@@ -54,6 +54,4 @@ public class FileRecord {
 		return "FileRecord [time=" + time + ", mstore=" + mstore + ", doctor="
 				+ doctor + ", record=" + record + ", flag=" + flag + "]";
 	}
-	
-	
 }

@@ -98,8 +98,14 @@ public class Types {
 	public static final int CHUFANG_GENERATE_TO_STORE = 0x0907;//医生给药店用户生成的处方
 
 	//排序类型
-	public static final int SORTTYPE_SMART = 0x0001;
-	public static final int SORTTYPE_CLOSE = 0x0002;
-	public static final int SORTTYPE_POPULAR = 0x0003;
-	public static final int SORTTYPE_COMMENT = 0x0004;
+	public static final int SORTTYPE_SMART = 0x0001;		//智能排序
+	public static final int SORTTYPE_CLOSE = 0x0002;		//离我最近
+	public static final int SORTTYPE_POPULAR = 0x0003;		//人气最高
+	public static final int SORTTYPE_COMMENT = 0x0004;		//评价最好
+
+	//searchUser flag
+	public static final int Search_Users_By_Rules = 0x0908;	//移动端设定特定条件搜索医生或药店;
+
+	//req perlist status
+	public static final int PATIENT_REQ_PRELIST_STATUS = 0x0910;  //请求清单状态
 }

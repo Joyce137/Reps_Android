@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.example.ustc.healthreps.model.Users;
-import com.example.ustc.healthreps.patient.ChatActivity;
 import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.P2PInfo;
 import com.example.ustc.healthreps.serverInterface.Types;

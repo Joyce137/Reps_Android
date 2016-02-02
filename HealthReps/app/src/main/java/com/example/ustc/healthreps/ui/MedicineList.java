@@ -70,7 +70,7 @@ public class MedicineList extends Fragment {
     private ListView medic_list_view;
     private TabMedicineAdapter medic_Adapter;
 
-    List <com.example.ustc.healthreps.model.Medicine> list = new ArrayList <com.example.ustc.healthreps.model.Medicine>();
+    List <Medicine> list = new ArrayList <com.example.ustc.healthreps.model.Medicine>();
     //弹出PopupWindow时背景变暗
     private View darkView;
 
@@ -323,17 +323,15 @@ public class MedicineList extends Fragment {
 
     private void initData() {
         //初始化药品信息
-        List <com.example.ustc.healthreps.model.Medicine> list_m = new ArrayList <com.example.ustc.healthreps.model.Medicine>();
-        list_m.add(new com.example.ustc.healthreps.model.Medicine("阿司匹林","非处方药","解热镇痛药"));
-        list_m.add(new com.example.ustc.healthreps.model.Medicine("尼莫地平片","处方药","缺血性脑血管病"));
+        //查询全部药品
+        MedicineDaoImpl dao = new MedicineDaoImpl(getActivity().getApplicationContext());
+//        ArrayList<Medicine> list_m = dao.findAll();
+        SearchInfo info = new SearchInfo();
+        info.drugStoreCategory = "感冒";
+        ArrayList<Medicine> list = dao.queryMedicineBySearch(info);
 
         final Medicine_Info_List minfo_list = new Medicine_Info_List();  //传递到药品清单的封装对象
-        final List<com.example.ustc.healthreps.model.Medicine> list_medic = new ArrayList<com.example.ustc.healthreps.model.Medicine>();     //传递到药品清单的封装对象的数据
-
-        for(int i=0;i<list_m.size();i++){
-            com.example.ustc.healthreps.model.Medicine med = list_m.get(i);
-            list.add(med);
-        }
+        final List<Medicine> list_medic = new ArrayList<com.example.ustc.healthreps.model.Medicine>();     //传递到药品清单的封装对象的数据
 
         medic_Adapter = new TabMedicineAdapter(getActivity().getApplicationContext(),list);
         medic_list_view.setAdapter(medic_Adapter);
@@ -341,8 +339,7 @@ public class MedicineList extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                final com.example.ustc.healthreps.model.Medicine medicine = (com.example.ustc.healthreps.model.Medicine) medic_Adapter.getItem(position);
-
+                final Medicine medicine = (com.example.ustc.healthreps.model.Medicine) medic_Adapter.getItem(position);
 
                 //自定义弹出药店数量对话框
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
@@ -355,7 +352,7 @@ public class MedicineList extends Fragment {
                 final EditText etAmount = (EditText) v.findViewById(R.id.amount);
                 final TextView etName = (TextView) v.findViewById(R.id.medic_name);
 
-                etName.setText(medicine.getMedicName());
+                etName.setText(medicine.name);
 
                 btnAdd.setOnClickListener(new OnClickListener() {
                     @Override
@@ -380,7 +377,7 @@ public class MedicineList extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int num = Integer.parseInt(etAmount.getText().toString());
                         if (num > 0) {
-                            medicine.setNum(num);
+                            medicine.num = num;
                             list_medic.add(medicine);
                             minfo_list.setArrayList(list_medic);
                         }
@@ -399,7 +396,7 @@ public class MedicineList extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int num = Integer.parseInt(etAmount.getText().toString());
                         if (num > 0) {
-                            medicine.setNum(num);
+                            medicine.num = num;
                             list_medic.add(medicine);
                         }
 

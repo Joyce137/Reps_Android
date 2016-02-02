@@ -126,16 +126,16 @@ public class LoginBackInfo {
 			// username
 			byte[] tempStr15 = new byte[15];
 			System.arraycopy(buf, 0, tempStr15, 0, 15);
-			username = new String(tempStr15, "GBK");
+			username = new String(tempStr15, "GBK").trim();
 
 			// pharmacist
 			System.arraycopy(buf, 15, tempStr15, 0, 15);
-			pharmacist = new String(tempStr15, "GBK");
+			pharmacist = new String(tempStr15, "GBK").trim();
 
 			// title
 			byte[] tempStr100 = new byte[100];
 			System.arraycopy(buf, 30, tempStr100, 0, 100);
-			pharmacist = new String(tempStr100, "GBK");
+			pharmacist = new String(tempStr100, "GBK").trim();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

@@ -16,6 +16,7 @@ import com.example.ustc.healthreps.serverInterface.ReqUserInfo;
 import com.example.ustc.healthreps.serverInterface.SingleUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.ui.DoctorSessionAty;
 import com.example.ustc.healthreps.ui.SearchDoctor;
 import com.example.ustc.healthreps.utils.AppPath;
 import com.example.ustc.healthreps.utils.Utils;
@@ -71,12 +72,12 @@ public class DocPhaRepo extends ReceiveSuper{
             mSingleUserInfo = SingleUserInfo.getSingleUserInfo(data.getM_buffer());
         }
 
-        //搜索产生的简单用户信息-用作显示在列表中
-        else if(data.getM_nFlag() == Types.REQ_USER_INFO){
-            ReqMsgUserInfo req = ReqMsgUserInfo.getReqMsgUserInfo(data.getM_buffer());
-            //msgList.add(req);
-            DoctorList.sDocHandler.obtainMessage(0, req).sendToTarget();
-        }
+//        //搜索产生的简单用户信息-用作显示在列表中
+//        else if(data.getM_nFlag() == Types.REQ_USER_INFO){
+//            ReqMsgUserInfo req = ReqMsgUserInfo.getReqMsgUserInfo(data.getM_buffer());
+//            //msgList.add(req);
+//            SearchDoctor.sDocHandler.obtainMessage(0, req).sendToTarget();
+//        }
 
 //        closeReceiveThread();
     }
@@ -119,6 +120,12 @@ public class DocPhaRepo extends ReceiveSuper{
                 String showmsg = "c"+"已与"+doctorName+"建立连接";
                 SearchDoctor.sDoctorResultHandler.obtainMessage(0,showmsg).sendToTarget();
             }
+        }
+        //断开连接的消息
+        else if(msg.getFlag() == Types.Off_Link){
+            //通知界面
+            String showmsg = "offc"+doctorName+"已与你断开连接";
+            DoctorSessionAty.sConectionStatusHandler.obtainMessage(0, showmsg).sendToTarget();
         }
     }
 

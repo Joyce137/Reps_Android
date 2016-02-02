@@ -6,7 +6,7 @@
         layout="@layout/file_record_list"
         android:id="@+id/table_title"/>
 
-    <ListView
+    <com.example.ustc.healthreps.ui.MyListView
         android:id="@+id/RecordlistView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -31,7 +31,7 @@
                 android:gravity="center_horizontal"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:text="附 近"
+                android:text="附近"
                 android:textColor="#666666" />
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.example.ustc.healthreps.ui;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,15 +43,24 @@ import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.FirstClassAdapter;
 import com.example.ustc.healthreps.adapter.SecondClassAdapter;
 import com.example.ustc.healthreps.adapter.TabDoctorAdapter;
+import com.example.ustc.healthreps.adapter.TabMedicineAdapter;
 import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.gps.GPSService;
 import com.example.ustc.healthreps.citylist.CityList;
 import com.example.ustc.healthreps.model.Doctor;
 import com.example.ustc.healthreps.model.FirstClassItem;
+import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.SecondClassItem;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
+import com.example.ustc.healthreps.repo.DoctorResult;
+import com.example.ustc.healthreps.repo.SearchInfo;
 import com.example.ustc.healthreps.serverInterface.NetPack;
+import com.example.ustc.healthreps.serverInterface.SearchUser;
+import com.example.ustc.healthreps.serverInterface.SearchUserInfo;
+import com.example.ustc.healthreps.serverInterface.Types;
+import com.example.ustc.healthreps.socket.Sockets;
+import com.example.ustc.healthreps.utils.Utils;
 
 import org.w3c.dom.Text;
 
@@ -106,6 +116,9 @@ public class SearchDoctor extends Fragment {
 
     private Doctor curDoctor;
 
+    private String district = "附近", address = "", hospitalOrkeshiName = "医院";
+    public static Handler sDocHandler = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,6 +141,15 @@ public class SearchDoctor extends Fragment {
         mainTab2TV.setOnClickListener(l);
         mainTab3TV.setOnClickListener(l);
 
+        sDocHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                SearchUserInfo result = (SearchUserInfo)msg.obj;
+                insertIntoList(result);
+            }
+        };
+
         sDoctorResultHandler = new android.os.Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -138,16 +160,49 @@ public class SearchDoctor extends Fragment {
         };
     }
 
+    //将得到的结果插入到list中
+    public void insertIntoList(SearchUserInfo searchUserInfo){
+        //显示在列表中的实体
+        String doctorName = "";
+        String departmentName = "";
+        String gradeName = "";
+        String hospitalName = "";
+        String loginName = "";
+
+        try {
+            doctorName = new String(searchUserInfo.realName,"GBK").trim();
+            departmentName = new String(searchUserInfo.keshi,"GBK").trim();
+            gradeName = new String(searchUserInfo.zhicheng,"GBK").trim();
+            hospitalName = new String(searchUserInfo.companyName,"GBK").trim();
+            loginName = new String(searchUserInfo.loginName,"GBK").trim();
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+
+        if(doctorName.length() == 0)
+            doctorName = "test";
+        if(departmentName.length() == 0)
+            departmentName = "test";
+        if(gradeName.length() == 0)
+            gradeName = "test";
+        if(hospitalName.length() == 0)
+            hospitalName = "test";
+        if(loginName.length() == 0)
+            loginName = "doctor1";
+
+        Doctor doctor = new Doctor(doctorName,departmentName,gradeName,hospitalName);
+        doctor.loginName = loginName;
+//        if(searchUserInfo.rank == 0)
+//            list.clear();
+        list.add(doctor);
+        doc_Adapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
+    }
+
     //收到处理结果
     public void onRecvDoctorResult(String data){
 
         if(data.startsWith("y")) {
-//            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
-////                i.setComponent(new ComponentName("com.example.ui",
-////                        "com.example.ui.DoctorSessionAty"));
-//            i.putExtra("doctor_name", curDoctor.getDoctorName());
-//            i.putExtra("grade_name", curDoctor.getGradeName());
-//            startActivity(i);
+            Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
         }
         else if(data.startsWith("n")){
             Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
@@ -156,8 +211,7 @@ public class SearchDoctor extends Fragment {
         else if(data.startsWith("c")){
             Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
-//                i.setComponent(new ComponentName("com.example.ui",
-//                        "com.example.ui.DoctorSessionAty"));
+
             i.putExtra("doctor_name", curDoctor.getDoctorName());
             i.putExtra("grade_name", curDoctor.getGradeName());
             startActivity(i);
@@ -221,11 +275,14 @@ public class SearchDoctor extends Fragment {
                         ft.addToBackStack(null);
                         ft.commit();
 
-                        Users.sDefaultStore = "xxx";
+                        Users.sDefaultStore = "store1";
+                        Sockets.socket_center.sendBindStoreDoctorInfo(true);
+
                         break;
                     case 2:
                         str = "私人医生";
-                        //不是我们组的功能^-^
+                        Users.sDefaultDoctor = "doctor1";
+                        Sockets.socket_center.sendBindStoreDoctorInfo(false);
                         break;
                     case 3:
                         str = "添加好友";
@@ -410,8 +467,10 @@ public class SearchDoctor extends Fragment {
                     String str = title[position];
                     popupWindow3.dismiss();
                     Toast.makeText(getActivity().getApplication(), str, Toast.LENGTH_SHORT).show();
+                    handleResult(3, 0, 0, str);
                 }
             });
+
         }
 
         private void tab2OnClick() {
@@ -510,6 +569,9 @@ public class SearchDoctor extends Fragment {
         leftLV1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //设置选择
+                district = firstList1.get(position).getName();
+
                 //二级数据
                 List<SecondClassItem> list2 = firstList1.get(position).getSecondList();
                 //如果没有二级类，则直接跳转
@@ -540,6 +602,7 @@ public class SearchDoctor extends Fragment {
         rightLV1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 flag1=true;
                 Drawable nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
                 nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
@@ -552,6 +615,8 @@ public class SearchDoctor extends Fragment {
                 int secondId = firstList1.get(firstPosition).getSecondList().get(position).getId();
                 String selectedName = firstList1.get(firstPosition).getSecondList().get(position)
                         .getName();
+
+                address = selectedName;
                 handleResult(1,firstId, secondId,selectedName);
             }
         });
@@ -621,6 +686,8 @@ public class SearchDoctor extends Fragment {
 
                 //显示右侧二级分类
                 updateSecondListView2(list2, secondAdapter2);
+
+                hospitalOrkeshiName = firstList2.get(position).getName();
             }
         });
 
@@ -706,22 +773,27 @@ public class SearchDoctor extends Fragment {
             flag3=true;
             nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
             mainTab3TV.setCompoundDrawables(null, null, nav_up, null);
+
+            handleResult(3, 0, 0, str);
         }
     }
 
     private void initData() {
         firstList1 = new ArrayList<FirstClassItem>();
         //1
-        ArrayList<SecondClassItem> list11 = new ArrayList<SecondClassItem>();
+        final ArrayList<SecondClassItem> list11 = new ArrayList<SecondClassItem>();
         list11.add(new SecondClassItem(111, "附近"));
-        list11.add(new SecondClassItem(112, "500米"));
-        list11.add(new SecondClassItem(113, "1000米"));
-        list11.add(new SecondClassItem(114, ">1000米"));
+        list11.add(new SecondClassItem(112, "500千米"));
+        list11.add(new SecondClassItem(113, "1000千米"));
+        list11.add(new SecondClassItem(114, "2000千米"));
+        list11.add(new SecondClassItem(114, "10000千米"));
+        list11.add(new SecondClassItem(114, ">10000千米"));
         firstList1.add(new FirstClassItem(1, "附近", list11));
         //2
         ArrayList<SecondClassItem> list12 = new ArrayList<SecondClassItem>();
         list12.add(new SecondClassItem(121, "左岸商业街"));
         list12.add(new SecondClassItem(122, "博览中心"));
+        list12.add(new SecondClassItem(123, "仁爱路"));
         list12.add(new SecondClassItem(123, "娄葑镇"));
         list12.add(new SecondClassItem(124, "湖东邻里中心"));
         list12.add(new SecondClassItem(125, "李公堤"));
@@ -804,33 +876,46 @@ public class SearchDoctor extends Fragment {
         firstList2.addAll(firstList2);
 
 
-        //初始化医生信息，后期该信息应从服务器端获得
-        List <Doctor> list_d = new ArrayList <Doctor>();
-
-        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
-        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
-
-        for(int i=0;i<list_d.size();i++)
-        {
-            Doctor doc = list_d.get(i);
-            list.add(doc);
-//			temp.add(doc);
-        }
+        //初始化医生信息，从服务器端获得
+        SearchUser allUser = new SearchUser(Types.USER_TYPE_DOCTOR);
+        Sockets.socket_center.sendSearchUser(allUser);
+//        List <Doctor> list_d = new ArrayList <Doctor>();
+//
+//        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
+//        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
+//
+//        for(int i=0;i<list_d.size();i++)
+//        {
+//            Doctor doc = list_d.get(i);
+//            list.add(doc);
+////			temp.add(doc);
+//        }
         doc_Adapter = new TabDoctorAdapter(getActivity().getApplicationContext(),list);
         doc_list_view.setAdapter(doc_Adapter);
 
-        doc_list_view.setOnItemClickListener(new OnItemClickListener(){
+        doc_list_view.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 curDoctor = (Doctor) doc_Adapter.getItem(position);
                 //建立连接
                 //new DocPhaRepo().connectDoctor(curDoctor.getDoctorName());
-                new DocPhaRepo().connectDoctor("doctor1");
+                new DocPhaRepo().connectDoctor(list.get(position).loginName);
+            }
+        });
+
+        doc_list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String loginNamethis = list.get(position).loginName;
+                Users.sDefaultDoctor = loginNamethis;
+                Sockets.socket_center.sendBindStoreDoctorInfo(false);
+                Toast.makeText(getActivity().getApplicationContext(),"私人医生已设为"+loginNamethis,Toast.LENGTH_LONG).show();
+                return true;
             }
         });
     }
@@ -873,9 +958,60 @@ public class SearchDoctor extends Fragment {
         String text = "你选择的是：" + selectedName;
         Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 
+        //清空列表
+        list.clear();
+
+        doc_Adapter = new TabDoctorAdapter(getActivity().getApplicationContext(),list);
+        doc_list_view.setAdapter(doc_Adapter);
+
         if(flag == 1)
             mainTab1TV.setText(selectedName);
         else if(flag == 2)
             mainTab2TV.setText(selectedName);
+        else if(flag == 3)
+            mainTab3TV.setText(selectedName);
+
+        SearchUser searchUser = new SearchUser();
+        try {
+            searchUser.type = Types.USER_TYPE_DOCTOR;
+            //tab1Str
+            String tab1Str = mainTab1TV.getText().toString().trim();
+            if(tab1Str.equals("附近") || tab1Str.endsWith("千米")){
+                if(tab1Str.equals("附近"))
+                    searchUser.distance = 40000;
+                else {
+                    address = tab1Str.substring(0, selectedName.length() - 2);
+                    if(address.startsWith(">"))
+                        searchUser.distance = 40000;
+                    else
+                        searchUser.distance = Integer.parseInt(address);
+                }
+            }
+            else {
+                address = district + tab1Str;
+                searchUser.district = address.getBytes("GBK");
+            }
+
+            //tab2Str
+            String tab2Str = mainTab2TV.getText().toString().trim();
+            if(hospitalOrkeshiName.equals("医院")){
+                if(tab2Str.equals("全部医院") || tab2Str.equals("医院"))
+                    tab2Str = "";
+                searchUser.companyName = tab2Str.getBytes("GBK");
+            }
+            else {
+                if(tab2Str.equals("全部科室"))
+                    tab2Str = "";
+                searchUser.keshi = tab2Str.getBytes("GBK");
+            }
+
+            //tab3Str
+            String tab3Str = mainTab3TV.getText().toString().trim();
+            searchUser.sortType = Utils.changeSortMethodToInt(tab3Str);
+
+            Sockets.socket_center.sendSearchUser(searchUser);
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
     }
 }

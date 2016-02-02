@@ -94,7 +94,7 @@ public class UserLogin {
 			// username
 			byte[] tempStr20 = new byte[20];
 			System.arraycopy(buf, 0, tempStr20, 0, 20);
-			username = new String(tempStr20, "GBK");
+			username = new String(tempStr20, "GBK").trim();
 
 			// key
 			System.arraycopy(buf, 20, key, 0, 20);

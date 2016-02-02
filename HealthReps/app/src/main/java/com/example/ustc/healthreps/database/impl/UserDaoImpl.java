@@ -31,7 +31,7 @@ public class UserDaoImpl extends DaoSupportImpl<User> {
     //判断某用户是否在user表中
     public User checkUsernameExistInUser(String username){
         String selector = DBConstants.USER_USERNAME + "=?";
-        String[] selectorargs = new String[]{username};
+        String[] selectorargs = new String[]{username.trim()};
 
         ArrayList<User> users= findEntity(selector,selectorargs);
 
@@ -74,7 +74,7 @@ public class UserDaoImpl extends DaoSupportImpl<User> {
     //查找用户
     public User searchUserFromUserTableByUsername(String username){
         String selector = DBConstants.USER_USERNAME + "=?";
-        String[] selectorargs = new String[]{username};
+        String[] selectorargs = new String[]{username.trim()};
         if(findEntity(selector,selectorargs).size() != 1)
             return null;
         else

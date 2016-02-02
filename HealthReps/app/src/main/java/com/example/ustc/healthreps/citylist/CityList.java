@@ -104,7 +104,7 @@ public class CityList extends Activity {
         city_locating_state.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cityModel = city_locate_state.getText().toString();
+                String cityModel = city_locate_state.getText().toString().trim();
                 Setting.Save2SharedPreferences(CityList.this, "city",
                         cityModel);
 

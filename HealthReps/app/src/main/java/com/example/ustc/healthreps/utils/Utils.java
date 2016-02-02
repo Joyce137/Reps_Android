@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -24,6 +25,60 @@ import java.util.regex.Pattern;
 
 public class Utils {
 	// 大小端转化问题
+
+	/**
+	 * 浮点转换为字节
+	 *
+	 * @param f
+	 * @return
+	 */
+	public static byte[] float2byte(float f) {
+
+		// 把float转换为byte[]
+		int fbit = Float.floatToIntBits(f);
+
+		byte[] b = new byte[4];
+		for (int i = 0; i < 4; i++) {
+			b[i] = (byte) (fbit >> (24 - i * 8));
+		}
+
+		// 翻转数组
+		int len = b.length;
+		// 建立一个与源数组元素类型相同的数组
+		byte[] dest = new byte[len];
+		// 为了防止修改源数组，将源数组拷贝一份副本
+		System.arraycopy(b, 0, dest, 0, len);
+		byte temp;
+		// 将顺位第i个与倒数第i个交换
+		for (int i = 0; i < len / 2; ++i) {
+			temp = dest[i];
+			dest[i] = dest[len - i - 1];
+			dest[len - i - 1] = temp;
+		}
+
+		return dest;
+
+	}
+
+	/**
+	 * 字节转换为浮点
+	 *
+	 * @param b 字节（至少4个字节）
+	 * @return
+	 */
+	public static float byte2float(byte[] b) {
+		int l;
+		l = b[0];
+		l &= 0xff;
+		l |= ((long) b[1] << 8);
+		l &= 0xffff;
+		l |= ((long) b[2] << 16);
+		l &= 0xffffff;
+		l |= ((long) b[3] << 24);
+		return Float.intBitsToFloat(l);
+	}
+
+
 	// short转化成byte数组
 	public static byte[] shortToLH(int n) {
 		byte[] b = new byte[2];
@@ -42,6 +97,16 @@ public class Utils {
 		return b;
 	}
 
+
+	public static int bytesToInt(byte[] ary) {
+		int value;
+		value = (int) ((ary[0]&0xFF)
+				| ((ary[0+1]<<8) & 0xFF00)
+				| ((ary[0+2]<<16)& 0xFF0000)
+				| ((ary[0+3]<<24) & 0xFF000000));
+		return value;
+	}
+
 	// byte数组转化为int
 	public static int vtolh(byte[] bArr) {
 		byte begin = bArr[0];
@@ -51,6 +116,10 @@ public class Utils {
 				int left = i * 8;
 				n += (bArr[i] << left);
 			}
+//			n = n + 256;
+//			if(n<0){
+//				n = n + 65536;
+//			}
 			return n + 256;
 		} else {
 			int n = 0;
@@ -58,7 +127,7 @@ public class Utils {
 				int left = i * 8;
 				n += (bArr[i] << left);
 			}
-			if(n<0){
+			if (n < 0) {
 				n = n + 65536;
 			}
 			return n;
@@ -81,7 +150,7 @@ public class Utils {
 			int x = (int) (Math.random() * 100 % (CCH.length() - 1));
 			ch[i] = CCH.charAt(x);
 		}
-		String str = new String(ch);
+		String str = new String(ch).trim();
 
 		return str;
 	}
@@ -100,34 +169,35 @@ public class Utils {
 	public static String getDate() {
 		// 日期
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-		return formatter.format(new Date());
+		return formatter.format(new Date()).trim();
 	}
 
-	public static int getYear(){
-		return new Date().getYear();
+	public static int getYear() {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+		String year = formatter.format(new Date());
+		return Integer.parseInt(year);
 	}
 
 	// 获取当前时间
 	public static String getTime() {
 		// 时间
 		SimpleDateFormat formatter = new SimpleDateFormat("HHmmss");
-		return formatter.format(new Date());
+		return formatter.format(new Date()).trim();
 
 	}
 
 	// 获取当前日期和时间作为文件名
-	public static String getDataAndTime(){
-		return getDate()+"-"+getTime();
+	public static String getDataAndTime() {
+		return getDate() + "-" + getTime();
 	}
-	
+
 	//判断是否仅包括数字、下划线和字母
-	public static boolean onlyIncludingNumber_Letter(String str){
-		for(int i = 0;i<str.length();i++){
+	public static boolean onlyIncludingNumber_Letter(String str) {
+		for (int i = 0; i < str.length(); i++) {
 			char ch = str.charAt(i);
-			if((ch>='0'&&ch<='9')||(ch>='a'&&ch<='z')||(ch>='a'&&ch<='z')||ch == '_'){
+			if ((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z') || (ch >= 'a' && ch <= 'z') || ch == '_') {
 				continue;
-			}
-			else{
+			} else {
 				return false;
 			}
 		}
@@ -135,7 +205,7 @@ public class Utils {
 	}
 
 	//密码加密
-	public static byte[] encryptPwd(String pwd){
+	public static byte[] encryptPwd(String pwd) {
 		String str = pwd;
 		byte crcPwd[] = str.getBytes();
 		for (int i = 0; i < crcPwd.length; i++)
@@ -152,8 +222,7 @@ public class Utils {
 	}
 
 	//获取当前时间
-	public static String getCurrentTime()
-	{
+	public static String getCurrentTime() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date curDate = new Date(System.currentTimeMillis());
 		String str = format.format(curDate);
@@ -168,7 +237,7 @@ public class Utils {
 		String dataStr = fileNameArray[4];
 
 		//判断是否为时间串
-		if(Utils.filterUnNumber(dataStr)== dataStr && dataStr.length() == 8){
+		if (Utils.filterUnNumber(dataStr) == dataStr && dataStr.length() == 8) {
 			return dataStr;
 		}
 		//如果不是，则使用现在日期
@@ -176,20 +245,19 @@ public class Utils {
 	}
 
 	//type(String)->int
-	public static int changeTypeToInt(String type){
-		if(type.equals("患者")){
+	public static int changeTypeToInt(String type) {
+		if (type.equals("患者")) {
 			return Types.USER_TYPE_PATIENT;
-		}
-		else if(type == "医生"){
+		} else if (type == "医生") {
 			return Types.USER_TYPE_DOCTOR;
-		}
-		else if(type == "药师"){
+		} else if (type == "药师") {
 			return Types.USER_TYPE_PHA;
 		}
-		else if(type == "药监局"){
+//		if (type == "药监局")
+		else {
 			//药监局;
+			return Types.USER_TYPE_STORE;
 		}
-		return Types.USER_TYPE_STORE;
 	}
 
 	//type(int)->String
@@ -208,124 +276,111 @@ public class Utils {
 	}
 
 	//判断某日期与当前日期的差值(是否一个月以内）
-	public static boolean checkValid(String date){
+	public static boolean checkValid(String date) {
 		String now = getDate();
-		for(int i = 0;i<6;i++){
-			if(now.charAt(i)>date.charAt(i))
+		for (int i = 0; i < 6; i++) {
+			if (now.charAt(i) > date.charAt(i))
 				return false;
 		}
 		return true;
 	}
 
 	//Q   判断用户名是否有效
-	public static boolean checkUsername(String NumberWord)
-	{
+	public static boolean checkUsername(String NumberWord) {
 		int[] anArray;
 		int[] bnArray;
-		int i,m;
-		int j=0,n=0,k=0;
+		int i, m;
+		int j = 0, n = 0, k = 0;
 		while (true) {
 			String s = NumberWord;
-			bnArray=new int[s.length()];
-			anArray=new int[s.length()];
+			bnArray = new int[s.length()];
+			anArray = new int[s.length()];
 
-			for(i=0;i<s.length();i++)
-			{
-				anArray[i]=(int) s.charAt(i);
+			for (i = 0; i < s.length(); i++) {
+				anArray[i] = (int) s.charAt(i);
 			}
 			//检查用户名中是否包含A~Z，a~z的字
-			for(i=0;i<s.length();i++)
-				if(anArray[i]<65||anArray[i]>90&anArray[i]<97
-						||anArray[i]>122)
-				{
-					bnArray[j]=anArray[i];
+			for (i = 0; i < s.length(); i++)
+				if (anArray[i] < 65 || anArray[i] > 90 & anArray[i] < 97
+						|| anArray[i] > 122) {
+					bnArray[j] = anArray[i];
 					j++;
 
 				}
-			for(m=0;m<bnArray.length;m++)
-			{
-				if(bnArray[m]!=0&(bnArray[m]>47&bnArray[m]<58))
+			for (m = 0; m < bnArray.length; m++) {
+				if (bnArray[m] != 0 & (bnArray[m] > 47 & bnArray[m] < 58))
 					n++;
-				else if(bnArray[m]!=0&(bnArray[m]<48||bnArray[m]>57))
+				else if (bnArray[m] != 0 & (bnArray[m] < 48 || bnArray[m] > 57))
 					k++;
 			}
-			if(k>0)
-			{
+			if (k > 0) {
 				//System.out.println("用户名非法，必须只含有数字和字母");
 				return false;
 			}
-			if(n==s.length())
-			{
+			if (n == s.length()) {
 				//System.out.println("用户名非法，用户名不能全为数字");
 				return false;
 			}
-			if(j==0)
-			{
+			if (j == 0) {
 				//System.out.println("用户名非法，用户名不能全为字母");
 				return false;
 			}
 			return true;
 		}
 	}
-	public static boolean checkEmail(String email)
-	{
-		String s=email;
-		int i,m;
+
+	public static boolean checkEmail(String email) {
+		String s = email;
+		int i, m;
 		//检测Email的长度
-		if(s.length()==0||s.length()>40)
+		if (s.length() == 0 || s.length() > 40)
 			return false;
-		else{
+		else {
 			//检测"@"在字符串中的位置
-			for(i=0;i<s.length();i++)
-			{
+			for (i = 0; i < s.length(); i++) {
 				System.out.println(s.charAt(i));
-				if(s.charAt(i)=='@')
+				if (s.charAt(i) == '@')
 					break;
 			}
 			//检测‘.’在字符串中的位置
-			for(m=0;m<s.length();m++)
-			{
-				if(s.charAt(m)=='.')
+			for (m = 0; m < s.length(); m++) {
+				if (s.charAt(m) == '.')
 					break;
 			}
 			//判断Email地址中的'@'和'.'是否合法
-			if(i==0||i==s.length()-1||m-i<=1||m==s.length()-1)
-			{
+			if (i == 0 || i == s.length() - 1 || m - i <= 1 || m == s.length() - 1) {
 				System.out.println("Email地址不合法");
 				return false;
-			}
-			else
+			} else
 				return true;
 		}
 
 	}
-	public static boolean checkNumber(String Number)
-	{
-		String s=Number;
-		int i=0,j=0;
+
+	public static boolean checkNumber(String Number) {
+		String s = Number;
+		int i = 0, j = 0;
 		//检查是否有除数字以外的字符
-		for(i=0;i<s.length();i++)
-		{
-			if(s.charAt(i)>='0'&&s.charAt(i)<='9')
+		for (i = 0; i < s.length(); i++) {
+			if (s.charAt(i) >= '0' && s.charAt(i) <= '9')
 				j++;
-			else
-			{
+			else {
 				System.out.println("账号名不合法");
 				return false;
 			}
 		}
 		//若字符串中不全是数字，则结果为false
-		if(j!=s.length())
+		if (j != s.length())
 			return false;
 		return true;
 	}
 
 	//copy默认头像到手机headphoto路径下
-	public static String copyDefaultHeadPhoto(Context context){
+	public static String copyDefaultHeadPhoto(Context context) {
 		int BUFFER_SIZE = 20000;
 		String imagePath = AppPath.getPathByFileType("headphoto");
 		AppPath.CheckAndMkdirPathExist(imagePath);
-		String imageFile = imagePath+"/defaultHeadPhoto.jpg";
+		String imageFile = imagePath + "/defaultHeadPhoto.jpg";
 		try {
 			File f = new File(imageFile);
 			if (!f.exists()) {
@@ -358,26 +413,66 @@ public class Utils {
 	 * @param uri
 	 * @return the file path or null
 	 */
-	public static String getRealFilePath( final Context context, final Uri uri ) {
-		if ( null == uri ) return null;
+	public static String getRealFilePath(final Context context, final Uri uri) {
+		if (null == uri) return null;
 		final String scheme = uri.getScheme();
 		String data = null;
-		if ( scheme == null )
+		if (scheme == null)
 			data = uri.getPath();
-		else if ( ContentResolver.SCHEME_FILE.equals( scheme ) ) {
+		else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
 			data = uri.getPath();
-		} else if ( ContentResolver.SCHEME_CONTENT.equals( scheme ) ) {
-			Cursor cursor = context.getContentResolver().query( uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null );
-			if ( null != cursor ) {
-				if ( cursor.moveToFirst() ) {
-					int index = cursor.getColumnIndex( MediaStore.Images.ImageColumns.DATA );
-					if ( index > -1 ) {
-						data = cursor.getString( index );
+		} else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+			Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+			if (null != cursor) {
+				if (cursor.moveToFirst()) {
+					int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+					if (index > -1) {
+						data = cursor.getString(index);
 					}
 				}
 				cursor.close();
 			}
 		}
 		return data;
+	}
+
+	//排序方式（String -> int）
+	public static byte changeSortMethodToInt(String sortMethodStr) {
+		switch (sortMethodStr) {
+			case "智能排序":
+				return Types.SORTTYPE_SMART;
+			case "离我最近":
+				return Types.SORTTYPE_CLOSE;
+			case "人气最高":
+				return Types.SORTTYPE_POPULAR;
+			case "评价最好":
+				return Types.SORTTYPE_COMMENT;
+			default:
+				return -1;
+		}
+	}
+
+	//byte[]->String
+	public static String changeByteToString(byte[] bytes) {
+		try {
+			return new String(bytes, "GBK").trim();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	//通过status的int值，获取清单状态
+	public static String getStatus(int status){
+		switch (status){
+			case Types.ORDER_STATUS_PRELIST:
+				return "待开方";
+			case Types.ORDER_STATUS_CHUFANG:
+				return "待审核";
+			case Types.ORDER_STATUS_CHECKED:
+				return "已审核";
+			default:
+				return "未知";
+		}
 	}
 }

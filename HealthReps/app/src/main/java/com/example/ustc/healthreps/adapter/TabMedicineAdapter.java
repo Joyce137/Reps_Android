@@ -59,18 +59,13 @@ public class TabMedicineAdapter extends BaseAdapter{
         {
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.mMedicName.setText(medicine.getMedicName());
-        viewHolder.mMedicCategory.setText(medicine.getMedicCategroy());
-        viewHolder.mMedicBehavior.setText(medicine.getMedicBehavior());
+        viewHolder.mMedicName.setText(medicine.name);
+        viewHolder.mMedicCategory.setText(medicine.category);
+        viewHolder.mMedicBehavior.setText(medicine.usage);
 
         viewHolder.mMedicName.setTextColor(Color.BLACK);
         viewHolder.mMedicCategory.setTextColor(Color.BLACK);
         viewHolder.mMedicBehavior.setTextColor(Color.BLACK);
-
-//        int size = (int) viewHolder.mMedicName.getTextSize() + 3;
-//        viewHolder.mMedicName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-//        viewHolder.mMedicCategory.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-//        viewHolder.mMedicBehavior.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
         return view;
     }
