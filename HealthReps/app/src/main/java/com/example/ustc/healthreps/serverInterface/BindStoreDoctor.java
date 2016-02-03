@@ -30,11 +30,11 @@ public class BindStoreDoctor {
 			temp = username.getBytes("GBK");
 			System.arraycopy(temp, 0, buf, 0, temp.length);
 			// pha
-			temp = username.getBytes();
-			System.arraycopy(temp, 0, buf, 0, temp.length);
+			temp = pha.getBytes("GBK");
+			System.arraycopy(temp, 0, buf, 15, temp.length);
 			// yesno
 			byte bool_byte = (byte) (yesno == true ? 0x01 : 0x00);
-			buf[20] = bool_byte;
+			buf[30] = bool_byte;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

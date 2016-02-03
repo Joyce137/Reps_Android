@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+	<LinearLayout
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="horizontal" >
+        	<Button
+            	android:id="@+id/btnOpen_send"
+            	android:layout_width="0dp"
+            	android:layout_height="wrap_content"
+            	android:layout_weight="0.2"
+            	android:text="启动接收" />
+        	<Button
+        	    android:id="@+id/btnExit"
+        	    android:layout_width="0dp"
+        	    android:layout_height="wrap_content"
+        	    android:layout_weight="0.2"
+        	    android:text="退出程序" />
+
+        	<EditText
+        	    android:id="@+id/IPaddress"
+        	    android:layout_width="0dp"
+        	    android:layout_height="wrap_content"
+        	    android:layout_weight="0.4" >
+
+        	    <requestFocus />
+        	</EditText>
+        </LinearLayout>
+
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" >
+        	<SurfaceView
+        		android:id="@+id/SurfaceViewPlay"
+        		android:layout_width="100dp"
+        		android:layout_height="80dp"
+        		android:layout_weight="0.1" />
+
+        	<LinearLayout
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="match_parent"
+        	    android:orientation="vertical"
+        	    android:layout_weight="0.8" >
+
+        		<EditText
+        		    android:id="@+id/editText1"
+        		    android:layout_width="match_parent"
+        		    android:layout_height="wrap_content" />
+
+        		<EditText
+        		    android:id="@+id/editText2"
+        		    android:layout_width="match_parent"
+        		    android:layout_height="wrap_content" />
+
+        	</LinearLayout>
+
+        	<Button
+        	    android:id="@+id/button1"
+        	    style="?android:attr/buttonStyleSmall"
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+        	    android:text="Button"
+        	    android:layout_weight="0.1" />
+
+		</LinearLayout>
+	
+    </LinearLayout>
+    
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    
+</LinearLayout>

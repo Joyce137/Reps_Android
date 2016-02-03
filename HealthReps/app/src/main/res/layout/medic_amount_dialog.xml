@@ -37,13 +37,12 @@
 
             <TextView
                 android:id="@+id/medic_name"
-                android:layout_marginLeft="20sp"
+                android:layout_marginLeft="35sp"
                 android:layout_width="wrap_content"
                 android:layout_height="40sp"
                 android:layout_alignParentLeft="true"
                 android:gravity="center"
                 android:text="药品名称"
-                android:textColor="#ff0000"
                 android:textSize="20sp"/>
 
             <Button
@@ -54,8 +53,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
                 android:text="+"
-                android:textSize="18sp"
-                android:textColor="#ff0000"/>
+                android:textSize="18sp"/>
 
 
             <EditText
@@ -66,7 +64,6 @@
                 android:layout_marginRight="10sp"
                 android:layout_gravity="center_vertical"
                 android:text="0"
-                android:textColor="#ff0000"
                 android:gravity="center"
                 android:editable="false"
                 android:textSize="15sp"/>
@@ -79,9 +76,38 @@
                 android:layout_marginRight="10sp"
                 android:layout_gravity="center_vertical"
                 android:text="-"
-                android:textSize="20sp"
-                android:textColor="#ff0000"/>
+                android:textSize="20sp"/>
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="20sp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_guige"
+                android:layout_marginLeft="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="药品规格"
+                android:layout_centerVertical="true"
+                android:textSize="40px"
+                />
+
+            <EditText
+                android:id="@+id/guige"
+                android:hint="一日三次"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@id/tv_guige"
+                android:layout_marginRight="80dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
         </RelativeLayout>
 
 

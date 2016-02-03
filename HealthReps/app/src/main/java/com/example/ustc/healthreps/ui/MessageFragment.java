@@ -28,12 +28,17 @@ public class MessageFragment extends Fragment {
 							 ViewGroup container, Bundle savedInstanceState) {
 
 		View view = inflater.inflate(R.layout.fragment_message, null);
+
+		return view;
+	}
+
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 		listView = (ListView)view.findViewById(R.id.listView1);
 		messHistoryAdapter = new MessHistoryAdapter(this.getActivity(),getInfo());
 		listView.setAdapter(messHistoryAdapter);
 		listView.setCacheColorHint(0);
 		init();
-		return view;
 	}
 
 	public void init(){
@@ -41,7 +46,7 @@ public class MessageFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				MessHistory messHistory = (MessHistory)messHistoryAdapter.getItem(position);
-				Intent i = new Intent(view.getContext(),DoctorSessionAty.class);
+				Intent i = new Intent(getActivity(),DoctorSessionAty.class);
 				i.putExtra("mess_name", messHistory.getName1());
 				i.putExtra("mess_time", messHistory.getLastTime());
 				startActivity(i);

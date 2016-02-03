@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.ustc.healthreps.MainActivity">
+
+    <item
+        android:id="@+id/myInfo"
+        android:title="@string/myinfo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/scan"
+        android:title="@string/mydevice"/>
+
+    <item
+        android:id="@+id/myStore"
+        android:title="@string/mystore"/>
+
+    <item
+        android:id="@+id/myDoctor"
+        android:title="@string/mydoctor"/>
+
+    <item
+        android:id="@+id/changeInput"
+        android:title="加好友" />
+
+    <item
+        android:id="@+id/signOutSetting"
+        android:title="@string/signout"/>
+
+    <item
+        android:id="@+id/exit"
+        android:title="退出" />
+
+
+</menu>

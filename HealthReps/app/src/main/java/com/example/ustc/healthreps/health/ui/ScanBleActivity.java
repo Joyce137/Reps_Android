@@ -165,7 +165,6 @@ public class ScanBleActivity extends Activity {
 
     public void startActivity(final View v, final DeviceBean bean) {
 
-//        Intent intent = new Intent(context, MainActivity.class);
 //        intent.putExtra("DEVICE_NAME", bean.getName());
 //        intent.putExtra("DEVICE_ADDRESS", bean.getAddress());
 //        intent.putExtra("scan", scanrecordsMap.get(bean.getAddress()));//哈希表返回的是地址对应的扫描号

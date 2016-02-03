@@ -1,0 +1,126 @@
+<resources>
+
+    <style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo"></style>
+
+
+    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">#388e3c</item>
+        <item name="colorAccent">#00ff00</item>
+        <item name="colorPrimaryDark">#388e3c</item>
+
+        <!--  <item name="android:windowBackground">@color/window_background</item>-->
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+
+
+    </style>
+    <style name="Theme.ScanDemo"  parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <item name="colorControlHighlight">#ffffff</item>
+        <!--  <item name="android:windowBackground">@color/window_background</item>-->
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="Theme.Device" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#4caf50</item>
+        <item name="colorPrimaryDark">#4caf50</item>
+    </style>
+    <style name="Theme.Login" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#388e3c</item>
+        <item name="colorPrimaryDark">#388e3c</item>
+    </style>
+    <style name="Theme.Set" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="colorPrimary">#ff5722</item>
+        <item name="colorPrimaryDark">#ff5722</item>
+    </style>
+    <style name="Widget.CardContent" parent="android:Widget">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">24dp</item>
+        <item name="android:paddingBottom">24dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="TitleBar">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@color/dialog_button_text_color</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_height">@dimen/base_title_bar_height</item>
+    </style>
+    <!-- 这里设立windowBackground的背景后就不用在xml里再设置了 -->
+    <style name="MyDialog" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@mipmap/common_alert_bg</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    <style name="ui_parent_Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="cityLocatingProgressStyle">
+        <item name="android:maxWidth">16.0dip</item>
+        <item name="android:maxHeight">24.0dip</item>
+        <item name="android:indeterminateDrawable">@anim/city_locating_anim</item>
+        <item name="android:minWidth">16.0dip</item>
+        <item name="android:minHeight">24.0dip</item>
+    </style>
+
+    <style name="city_hot_header" parent="@style/ui_parent_Wrap">
+        <item name="android:textSize">@dimen/city_list_text_size</item>
+        <item name="android:textColor">@color/city_item_letter_color</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="chat_text_date_style">
+        <item name="android:padding">2dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">#bfbfbf</item>
+    </style>
+
+    <style name="chat_content_date_style">
+        <item name="android:minHeight">30dp</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">#bfbfbf</item>
+    </style>
+
+    <style name="chat_text_name_style">
+        <item name="android:textColor">#818181</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="title_right_button">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@drawable/back_button_default_style</item>
+    </style>
+
+    <style name="AnimBottom" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>
+    </style>
+
+    <style name="CustomDialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+</resources>

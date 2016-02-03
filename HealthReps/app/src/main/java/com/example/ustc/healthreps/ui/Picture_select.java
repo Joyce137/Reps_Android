@@ -3,15 +3,18 @@ package com.example.ustc.healthreps.ui;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
 
@@ -52,6 +55,14 @@ public class Picture_select extends Activity {
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 ImageView imageView = (ImageView)findViewById(R.id.imageView);
                 imageView.setImageBitmap(bitmap);
+
+                //get the picture path
+                String []proj = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(uri,proj,null,null,null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                picPath = cursor.getString(column_index);
+                Toast.makeText(getApplication(), picPath, Toast.LENGTH_SHORT).show();
             }catch (FileNotFoundException e){
                 Log.e("Exception",e.getMessage(),e);
             }

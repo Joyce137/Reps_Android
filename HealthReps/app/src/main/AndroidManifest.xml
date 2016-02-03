@@ -108,6 +108,7 @@
             android:name=".ui.Picture_select"
             android:label="@string/title_activity_picture_select" >
         </activity>
+        <activity android:name=".ui.File_select"></activity>
 
         <!--GPS相关-->
         <activity android:name=".citylist.Home"></activity>

@@ -131,15 +131,6 @@ public class SearchDoctor extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initToolbar();
         findView();
-        initData();
-        initPopup();
-        //定位
-        location();
-
-        OnClickListenerImpl l = new OnClickListenerImpl();
-        mainTab1TV.setOnClickListener(l);
-        mainTab2TV.setOnClickListener(l);
-        mainTab3TV.setOnClickListener(l);
 
         sDocHandler = new Handler() {
             @Override
@@ -158,6 +149,16 @@ public class SearchDoctor extends Fragment {
                 onRecvDoctorResult(data);
             }
         };
+
+        initData();
+        initPopup();
+        //定位
+        location();
+
+        OnClickListenerImpl l = new OnClickListenerImpl();
+        mainTab1TV.setOnClickListener(l);
+        mainTab2TV.setOnClickListener(l);
+        mainTab3TV.setOnClickListener(l);
     }
 
     //将得到的结果插入到list中
@@ -877,23 +878,23 @@ public class SearchDoctor extends Fragment {
 
 
         //初始化医生信息，从服务器端获得
-        SearchUser allUser = new SearchUser(Types.USER_TYPE_DOCTOR);
-        Sockets.socket_center.sendSearchUser(allUser);
-//        List <Doctor> list_d = new ArrayList <Doctor>();
-//
-//        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
-//        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
-//        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
-//        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
-//        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
-//        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
-//
-//        for(int i=0;i<list_d.size();i++)
-//        {
-//            Doctor doc = list_d.get(i);
-//            list.add(doc);
-////			temp.add(doc);
-//        }
+//        SearchUser allUser = new SearchUser(Types.USER_TYPE_DOCTOR);
+//        Sockets.socket_center.sendSearchUser(allUser);
+        List <Doctor> list_d = new ArrayList <Doctor>();
+
+        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
+        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
+        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
+        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
+        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
+        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
+
+        for(int i=0;i<list_d.size();i++)
+        {
+            Doctor doc = list_d.get(i);
+            list.add(doc);
+//			temp.add(doc);
+        }
         doc_Adapter = new TabDoctorAdapter(getActivity().getApplicationContext(),list);
         doc_list_view.setAdapter(doc_Adapter);
 
@@ -904,7 +905,7 @@ public class SearchDoctor extends Fragment {
                 curDoctor = (Doctor) doc_Adapter.getItem(position);
                 //建立连接
                 //new DocPhaRepo().connectDoctor(curDoctor.getDoctorName());
-                new DocPhaRepo().connectDoctor(list.get(position).loginName);
+                new DocPhaRepo().connectDoctor(curDoctor.loginName);
             }
         });
 

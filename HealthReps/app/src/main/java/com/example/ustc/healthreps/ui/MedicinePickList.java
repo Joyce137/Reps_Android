@@ -1,16 +1,22 @@
 package com.example.ustc.healthreps.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.R;
@@ -71,7 +77,18 @@ public class MedicinePickList extends Activity {
         sendPrelistBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new PrelistRepo().sendPrelist(getPrelistContent());
+//                new PrelistRepo().sendPrelist(getPrelistContent());
+                //设置备注
+                new AlertDialog.Builder(MedicinePickList.this, R.style.CustomDialog).setTitle("添加备注")
+                        .setView(new EditText(getApplication()))
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new PrelistRepo().sendPrelist(getPrelistContent());
+                                Toast.makeText(getApplication(),"send success!",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("取消", null).show();
             }
         });
 
@@ -88,6 +105,69 @@ public class MedicinePickList extends Activity {
         medicListAdapter = new TabMedicListAdapter(this,list);
         lv.setAdapter(medicListAdapter);
 
+        medicListAdapter = new TabMedicListAdapter(this,list);
+        lv.setAdapter(medicListAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final Medicine medicine = (Medicine) medicListAdapter.getItem(position);
+
+                //自定义弹出药店数量对话框
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MedicinePickList.this, R.style.CustomDialog);
+                builder.setTitle("订单修改");
+                View v = LayoutInflater.from(getApplication()).inflate(R.layout.medic_amount_dialog, null);
+                builder.setView(v);
+
+                Button btnAdd = (Button) v.findViewById(R.id.add);
+                Button btnSub = (Button) v.findViewById(R.id.sub);
+                final EditText etAmount = (EditText) v.findViewById(R.id.amount);
+                final TextView etName = (TextView) v.findViewById(R.id.medic_name);
+
+                etName.setText(medicine.name);
+
+                String str = medicine.num + "";
+                Toast.makeText(getApplication(), str, Toast.LENGTH_SHORT).show();
+
+                etAmount.setText(str);
+
+                btnAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int num = Integer.parseInt(etAmount.getText().toString());
+                        etAmount.setText(String.valueOf(++num));
+                    }
+                });
+                btnSub.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int num = Integer.parseInt(etAmount.getText().toString());
+                        if (0 == num) {
+                            etAmount.setText("0");
+                        } else {
+                            etAmount.setText(String.valueOf(--num));
+                        }
+                    }
+                });
+                builder.setPositiveButton("确定修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int num = Integer.parseInt(etAmount.getText().toString());
+                        if (num > 0) {
+                            medicine.num = num;
+                        }
+                        medicListAdapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("取消修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
     }
 
 }

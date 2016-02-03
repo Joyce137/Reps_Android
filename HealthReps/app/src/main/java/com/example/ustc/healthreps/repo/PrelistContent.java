@@ -59,34 +59,52 @@ public class PrelistContent implements Serializable {
 
             //对应病症
             diseasesStr += medicine.disease;
-//            diseasesStr += " ";
+            diseasesStr += "&&";
 //            diseasesStr += medicine.disease2;    //对应病症2
 //            diseasesStr += " ";
 //            diseasesStr += medicine.disease3;    //对应病症3
 
-            prelistcontentStr += diseasesStr;
             prelistcontentStr += "~#%";
         }
 
         prelistcontentStr += contentPost;   //备注
+        prelistcontentStr += "~#%";
+        prelistcontentStr += diseasesStr;
     }
 
     public static PrelistContent getPrelistContentByStr(String prelistcontentStr){
         PrelistContent prelistContent = new PrelistContent();
         String allMedicinesStr[] = prelistcontentStr.split("~#%");
-        prelistContent.contentPost = allMedicinesStr[allMedicinesStr.length-1];
+        prelistContent.contentPost = allMedicinesStr[allMedicinesStr.length-2].trim();
+        String diseaseStr = allMedicinesStr[allMedicinesStr.length-1].trim();
+        String diseases[] = diseaseStr.split("&&");
 
-        for(int i = 0;i<allMedicinesStr.length-1;i++){
+        for(int i = 0;i<allMedicinesStr.length-2;i++){
             Medicine medicine = new Medicine();
             String curMedicineStr = allMedicinesStr[i];
             //每条清单
             String everyMedicineStr[] = curMedicineStr.split("\\$&\\*");
-            medicine.name = everyMedicineStr[0];
-            medicine.category = everyMedicineStr[1];
-            medicine.num = Integer.parseInt(everyMedicineStr[2]);
-            medicine.unit = everyMedicineStr[3];
-            medicine.usage = everyMedicineStr[4];
-            medicine.disease = everyMedicineStr[5];
+            if(everyMedicineStr[0]!=null){
+                medicine.name = everyMedicineStr[0];
+            }
+            if(everyMedicineStr[1]!=null){
+                medicine.category = everyMedicineStr[1];
+            }
+            if(everyMedicineStr[2]!=null){
+                medicine.num = Integer.parseInt(everyMedicineStr[2]);
+            }
+
+            if(everyMedicineStr[3]!=null){
+                medicine.unit = everyMedicineStr[3];
+            }
+
+            if(everyMedicineStr[4]!=null){
+                medicine.usage = everyMedicineStr[4];
+            }
+
+            if(diseases[i]!=null){
+                medicine.disease = diseases[i].trim();medicine.name = everyMedicineStr[0];
+            }
 
             prelistContent.medicines.add(medicine);
         }

@@ -69,6 +69,9 @@ public class SearchMedicine extends Fragment {
     //接收药店消息
     public static Handler sMedicineHandler = null;
 
+    //接收绑定药店消息
+    public static Handler sBindStoreResultHandler = null;
+
     View view;
     MedicineList smfragment = null;
     private LocationClient locationClient = null;
@@ -120,8 +123,28 @@ public class SearchMedicine extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initToolbar();
         initview();
+
+        sBindStoreResultHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                String data = (String) msg.obj;
+                Toast.makeText(getActivity(),data,Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        sMedicineHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                SearchUserInfo result = (SearchUserInfo)msg.obj;
+                insertIntoList(result);
+            }
+        };
+
         initData();
         initPopup();
         //定位
@@ -132,14 +155,7 @@ public class SearchMedicine extends Fragment {
         mainTab2TV.setOnClickListener(l);
         mainTab3TV.setOnClickListener(l);
 
-        sMedicineHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                SearchUserInfo result = (SearchUserInfo)msg.obj;
-                insertIntoList(result);
-            }
-        };
+
     }
 
     //将得到的结果插入到list中
@@ -676,15 +692,15 @@ public class SearchMedicine extends Fragment {
 
 
         //初始化药店信息
-        SearchUser allUser = new SearchUser(Types.USER_TYPE_STORE);
-        Sockets.socket_center.sendSearchUser(allUser);
-//        List<MedicStore> list_store = new ArrayList<MedicStore>();
-//        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
-//        for(int i=0;i<list_store.size();i++)
-//        {
-//            MedicStore mstore = list_store.get(i);
-//            list.add(mstore);
-//        }
+//        SearchUser allUser = new SearchUser(Types.USER_TYPE_STORE);
+//        Sockets.socket_center.sendSearchUser(allUser);
+        List<MedicStore> list_store = new ArrayList<MedicStore>();
+        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
+        for(int i=0;i<list_store.size();i++)
+        {
+            MedicStore mstore = list_store.get(i);
+            list.add(mstore);
+        }
 
         store_Adapter = new TabStoreAdapter(getActivity(),list);
         store_list_view.setAdapter(store_Adapter);

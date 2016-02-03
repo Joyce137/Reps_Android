@@ -88,6 +88,7 @@ public class MedicineList extends Fragment {
     private LinearLayout layout;
     private ListView listView;
 
+    private int flag = -1;  //全部科室：0，内科：1，外科:2,其他：3
 
     @Nullable
     @Override
@@ -194,18 +195,54 @@ public class MedicineList extends Fragment {
             final String title[] = {
                     "抗感染","感冒","解热镇痛","心脑",
                     "止咳化痰","胃肠道","镇静安神","糖尿病",
-                    "内分泌","泌尿","肝胆","骨伤科",
+                    "内分泌","泌尿", "骨伤科","肝胆","甲状腺","肿瘤",
                     "五官","儿童","妇科","皮肤",
                     "清热解毒","维生素","滋补养颜","针剂",
                     "抗肿瘤","其他"
             };
+
+            //内科
+            final String nai[] = {
+                    "抗感染","感冒","解热镇痛","心脑",
+                    "止咳化痰","胃肠道","镇静安神","糖尿病",
+                    "内分泌","泌尿"
+            };
+            //外科
+            final String wai[] = {
+                    "骨伤科","肝胆","甲状腺","肿瘤"
+            };
+            //其他
+            final String other[] = {
+                    "五官","儿童","妇科","皮肤",
+                    "清热解毒","维生素","滋补养颜","针剂",
+                    "抗肿瘤","其他"
+            };
+            String temp[] = null;
+            switch (flag){
+                case 0:
+                    temp=title;
+                    break;
+                case 1:
+                    temp=nai;
+                    break;
+                case 2:
+                    temp=wai;
+                    break;
+                case 3:
+                    temp=other;
+                    break;
+                default:
+                    temp = title;
+                    break;
+            }
+
             //加载布局
             layout = (LinearLayout)LayoutInflater.from(getActivity()).inflate(R.layout.more_setting_dialog, null);
             //找到布局控件
             listView = (ListView)layout.findViewById(R.id.lv_dialog);
             //设置适配器
             listView.setAdapter(new ArrayAdapter<String>(getActivity(),
-                    R.layout.more_text_setting,R.id.tv_text,title));
+                    R.layout.more_text_setting,R.id.tv_text,temp));
             //实例化popupwindow
             popupWindow2 = new PopupWindow(layout, LinearLayout.LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
             //控制键盘是否可以获得焦点
@@ -224,7 +261,23 @@ public class MedicineList extends Fragment {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String str = null;
                     popupWindow2.dismiss();
-                    str = title[position];
+                    switch (flag){
+                        case 0:
+                            str = title[position];
+                            break;
+                        case 1:
+                            str = nai[position];
+                            break;
+                        case 2:
+                            str = wai[position];
+                            break;
+                        case 3:
+                            str = other[position];
+                            break;
+                        default:
+                            str = title[position];
+                            break;
+                    }
                     mainTab2TV.setText(str);
                     //指示图标归位
                     Drawable  nav_up=getResources().getDrawable(R.drawable.ic_arrow_down_black);
@@ -275,6 +328,8 @@ public class MedicineList extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String str = title[position];
+                    flag = position;
+
                     popupWindow1.dismiss();
                     mainTab1TV.setText(str);
                     //指示图标归位

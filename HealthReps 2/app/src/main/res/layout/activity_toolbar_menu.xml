@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical"
+    android:paddingBottom="2dp"
+    android:background="#ffffff">
+
+    <TextView
+        android:id="@+id/tv_menu_01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="8dp"
+        android:text="私人医生"
+        android:textSize="20sp"
+        android:textColor="#5084FE" />
+
+    <TextView
+        android:id="@+id/tv_menu_02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        android:text="专属药店"
+        />
+    <TextView
+        android:id="@+id/tv_menu_03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        android:text="个人设置"
+        />
+
+</LinearLayout>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ustc.healthreps">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label=""
+        android:theme="@style/Theme.DesignDemo">
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="rN85aArE3qzUeq9G1394re6y" />
+        
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.MedicinePickList"
+            android:label="@string/title_activity_medicine_pick_list" >
+        </activity>
+
+        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ChangePwdActivity"></activity>
+        <activity android:name=".ui.DetailUserInfoActivity"></activity>
+
+        <activity
+            android:name=".health.ui.ScanBleFailedActivity"
+            android:theme="@style/Theme.ScanDemo"></activity>
+        <activity
+            android:name=".health.ui.ScanBleActivity"
+            android:theme="@style/Theme.ScanDemo"></activity>
+        <activity
+            android:name=".friends.FriendsDetailActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+            >
+        </activity>
+
+        <activity
+            android:name=".register.RegisterActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+
+        </activity>
+        <activity
+            android:name=".register.RegisterActivityFin"
+            android:parentActivityName=".register.RegisterActivityPh"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".register.RegisterActivityPh" />
+        </activity>
+        <activity
+            android:name=".register.RegisterActivityPh"
+            android:parentActivityName=".register.RegisterActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:theme="@style/Theme.Login">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".register.RegisterActivity" />
+        </activity>
+
+        <activity android:name=".patient.DoctorList"></activity>
+        <activity android:name=".patient.PharmacistList"></activity>
+        <activity android:name=".patient.Set"></activity>
+        <activity android:name=".patient.State"></activity>
+        <activity android:name=".patient.PatientActivity"></activity>
+        <activity android:name=".patient.DoctorSessionAty"></activity>
+
+        <activity android:name=".ErrorActivity"></activity>
+
+        <activity android:name=".ui.PersonSetting"></activity>
+
+        <activity
+            android:name=".SetActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Set">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+            >
+        </activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".ui.DoctorSessionAty" />
+        <activity android:name=".ui.RecordDetail" />
+        <activity
+            android:name=".ui.Picture_select"
+            android:label="@string/title_activity_picture_select" >
+        </activity>
+
+        <!--GPS相关-->
+        <activity android:name=".citylist.Home"></activity>
+        <activity android:name=".citylist.CityList"></activity>
+        <activity android:name=".citylist.Searchactivity"></activity>
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
+        </service>
+    </application>
+
+    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <!--往sdcard中写入数据的权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <!--在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
+
+    <!--GPS相关-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_LOGS"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+
+
+    <!--手机短信验证码相关-->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <activity
+        android:name="cn.smssdk.SMSSDKUIShell"
+        android:configChanges="keyboardHidden|orientation|screenSize"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        android:windowSoftInputMode="stateHidden|adjustResize" />
+
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+</manifest>
+

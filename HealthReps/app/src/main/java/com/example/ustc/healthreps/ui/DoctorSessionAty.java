@@ -155,8 +155,8 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 		mBtnSend.setOnClickListener(this);
 		mBtnBack = (Button) findViewById(R.id.btn_back11);
 		mBtnBack.setOnClickListener(this);
-		mBtnOther = (Button) findViewById(R.id.btn_other);
-		mBtnOther.setOnClickListener(this);
+//		mBtnOther = (Button) findViewById(R.id.btn_other);
+//		mBtnOther.setOnClickListener(this);
 		
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		
@@ -193,8 +193,8 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 				back();// 结束,实际开发中，可以返回主界面
 				break;
 			case R.id.btn_other://弹出图片、文件、音频、视频选择
-//				other();
-				sendFile();
+				other();
+//				sendFile();
 				break;
 		}
 	}
@@ -205,8 +205,8 @@ public class DoctorSessionAty extends Activity implements OnClickListener{
 			AllThreads.sSendFileThread = new SendFileThread();
 			AllThreads.sSendFileThread.start();
 		}
-//		String filePath = Utils.copyDefaultHeadPhoto(this);
-		String filePath = "/1.jpg";
+		String filePath = Utils.copyDefaultHeadPhoto(this);
+//		String filePath = "/1.jpg";
 //		String filePath = "/sdcard2/1.jpg";
 		File file = new File(filePath);
 		if(file.exists()&&file.isFile()&&file.canRead()){

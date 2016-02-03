@@ -388,6 +388,15 @@ public class TCPSocket {
 			RecordFragment.sPrelistStatusHandler.obtainMessage(0, preList).sendToTarget();
 		}
 
+		//绑定结果消息
+		else if(data.getM_nFlag() == Types.BangDing){
+			BindStoreDoctor bindStoreDoctor = BindStoreDoctor.getBangDingPhaInfo(data.getM_buffer());
+			if(bindStoreDoctor.yesno){
+				//绑定药店成功
+				SearchMedicine.sBindStoreResultHandler.obtainMessage(0, "成功绑定药店").sendToTarget();
+			}
+		}
+
 		//文件标志
 		else if(data.getM_nFlag() == Types.FILETAG){
 			saveFile(data);
@@ -891,7 +900,7 @@ public class TCPSocket {
 	//发送绑定消息
 	public void sendBindStoreDoctorInfo(boolean storeOrDoctor){
 		BindStoreDoctor bindStoreDoctor;
-		if(storeOrDoctor){
+		if(!storeOrDoctor){
 			bindStoreDoctor = new BindStoreDoctor(Users.sLoginUsername,Users.sDefaultDoctor,true);
 		}
 		else {

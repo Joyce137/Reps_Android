@@ -16,10 +16,11 @@
 
         <ImageView
             android:id="@+id/back"
-            style="@style/title_right_button"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/button_above_more" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10sp"
+            android:background="@drawable/wb_back_btn"/>
 
         <TextView
             android:id="@+id/tv_above_title"
@@ -30,20 +31,21 @@
             android:textColor="#fff" />
 
         <Button
+            android:layout_marginTop="7dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="创建清单"
-            android:textSize="20dp"
+            android:textSize="23dp"
             android:textColor="@color/white"
             android:background="@color/blue"
             android:id="@+id/sendPrelistBtn" />
 
         <ImageView
             android:id="@+id/more"
-            style="@style/title_right_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/button_title_more" />
+
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+             />
     </LinearLayout>
 
     <LinearLayout

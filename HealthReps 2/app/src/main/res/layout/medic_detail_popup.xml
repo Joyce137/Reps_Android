@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"  
+    android:layout_height="wrap_content"  
+    android:gravity="center_horizontal"  
+    android:orientation="vertical"  >
+
+    
+    <LinearLayout
+    android:id="@+id/pop_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="#33999999"
+    android:orientation="vertical" >
+
+    <TextView 
+        android:id="@+id/title"
+        android:layout_marginTop="20sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="药品清单"
+        android:textSize="20sp"
+        android:textColor="#ff33b5e5"
+        android:gravity="center"
+        />
+        <View
+        android:layout_marginTop="10dp"
+        android:id="@+id/main_div_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ff0000"/>
+        
+        
+        <RelativeLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="10sp"
+            android:orientation="horizontal">
+            
+            <TextView 
+              android:id="@+id/medic_name"
+              android:layout_marginLeft="20sp"
+              android:layout_width="wrap_content"
+              android:layout_height="40sp"
+              android:layout_alignParentLeft="true"
+              android:gravity="center"
+              android:text="阿司匹林"
+              android:textColor="#ff0000"
+              android:textSize="20sp"/>
+            
+            <Button 
+              android:id="@+id/add"
+              android:layout_width="40sp"
+              android:layout_height="40sp"
+              android:layout_marginRight="20sp"
+              android:layout_alignParentRight="true"
+              android:layout_gravity="center_vertical"
+              android:text="+"
+              android:textSize="18sp"
+              android:textColor="#ff0000"/>
+            
+            
+            <EditText 
+              android:id="@+id/amount"
+              android:layout_width="60sp"
+              android:layout_height="40sp"
+              android:layout_toLeftOf="@id/add"
+              android:layout_marginRight="10sp"
+              android:layout_gravity="center_vertical"
+              android:text="0"
+              android:textColor="#ff0000"
+              android:gravity="center"
+              android:editable="false"
+              android:textSize="15sp"/>
+            
+            <Button 
+              android:id="@+id/sub"
+              android:layout_width="40sp"
+              android:layout_height="40sp"
+              android:layout_toLeftOf="@id/amount"
+              android:layout_marginRight="10sp"
+              android:layout_gravity="center_vertical"
+              android:text="-"
+              android:textSize="20sp"
+              android:textColor="#ff0000"/>
+            
+            </RelativeLayout>
+        
+        
+        <View
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ff0000"/>
+        
+        <Button 
+            android:id="@+id/sumbit"
+            android:layout_marginTop="15sp"
+            android:layout_marginBottom="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提交清单"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+        
+
+</LinearLayout>
+</RelativeLayout>

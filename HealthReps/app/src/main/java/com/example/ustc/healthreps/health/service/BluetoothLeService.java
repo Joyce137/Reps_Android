@@ -386,12 +386,10 @@ public class BluetoothLeService extends Service {
             {
                 isSAME=true;
             }*/
-            //  Log.e(TAG, MainActivity.mDeviceAddrs);
             if (device.getAddress().equals(device_name)) {
                 scanLeDevice(false);
                 Log.e(TAG, "scanLeDevice(false)");
                 if (!(Arrays.equals(scanrecordsMap.get(MainActivity.mDeviceAddress), scanRecord))) {
-                    //Log.e(TAG, MainActivity.mDeviceAddress);
                     //int i;if((scanrecordsMap.get(DeviceControlActivity.mDeviceAddress)!=null))for(i=0;i<=61;i++)Log.e(TAG,Integer.toHexString(scanRecord[i] & 0x000000ff) + ""+Integer.toHexString(scanrecordsMap.get(DeviceControlActivity.mDeviceAddress)[i] & 0x000000ff));    // Sets up UI references.
 
                     scanrecordsMap.put(device.getAddress(), scanRecord);

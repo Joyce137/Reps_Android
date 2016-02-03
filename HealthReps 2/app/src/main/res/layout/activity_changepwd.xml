@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="重置密码"
+            android:textSize="30sp"
+            android:textColor="@android:color/white"
+            android:id="@+id/registerResult"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_person_white" />
+
+        <EditText
+            android:id="@+id/ChangeUsernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Username"
+            android:textColorHint="@android:color/white"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="20sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_phone_android_white" />
+
+        <EditText
+            android:id="@+id/changeNumberText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Number"
+            android:textColorHint="@android:color/white"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="20sp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="获取验证码"
+            android:textColor="@android:color/holo_green_light"
+            android:background="@drawable/shape_button_reg"
+            android:id="@+id/pwdSMSCodeBtn" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_format_list_numbered_white" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="654123"
+            android:textColorHint="@android:color/white"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="20sp"
+            android:id="@+id/pwdSMSCodeText" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="验证"
+            android:textColor="@android:color/holo_green_light"
+            android:background="@drawable/shape_button_reg"
+            android:id="@+id/ConfirmPwdSMSCodeBtn"></Button>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/passwordLinerLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_lock_white" />
+
+
+            <EditText
+                android:id="@+id/changePasswordText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Password"
+                android:textColorHint="@android:color/white"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_lock_white" />
+
+
+            <EditText
+                android:id="@+id/changeConfirmPasswordText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Confirm Password"
+                android:textColorHint="@android:color/white"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/shape_button_reg"
+            android:text="返回登录"
+            android:textColor="@android:color/holo_green_light" />
+
+        <Button
+            android:id="@+id/changePWD_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/shape_button_reg"
+            android:text="重置密码"
+            android:textColor="@android:color/holo_green_light" />
+
+
+    </LinearLayout>
+</LinearLayout>

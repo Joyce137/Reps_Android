@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/reg_ph_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <include layout="@layout/activity_reg_timeline_ph"></include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="1dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:text="Sex:"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    />
+                <Spinner
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/spinner_gender"
+                    android:entries="@array/spingarr"
+                    android:background="@android:color/white"
+                    android:textColor="@android:color/white"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@null"
+                    android:text="Birthday Date:"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    />
+                <Button
+                    android:id="@+id/select_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="日期设置"
+                    android:textColor="@color/holo_green_dark"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:id="@+id/IDText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="ID Card Number"
+                    android:textColor="@color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:text="37163219940124723X" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:id="@+id/InsuranceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="YiBao Card Number"
+                    android:textColor="@color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:text="12345678" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:id="@+id/AddressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Address"
+                    android:textColor="@color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:text="苏州|吴中区&amp;文星广场" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:textColor="@color/white"
+                    android:hint="Myself Instructions"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:id="@+id/myInstructionEditText"
+                    android:text="hello, i am joyce.cao" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_phone_android_white" />
+
+                <EditText
+                    android:id="@+id/cellphoneNumberText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:textColor="@color/white"
+                    android:hint="Number"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:text="15150451949" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="获取验证码"
+                    android:textColor="@android:color/holo_green_light"
+                    android:background="@drawable/shape_button_reg"
+                    android:id="@+id/smscodeBtn" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_format_list_numbered_white" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="654123"
+                    android:textColor="@color/white"
+                    android:textColorHint="@android:color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="20sp"
+                    android:id="@+id/smscodeText" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:id="@+id/reg_back1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="40dp"
+                    android:background="@drawable/shape_button_reg"
+                    android:text="LAST"
+                    android:textColor="@android:color/holo_green_light" />
+                <Button
+                    android:id="@+id/reg_ph_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/shape_button_reg"
+                    android:text="SIGN"
+                    android:textColor="@android:color/holo_green_light" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

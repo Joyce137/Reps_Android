@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_marginTop="1dp"
+    android:layout_height="wrap_content" >
+
+    <TextView
+        android:id="@+id/rec_time"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:text="时间" />
+    
+    <View 
+        android:layout_width="1.5dip"
+        android:layout_height="fill_parent"
+        android:background="#f9b68b"/>
+
+    <TextView
+        android:id="@+id/rec_store_doc"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:gravity="center"
+        android:text="药店/医生" />
+    
+     <View 
+        android:layout_width="1.5dip"
+        android:layout_height="fill_parent"
+        android:background="#f9b68b"/>
+
+    <TextView
+        android:id="@+id/rec_mess"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:gravity="center"
+        android:text="记录" />
+    
+    
+    <View 
+        android:layout_width="1.5dip"
+        android:layout_height="fill_parent"
+        android:background="#f9b68b"/>
+
+    <TextView
+        android:id="@+id/rec_flag"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingBottom="10dip"
+        android:paddingTop="10dip"
+        android:gravity="center"
+        android:text="状态" />
+
+</LinearLayout>
