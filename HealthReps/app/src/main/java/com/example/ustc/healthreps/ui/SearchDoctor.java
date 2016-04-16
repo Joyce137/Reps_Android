@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -43,26 +44,20 @@ import com.example.ustc.healthreps.R;
 import com.example.ustc.healthreps.adapter.FirstClassAdapter;
 import com.example.ustc.healthreps.adapter.SecondClassAdapter;
 import com.example.ustc.healthreps.adapter.TabDoctorAdapter;
-import com.example.ustc.healthreps.adapter.TabMedicineAdapter;
 import com.example.ustc.healthreps.gps.CurLocation;
 import com.example.ustc.healthreps.gps.GPSService;
 import com.example.ustc.healthreps.citylist.CityList;
 import com.example.ustc.healthreps.model.Doctor;
 import com.example.ustc.healthreps.model.FirstClassItem;
-import com.example.ustc.healthreps.model.Medicine;
 import com.example.ustc.healthreps.model.SecondClassItem;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.repo.DocPhaRepo;
-import com.example.ustc.healthreps.repo.DoctorResult;
-import com.example.ustc.healthreps.repo.SearchInfo;
-import com.example.ustc.healthreps.serverInterface.NetPack;
 import com.example.ustc.healthreps.serverInterface.SearchUser;
 import com.example.ustc.healthreps.serverInterface.SearchUserInfo;
 import com.example.ustc.healthreps.serverInterface.Types;
 import com.example.ustc.healthreps.socket.Sockets;
 import com.example.ustc.healthreps.utils.Utils;
-
-import org.w3c.dom.Text;
+import com.example.ustc.healthreps.video.androiddecoder_log.Integration;
 
 /*
  * 2015/12/07
@@ -211,11 +206,25 @@ public class SearchDoctor extends Fragment {
 
         else if(data.startsWith("c")){
             Toast.makeText(getActivity(),data.substring(1),Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
+//            Intent i = new Intent(getActivity().getApplicationContext(), DoctorSessionAty.class);
+//            i.putExtra("doctor_name", curDoctor.getDoctorName());
+//            i.putExtra("grade_name", curDoctor.getGradeName());
+//            startActivity(i);
 
-            i.putExtra("doctor_name", curDoctor.getDoctorName());
-            i.putExtra("grade_name", curDoctor.getGradeName());
-            startActivity(i);
+            Intent intent = new Intent(getActivity().getApplicationContext(), Integration.class);
+            String a = Users.sLoginUsername;
+            String b = curDoctor.getDoctorName();
+
+            if(a==null||b==null){
+                Toast.makeText(getActivity().getApplicationContext(),"名字不能为空",Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("mName",a);
+            bundle.putString("yName",b);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
@@ -312,15 +321,13 @@ public class SearchDoctor extends Fragment {
         });
         toolbar=(Toolbar)view.findViewById(R.id.id_toolbar) ;
 
-        imageView=(ImageView)view.findViewById(R.id.iv_toolbar_set) ;
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupWindow(imageView);
-            }
-        });
-
-
+//        imageView=(ImageView)view.findViewById(R.id.iv_toolbar_set) ;
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showPopupWindow(imageView);
+//            }
+//        });
     }
 
     @Override
@@ -344,6 +351,8 @@ public class SearchDoctor extends Fragment {
             Toast.makeText(getActivity(), "Latitude:" + CurLocation.latitude + " | Longitude: " + CurLocation.lontitude, Toast.LENGTH_LONG).show();
 
         if(CurLocation.city!=null){
+            if(CurLocation.city.endsWith("市"))
+                CurLocation.city = CurLocation.city.substring(0,CurLocation.city.length()-1);
             tvCity.setText(CurLocation.city);
         }
         else {
@@ -878,23 +887,23 @@ public class SearchDoctor extends Fragment {
 
 
         //初始化医生信息，从服务器端获得
-//        SearchUser allUser = new SearchUser(Types.USER_TYPE_DOCTOR);
-//        Sockets.socket_center.sendSearchUser(allUser);
-        List <Doctor> list_d = new ArrayList <Doctor>();
-
-        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
-        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
-        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
-
-        for(int i=0;i<list_d.size();i++)
-        {
-            Doctor doc = list_d.get(i);
-            list.add(doc);
-//			temp.add(doc);
-        }
+        SearchUser allUser = new SearchUser(Types.USER_TYPE_DOCTOR);
+        Sockets.socket_center.sendSearchUser(allUser);
+//        List <Doctor> list_d = new ArrayList <Doctor>();
+//
+//        list_d.add(new Doctor("李医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("张医生", "内科", "副主任医师", "第一医院"));
+//        list_d.add(new Doctor("韩医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("王医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("赵医生", "内科", "副主任医师", "协和医院"));
+//        list_d.add(new Doctor("安医生", "内科", "副主任医师", "协和医院"));
+//
+//        for(int i=0;i<list_d.size();i++)
+//        {
+//            Doctor doc = list_d.get(i);
+//            list.add(doc);
+////			temp.add(doc);
+//        }
         doc_Adapter = new TabDoctorAdapter(getActivity().getApplicationContext(),list);
         doc_list_view.setAdapter(doc_Adapter);
 

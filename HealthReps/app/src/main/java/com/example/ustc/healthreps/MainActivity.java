@@ -1,13 +1,18 @@
 package com.example.ustc.healthreps;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,16 +27,16 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.ustc.healthreps.friends.MyFriendsActivity;
-import com.example.ustc.healthreps.health.service.DeviceControlService;
-import com.example.ustc.healthreps.health.ui.MyhealthFragment;
-import com.example.ustc.healthreps.health.ui.ScanBleActivity;
+import com.example.ustc.healthreps.health.ble.DeviceControlService;
+import com.example.ustc.healthreps.health.ble.ScanBleActivity;
+import com.example.ustc.healthreps.health.ui.BleSettingActivity;
+import com.example.ustc.healthreps.health.ui.MyhealthActivity;
 import com.example.ustc.healthreps.model.Users;
 import com.example.ustc.healthreps.threads.AllThreads;
 import com.example.ustc.healthreps.ui.FileDealActivity;
 import com.example.ustc.healthreps.ui.MedicineList;
 import com.example.ustc.healthreps.ui.SearchDoctor;
 import com.example.ustc.healthreps.ui.SearchMedicine;
-import com.example.ustc.healthreps.utils.AppManager;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout menu_my;
@@ -62,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static Context context;
 
+    //睡眠模式
+    public  static boolean isSleepBMode = false;
+
     //蓝牙相关
     private final static String TAG = MainActivity.class
             .getSimpleName();
@@ -74,7 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //BLe控制服务
     private ServiceConnection serCon;
     DeviceControlService devConService;
+    private BluetoothAdapter mBluetoothAdapter;
+
+    private static final int REQUEST_ENABLE_BT = 1;
+
     public static String str01 = "0", str02 = "0";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //添加到Activity集合
 //        AppManager.getInstance().addActivity(this);
 
-        context = this.getApplicationContext();
+        //判断是否支持ble
+        context=this;
+        initBle();
 
         final Intent intent = getIntent();
         if (intent != null) {
@@ -116,33 +132,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //检查程序是否为第一次运行
         if (checkIsFirstRun()) {
-            Intent intDet = new Intent();
-            intDet.setClass(MainActivity.this, ScanBleActivity.class);
-            startActivity(intDet);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setIcon(R.mipmap.ic_warning_amber);
+            builder.setTitle("第一次运行");
+            builder.setMessage("此设备为第一次运行，是否扫描BLE？");
+            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intDet = new Intent();
+                    intDet.setClass(MainActivity.this, ScanBleActivity.class);
+                    startActivity(intDet);
+                }
+            });
+            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "不扫描", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.show();
         } else {
             SharedPreferences sharedPreferences = this.getSharedPreferences("share", MODE_PRIVATE);
             String device_name = sharedPreferences.getString("DEVICE_NAME", "");
             Log.d(TAG, device_name);
             if (device_name.equals("")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setIcon(R.mipmap.ic_warning_amber);
+                builder.setTitle("是否扫描绑定BLE");
+                builder.setMessage("此设备还没绑定BLE，是否前去绑定？");
+                builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intDet = new Intent();
+                        intDet.setClass(MainActivity.this, ScanBleActivity.class);
+                        startActivity(intDet);
+                    }
+                });
+                builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, "不绑定", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.show();
 
-            }
-            else
-            {
-                mDeviceAddress=device_name;
-               /* devConService.mBluetoothLeService.scanLeDevice(true);
-                boolean isSAME=devConService.mBluetoothLeService.isSAME;*/
-              /*  str01=sharedPreferences.getString("NEW_HEARTRATE", "60");
-                str02=sharedPreferences.getString("NEW_STEPNUM","1000");*/
-                if (true)
-                {
-                    Log.d(TAG,"scan success!!");
-                    //   devConService.mBluetoothLeService.scanLeDevice(true);
-                }
-                else
-                {
-                    Log.d(TAG,"scan failed!!");
-                    Toast.makeText(MainActivity.this,"Sorry",Toast.LENGTH_LONG).show();
-                }
+            } else {
+                mDeviceAddress = device_name;
             }
         }
     }
@@ -156,14 +191,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (isFirstRun) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             Log.d(TAG, "第一次运行");
-            Toast.makeText(MainActivity.this, "第一次运行！", Toast.LENGTH_LONG).show();
+//            Toast.makeText(MainActivity.this, "第一次运行！", Toast.LENGTH_LONG).show();
             editor.putBoolean("isFirstRun", false);
             editor.commit();
 
 
         } else {
             Log.d(TAG, "不是第一次运行！");
-            Toast.makeText(MainActivity.this, "不是第一次运行！", Toast.LENGTH_LONG).show();
+//            Toast.makeText(MainActivity.this, "不是第一次运行！", Toast.LENGTH_LONG).show();
 
 
         }
@@ -192,12 +227,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, "bindService failed!!");
         }
     }
+
+    //是否支持BLE
+    private boolean initBle() {
+        //1.android:required="false",判断系统是否支持BLE
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "此设备不支持BLE", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setIcon(R.mipmap.ic_warning_amber);
+            builder.setTitle("退出对话框");
+            builder.setMessage("此设备不支持BLE，是否退出？");
+            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "此设备支持BLE", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "此设备不支持BLE", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.show();
+        }
+        //2.获取BluetoothAdapter
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+        //3.判断是否支持蓝牙，并打开蓝牙
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            return true;
+        }
+        return false;
+    }
     private void initView() {
         // 底部菜单5个Linearlayout
         menu_my = (LinearLayout) findViewById(R.id.ly_my);
         menu_doctor = (LinearLayout) findViewById(R.id.ly_doctor);
         menu_medicine = (LinearLayout) findViewById(R.id.ly_medicine);
-        menu_file = (LinearLayout) findViewById(R.id.ly_file);
+//        menu_file = (LinearLayout) findViewById(R.id.ly_file);
         menu_friends = (LinearLayout) findViewById(R.id.ly_friends);
 
 
@@ -205,14 +277,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_my = (ImageView) findViewById(R.id.iv_my);
         iv_doctor = (ImageView) findViewById(R.id.iv_doctor);
         iv_medicine = (ImageView) findViewById(R.id.iv_medicine);
-        iv_file = (ImageView) findViewById(R.id.iv_file);
+//        iv_file = (ImageView) findViewById(R.id.iv_file);
         iv_friends = (ImageView) findViewById(R.id.iv_friends);
 
         // 底部菜单5个菜单标题
         tv_my = (TextView) findViewById(R.id.tv_my);
         tv_doctor = (TextView) findViewById(R.id.tv_doctor);
         tv_medicine = (TextView) findViewById(R.id.tv_medicine);
-        tv_file = (TextView) findViewById(R.id.tv_file);
+//        tv_file = (TextView) findViewById(R.id.tv_file);
         tv_friends = (TextView) findViewById(R.id.tv_friends);
     }
 
@@ -222,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         menu_doctor.setOnClickListener(this);
         menu_medicine.setOnClickListener(this);
         menu_friends.setOnClickListener(this);
-        menu_file.setOnClickListener(this);
+//        menu_file.setOnClickListener(this);
     }
 
     private void initFragment(int index) {
@@ -235,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (fragmentManager.getFragments() != null && fragmentManager.getFragments().size() > 0) {
             for (Fragment cf : fragmentManager.getFragments()) {
                 if(cf instanceof FileDealActivity
-                        || cf instanceof MyhealthFragment
+                        || cf instanceof MyhealthActivity
                         || cf instanceof SearchDoctor
                         || cf instanceof SearchMedicine
                         || cf instanceof MedicineList)
@@ -251,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                } else {
 //                    transaction.show(myFragment);
 //                }
-                myFragment = new MyhealthFragment();
+                myFragment = new MyhealthActivity();
                 transaction.add(R.id.frame_content, myFragment);
                 break;
 
@@ -336,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.myInfo:
                 Log.d("MyhealthFragment", "action_share");
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, SetActivity.class);
+                intent.setClass(MainActivity.this, BleSettingActivity.class);
                 startActivity(intent);
                 break;
 
@@ -349,12 +421,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //专属药店
             case R.id.myStore:
-
+                Users.sDefaultStore = "store1";
                 break;
 
             //私人医生
             case R.id.myDoctor:
-
+                Users.sDefaultDoctor = "doctor1";
                 break;
 
             //加好友
@@ -394,14 +466,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_my.setImageResource(R.mipmap.me1);
         iv_doctor.setImageResource(R.mipmap.chat1);
         iv_medicine.setImageResource(R.mipmap.chat1);
-        iv_file.setImageResource(R.mipmap.find1);
+//        iv_file.setImageResource(R.mipmap.find1);
         iv_friends.setImageResource(R.mipmap.contact1);
 
         // TextView置为灰色
         tv_my.setTextColor(0xffA6A6A6);
         tv_doctor.setTextColor(0xffA6A6A6);
         tv_medicine.setTextColor(0xffA6A6A6);
-        tv_file.setTextColor(0xffA6A6A6);
+//        tv_file.setTextColor(0xffA6A6A6);
         tv_friends.setTextColor(0xffA6A6A6);
     }
 
@@ -424,11 +496,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tv_medicine.setTextColor(0xff008000);
                 initFragment(2);
                 break;
-            case R.id.ly_file:
-                iv_file.setImageResource(R.mipmap.find);
-                tv_file.setTextColor(0xff008000);
-                initFragment(3);
-                break;
+//            case R.id.ly_file:
+//                iv_file.setImageResource(R.mipmap.find);
+//                tv_file.setTextColor(0xff008000);
+//                initFragment(3);
+//                break;
             case R.id.ly_friends:
                 iv_friends.setImageResource(R.mipmap.contact);
                 tv_friends.setTextColor(0xff008000);

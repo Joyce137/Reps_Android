@@ -205,14 +205,14 @@ public class SearchMedicine extends Fragment {
         });
         toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
 
-        imageView = (ImageView) view.findViewById(R.id.iv_toolbar_set);
-        imageView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                showPopupWindow(imageView);
-            }
-        });
+//        imageView = (ImageView) view.findViewById(R.id.iv_toolbar_set);
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//                showPopupWindow(imageView);
+//            }
+//        });
     }
 
     //Toolbar
@@ -318,6 +318,8 @@ public class SearchMedicine extends Fragment {
             Toast.makeText(getActivity(), "Latitude:" + CurLocation.latitude + " | Longitude: " + CurLocation.lontitude, Toast.LENGTH_LONG).show();
 
         if(CurLocation.city!=null){
+            if(CurLocation.city.endsWith("市"))
+                CurLocation.city = CurLocation.city.substring(0,CurLocation.city.length()-1);
             tvCity.setText(CurLocation.city);
         }
         else {
@@ -692,15 +694,15 @@ public class SearchMedicine extends Fragment {
 
 
         //初始化药店信息
-//        SearchUser allUser = new SearchUser(Types.USER_TYPE_STORE);
-//        Sockets.socket_center.sendSearchUser(allUser);
-        List<MedicStore> list_store = new ArrayList<MedicStore>();
-        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
-        for(int i=0;i<list_store.size();i++)
-        {
-            MedicStore mstore = list_store.get(i);
-            list.add(mstore);
-        }
+        SearchUser allUser = new SearchUser(Types.USER_TYPE_STORE);
+        Sockets.socket_center.sendSearchUser(allUser);
+//        List<MedicStore> list_store = new ArrayList<MedicStore>();
+//        list_store.add(new MedicStore("万寿堂大药房","中药店","2Km"));
+//        for(int i=0;i<list_store.size();i++)
+//        {
+//            MedicStore mstore = list_store.get(i);
+//            list.add(mstore);
+//        }
 
         store_Adapter = new TabStoreAdapter(getActivity(),list);
         store_list_view.setAdapter(store_Adapter);

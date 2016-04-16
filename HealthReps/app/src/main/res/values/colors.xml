@@ -394,6 +394,10 @@
     <color name="turquoise">#40E0D0</color>
     <!-- 青绿色 -->
     <color name="mediumseagreen">#3CB371</color>
+
+    <color name="chooseColor">#f1824b</color>
+    <color name="backgroudColor">#f5f5f5</color>
+
     <!-- 中海蓝 -->
     <color name="limegreen">#32CD32</color>
     <!-- 橙绿色 -->
@@ -474,5 +478,7 @@
     <color name="div_gray">#ccc</color>
 
     <color name="backColor">#2000</color>
+
+    <color name="zongtiColor">#1b1a1a</color>
 
 </resources>

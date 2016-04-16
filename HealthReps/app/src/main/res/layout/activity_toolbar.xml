@@ -7,11 +7,61 @@
     app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:layout_scrollFlags="scroll|enterAlways">
 
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/iv_toolbar_my"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_margin="10dp"
+    android:src="@mipmap/ic_perimg"
+    app:civ_border_color="@android:color/white"
+    app:civ_border_width="1dp"
+    />
+
     <TextView
-        android:id="@+id/mytitle1Text"
+        android:id="@+id/usernameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="20dp"/>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_toolbar_set"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:layout_gravity="right"-->
+        <!--android:src="@mipmap/ic_add_circle_outline" />-->
+
+    <ImageView
+        android:id="@+id/iv_toolbar_refresh"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_refresh_white"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="状态:"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tv_toolbar_state"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="未连接"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
 
 </android.support.v7.widget.Toolbar>

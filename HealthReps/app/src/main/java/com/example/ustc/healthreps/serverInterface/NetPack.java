@@ -157,6 +157,9 @@ public class NetPack {
 		for (int i = 0; i < nDataLen; i++) {
 			sum += m_buffer[i];
 		}
+//		if(sum < 0){
+//			sum += 65536;
+//		}
 		return (int)sum % 65536;
 	}
 }

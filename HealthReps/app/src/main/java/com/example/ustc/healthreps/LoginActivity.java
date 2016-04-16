@@ -69,6 +69,11 @@ public class LoginActivity extends Activity {
         //添加到Activity集合
 //        AppManager.getInstance().addActivity(this);
 
+        //初始化布局
+        initLayout();
+        // 初始化界面
+        initView();
+
         // 接收消息
         sLoginResultHandler = new Handler() {
             @Override
@@ -90,10 +95,7 @@ public class LoginActivity extends Activity {
         if(cookieDao == null)
             cookieDao = new CookieDaoImpl(this);
 
-        //初始化布局
-        initLayout();
-        // 初始化界面
-        initView();
+
         //不是主动sign out时，检测cookie
         if(!Users.sISSignout){
             //判断cookie是否有效,有效直接跳到主页面
@@ -226,7 +228,7 @@ public class LoginActivity extends Activity {
                 userDao.addNewUserToUser(newUser);
 
                 //请求详细信息
-                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, false);
+                new UserRepo().reqUserInfo(Users.sLoginUsername, Users.sLoginUserType, true);
 
                 goToNextActivity(Users.sLoginUserType);
 

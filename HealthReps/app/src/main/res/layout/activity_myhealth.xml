@@ -14,48 +14,103 @@
         android:orientation="vertical"
         android:layout_weight="2.0">
 
-        <include
-            android:id="@+id/include_heartrate_detail"
-            layout="@layout/activity_heartrate_detail"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="gone"></include>
+        <!--<include-->
+            <!--android:id="@+id/include_heartrate_detail"-->
+            <!--layout="@layout/activity_heartrate_detail"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:visibility="gone"></include>-->
 
-        <include
-            android:id="@+id/include_stepnum_detail"
-            layout="@layout/activity_stepnum_detail"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="gone"></include>
+        <!--<include-->
+            <!--android:id="@+id/include_stepnum_detail"-->
+            <!--layout="@layout/activity_stepnum_detail"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:visibility="gone"></include>-->
+
+        <FrameLayout
+            android:id="@+id/myhealth_frame_content1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--<Button-->
+            <!--android:id="@+id/bt_myhealth_sleepmode"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:background="@drawable/shape_map_button"-->
+            <!--android:text="开启睡眠模式"-->
+            <!--android:textColor="@color/white" />-->
+            <android.support.v4.view.ViewPager
+                android:id="@+id/myhealth_frame_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </FrameLayout>
+
+
 
     </LinearLayout>
+
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2.0"
-        android:orientation="vertical"
-        android:paddingBottom="5dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:weightSum="1">
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/bt_sleepmode"
+            android:layout_marginLeft="22dp"
+            android:background="@drawable/sleep"
+            android:layout_gravity="left|center_vertical"/>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/day_week_month"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="日"
+            android:textSize="30dp"
+            android:textColor="@color/black"
+            android:layout_gravity="center|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"/>
 
-            android:background="@android:color/white"
-            app:tabIndicatorColor="@android:color/holo_green_dark"
-            app:tabSelectedTextColor="@android:color/holo_green_dark"
-            app:tabTextColor="@android:color/black" />
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/bt_myhealth_map"
+            android:background="@drawable/map" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:background="@android:color/white"
-
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>
 
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/hsksView"
+        android:orientation="horizontal">
+        <!--<include -->
+            <!--layout="@layout/activity_myinfor"-->
+            <!--></include>-->
+
+        <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/viewpager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="219dp"-->
+
+            <!--android:background="@android:color/white"-->
+
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+    </LinearLayout>
+
+
+
+
+
+    </LinearLayout>

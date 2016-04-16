@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+
+    android:layout_height="fill_parent">
+
+    <com.baidu.mapapi.map.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/bmapView"
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_map_bg"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="GPS状态:"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="不可用"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginLeft="30dp"
+                android:textSize="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="000 步"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
+
+    <!-- <ImageView
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+     android:clickable="true"
+     android:src="@mipmap/device7"
+     xmlns:android="http://schemas.android.com/apk/res/android" />-->

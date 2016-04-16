@@ -177,9 +177,8 @@ public class CircleProgressBar extends View {
     }
 
 
-    public class BarAnimation extends Animation {
+    private class BarAnimation extends Animation {
         public BarAnimation() {
-
         }
 
 

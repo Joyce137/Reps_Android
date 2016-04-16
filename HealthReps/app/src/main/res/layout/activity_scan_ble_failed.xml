@@ -70,7 +70,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/shape_button1"
                 android:text="重新搜索"
-                android:textColor="@android:color/white" />
+                android:textColor="#03a9f4" />
 
             <Button
                 android:layout_marginTop="8dp"
@@ -81,7 +81,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/shape_button1"
                 android:text="查看帮助"
-                android:textColor="@android:color/white" />
+                android:textColor="#03a9f4" />
         </RelativeLayout>
     </FrameLayout>
 

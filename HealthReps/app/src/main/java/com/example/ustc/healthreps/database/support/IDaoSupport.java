@@ -42,5 +42,5 @@ public interface IDaoSupport<DBEntity> {
 
     //执行sql语句
     ArrayList<DBEntity> executeSql(String[] columns,String sql);
-
+    ArrayList<DBEntity> executeSql(String sqlStr);
 }

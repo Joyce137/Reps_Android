@@ -475,4 +475,15 @@ public class Utils {
 				return "未知";
 		}
 	}
+
+	public static boolean checkThreeMinute(String time1, String time2){
+		String minute1Str = time1.substring(time1.length()-4,time1.length()-2);
+		String minute2Str = time2.substring(time2.length()-4,time2.length()-2);
+		int minute1 = Integer.parseInt(minute1Str);
+		int minute2 = Integer.parseInt(minute2Str);
+		if(minute2-minute1 >= 3){
+			return true;
+		}
+		return false;
+	}
 }

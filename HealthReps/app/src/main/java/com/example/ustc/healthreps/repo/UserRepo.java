@@ -18,9 +18,9 @@ public class UserRepo {
     public void reqUserInfo(String username,String type, boolean withImage){
         ReqSingleUserInfo info = new ReqSingleUserInfo();
         try{
-            info.username = Users.sLoginUsername.getBytes("GBK");
+            info.username = username.getBytes("GBK");
             info.type = Utils.changeTypeToInt(type);
-            info.isPicExist = true;
+            info.isPicExist = withImage;
         }catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

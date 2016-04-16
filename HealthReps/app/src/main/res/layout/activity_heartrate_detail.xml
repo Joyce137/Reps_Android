@@ -15,10 +15,10 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/gradient_bg"
-       ></LinearLayout>
+        android:background="@drawable/gradient_bg"></LinearLayout>
 
     <TextView
+        android:id="@+id/tv_heartrate_detaile_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,23 +26,17 @@
         android:text="55"
         android:textColor="@android:color/white"
         android:textSize="45sp" />
+
+    <!--<Button-->
+        <!--android:id="@+id/bt_sleepmode_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@drawable/shape_map_button"-->
+        <!--android:textColor="@color/white" />-->
+
+
+
 </FrameLayout>
 
-
-    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_stepnum_detail">
-
-        <com.example.administrator.view.ChartView
-
-            android:id="@+id/ly_heartrate_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="280dp"
-            android:layout_marginBottom="50dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="50dp" />
-
-
-    </FrameLayout>-->

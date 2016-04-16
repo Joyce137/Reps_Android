@@ -5,9 +5,9 @@
 
     <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="colorPrimary">#388e3c</item>
-        <item name="colorAccent">#00ff00</item>
-        <item name="colorPrimaryDark">#388e3c</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorAccent">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
 
         <!--  <item name="android:windowBackground">@color/window_background</item>-->
         <item name="android:textColor">@android:color/black</item>
@@ -15,9 +15,10 @@
 
 
     </style>
-    <style name="Theme.ScanDemo"  parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@android:color/darker_gray</item>
-        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+
+    <style name="Theme.ScanDemo" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#03a9f4</item>
+        <item name="colorPrimaryDark">#03a9f4</item>
         <item name="colorControlHighlight">#ffffff</item>
         <!--  <item name="android:windowBackground">@color/window_background</item>-->
         <item name="android:textColor">@android:color/white</item>
@@ -25,8 +26,8 @@
     </style>
 
     <style name="Theme.Device" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#4caf50</item>
-        <item name="colorPrimaryDark">#4caf50</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
     </style>
     <style name="Theme.Login" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">#388e3c</item>
@@ -38,6 +39,20 @@
         <item name="colorPrimary">#ff5722</item>
         <item name="colorPrimaryDark">#ff5722</item>
     </style>
+
+    <style name="Theme.ProFile" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="colorPrimary">#f50057</item>
+        <item name="colorPrimaryDark">#f50057</item>
+    </style>
+    <style name="Theme.MyProFile" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="colorPrimary">#03a9f4</item>
+        <item name="colorPrimaryDark">#03a9f4</item>
+    </style>
+
     <style name="Widget.CardContent" parent="android:Widget">
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -122,5 +137,20 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
+        <item name="tabSelectedTextColor">?android:textColorPrimary</item>
+    </style>
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="textAllCaps">true</item>
     </style>
 </resources>

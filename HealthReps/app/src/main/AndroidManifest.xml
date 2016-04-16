@@ -25,18 +25,14 @@
             android:label="@string/title_activity_medicine_pick_list" >
         </activity>
 
+        <activity android:name=".video.androiddecoder_log.Integration"></activity>
         <activity android:name=".BaseActivity"></activity>
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".ChangePwdActivity"></activity>
-        <activity android:name=".ui.DetailUserInfoActivity"></activity>
 
-        <activity
-            android:name=".health.ui.ScanBleFailedActivity"
-            android:theme="@style/Theme.ScanDemo"></activity>
-        <activity
-            android:name=".health.ui.ScanBleActivity"
-            android:theme="@style/Theme.ScanDemo"></activity>
+        <activity android:name=".health.ui.MyActivity"></activity>
+
         <activity
             android:name=".friends.FriendsDetailActivity"
             android:parentActivityName=".MainActivity">
@@ -87,15 +83,7 @@
 
         <activity android:name=".ui.PersonSetting"></activity>
 
-        <activity
-            android:name=".SetActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.Set">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-            >
-        </activity>
+
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
@@ -116,6 +104,42 @@
         <activity android:name=".citylist.Searchactivity"></activity>
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
         </service>
+
+        <!--蓝牙相关-->
+        <meta-data
+            android:name="com.example.ustc.healthreps"
+            android:value="LGXaCxt7OVhanvZuXiIRoD1i" />
+
+        <activity android:name=".health.ble.ScanBleActivity"
+            android:theme="@style/Theme.ScanDemo"></activity>
+        <activity android:name=".health.ble.ScanBleFailedActivity"
+            android:theme="@style/Theme.ScanDemo"></activity>
+        <activity android:name=".health.ble.DeviceListActivity"></activity>
+        <activity android:name=".health.baidumap.MapActivity"></activity>
+        <activity android:name=".MyProFileActivity"></activity>
+        <activity android:name=".ProFileActivity"></activity>
+        <activity android:name=".health.ui.BleSettingActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Set">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <service android:name=".health.ble.BluetoothLeService"></service>
+        <service android:name=".health.ble.DeviceControlService"></service>
+
+        <receiver android:name=".health.ui.MyhealthActivity$MyBroadcastReceiver01">
+            <intent-filter>
+                <action android:name="com.example.ustc.healthreps.ble.MY_BROADCAST01"></action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".health.ui.MyhealthActivity$MyBroadcastReceiver02">
+            <intent-filter>
+                <action android:name="com.example.ustc.healthreps.ble.MY_BROADCAST02"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
@@ -154,6 +178,8 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
 
+    <!--手势相关-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!--手机短信验证码相关-->
     <uses-permission android:name="android.permission.READ_CONTACTS" />

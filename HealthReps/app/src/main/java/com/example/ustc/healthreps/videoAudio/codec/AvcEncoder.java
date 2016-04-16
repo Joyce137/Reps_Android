@@ -41,6 +41,7 @@ public class AvcEncoder
             e.printStackTrace();
         }
 
+
         MediaCodecInfo codecInfo = selectCodec(MIME_TYPE);
         int colorFormat = selectColorFormat(codecInfo, MIME_TYPE);
         if(colorFormat==19){
@@ -174,7 +175,7 @@ public class AvcEncoder
     private void rotateYUV240SPfront(byte[] src,byte[] des,int width,int height)
     {
         int wh = width * height;
-        //旋转Y  
+        //旋转Y
         int k = 0;
         for(int i=0;i<width;i++) {
             for(int j=0;j<height;j++) {
@@ -194,7 +195,7 @@ public class AvcEncoder
     private void rotateYUV240SP(byte[] src,byte[] des,int width,int height)
     {
         int wh = width * height;
-        //旋转Y  
+        //旋转Y
         int k = 0;
         for(int i=0;i<width;i++) {
             for(int j=0;j<height;j++) {
@@ -232,12 +233,12 @@ public class AvcEncoder
         }
     }
     private void YV12toYUV420PackedSemiPlanar(byte[] input, byte[] output, int width, int height) {
-        /* 
+        /*
          * COLOR_TI_FormatYUV420PackedSemiPlanar is NV12
          * We convert by putting the corresponding U and V bytes together (interleaved).
          */
-        int frameSize = width * height;//final 
-        int qFrameSize = width * height/4;//final 
+        int frameSize = width * height;//final
+        int qFrameSize = width * height/4;//final
 
         System.arraycopy(input, 0, output, 0, frameSize);
         for (int i = 0; i < (qFrameSize); i++) {
@@ -248,7 +249,7 @@ public class AvcEncoder
     private void rotateYUV240SPSemifront(byte[] src,byte[] des,int width,int height)
     {
         int wh = width * height;
-        //旋转Y  
+        //旋转Y
         int k = 0;
         for(int i=0;i<width;i++) {
             for(int j=0;j<height;j++) {
@@ -268,7 +269,7 @@ public class AvcEncoder
     private void rotateYUV240SPSemi(byte[] src,byte[] des,int width,int height)
     {
         int wh = width * height;
-        //旋转Y  
+        //旋转Y
         int k = 0;
         for(int i=0;i<width;i++) {
             for(int j=0;j<height;j++) {

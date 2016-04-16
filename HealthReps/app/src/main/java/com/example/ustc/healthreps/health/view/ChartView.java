@@ -35,7 +35,7 @@ public class ChartView extends View {
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);//重写onDraw方法
 
-        //canvas.drawColor(Color.WHITE);//设置背景颜色
+       /* //canvas.drawColor(Color.WHITE);//设置背景颜色
         Paint paint= new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);//去锯齿
@@ -80,9 +80,9 @@ public class ChartView extends View {
         canvas.drawLine(XPoint+XLength,YPoint,XPoint+XLength-6,YPoint-3,paint);    //箭头
         canvas.drawLine(XPoint+XLength,YPoint,XPoint+XLength-6,YPoint+3,paint);
         paint.setTextSize(16);
-        canvas.drawText(Title, 150, 50, paint);
+        canvas.drawText(Title, 150, 50, paint);*/
     }
-    private int YCoord(String y0)  //计算绘制时的Y坐标，无数据时返回-999
+   /* private int YCoord(String y0)  //计算绘制时的Y坐标，无数据时返回-999
     {
         int y;
         try
@@ -101,5 +101,5 @@ public class ChartView extends View {
         {
         }
         return y;
-    }
+    }*/
 }

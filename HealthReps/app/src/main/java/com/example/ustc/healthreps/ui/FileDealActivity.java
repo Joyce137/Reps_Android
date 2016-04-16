@@ -39,6 +39,11 @@ public class FileDealActivity extends Fragment {
 	}
 
 	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		initview();
@@ -108,7 +113,7 @@ public class FileDealActivity extends Fragment {
 	}
 	
 	private void loadFragment(int type) {
-		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+		FragmentManager fragmentManager = getChildFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		if (type == RECORD_FRAGMENT_TYPE) {
 //			if (recordFragment == null) {

@@ -54,7 +54,7 @@ public class MyFriendsActivity extends Fragment {
         fragments.add(new FriendsListFragment());
 
         FragmentAdapter adapter =
-                new FragmentAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
+                new FragmentAdapter(getChildFragmentManager(), fragments, titles);
         mViewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setTabsFromPagerAdapter(adapter);

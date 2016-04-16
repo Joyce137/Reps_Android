@@ -2,7 +2,6 @@ package com.example.ustc.healthreps.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.ustc.healthreps.utils.AppPath;
 
 /**
  * Created by CaoRuijuan on 12/22/15.
@@ -108,7 +107,7 @@ public class DBConstants {
     //蓝牙数据库
     public static final String DB_NAME_BLE = "ble.db";
     //用户蓝牙数据
-    public static String TABLE_BLE = "_bledata";
+    public static String TABLE_BLE = "test" + "_bledata";
     public static final String TABLE_BLE_KEY = "id";
     public static final String BLE_DATATIME = "datatime";
     public static final String BLE_HEARTRATE = "heartrate";
@@ -122,10 +121,33 @@ public class DBConstants {
             BLE_DATATIME + " text not null, "+
             BLE_HEARTRATE + " text not null, "+
             BLE_STEPNUM + " text not null, "+
-            BLE_CALORIE + " text not null);"+
-            BLE_AMUTOFERCE + " text not null);";
+            BLE_CALORIE + " text, "+
+            BLE_AMUTOFERCE + " text);";
     //删除ble表
     public static final String BLE_DB_DROP = "drop table if exists "+TABLE_BLE;
+
+    public static String createBleStr(String userName){
+        return "create table "+ userName +
+                TABLE_BLE + " ("+
+                TABLE_BLE_KEY + " integer primary key autoincrement, "+
+                BLE_DATATIME + " text not null, "+
+                BLE_HEARTRATE + " text not null, "+
+                BLE_STEPNUM + " text not null, "+
+                BLE_CALORIE + " text, "+
+                BLE_AMUTOFERCE + " text);";
+    }
+
+    //心率数据表
+    public static final String TABLE_HEARTRATE = "heartRateData";
+    //创建heartRateData表
+    public static String HEARTBEAT_TABLE_CREATE = "create table "+
+            TABLE_HEARTRATE + " ("+
+            TABLE_BLE_KEY + " integer primary key autoincrement, "+
+            BLE_DATATIME + " text not null, "+
+            BLE_HEARTRATE + " text not null);";
+    //删除ble表
+    public static final String HEARTBEAT_TABLE_DROP = "drop table if exists "+TABLE_HEARTRATE;
+
 
     //数据库版本
     public static final int DB_VERSION = 1;

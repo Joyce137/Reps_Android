@@ -22,6 +22,13 @@ public class DBManagerForNew {
                 dbHelper = new DBHelperForNew(context,DBConstants.DB_NAME_USER,
                         DBConstants.COOKIE_DB_CREATE,DBConstants.COOKIE_DB_DROP);
                 break;
+
+            //ble数据库
+            case "ble":
+                dbHelper = new DBHelperForNew(context,DBConstants.DB_NAME_BLE,
+                        DBConstants.BLE_DB_CREATE,DBConstants.BLE_DB_DROP);
+                break;
+
             default:
                 dbHelper = null;
                 break;

@@ -276,6 +276,22 @@ public class DaoSupportImpl<DBEntity> implements IDaoSupport<DBEntity> {
         ArrayList<DBEntity> list = new ArrayList<DBEntity>();
         sqlStr = "select *" + " from " + DBConstants.TABLE_Medicine + sqlStr;
         db.beginTransaction();
+        Cursor cursor = db.rawQuery(sqlStr, null);
+
+        if (cursor != null && cursor.getCount() > 0)
+            while(cursor.moveToNext()) {
+                DBEntity entity = getInstance();
+                fillField(cursor, entity);
+                list.add(entity);
+            }
+        db.endTransaction();
+        return list;
+    }
+
+    @Override
+    public ArrayList<DBEntity> executeSql(String sqlStr) {
+        ArrayList<DBEntity> list = new ArrayList<DBEntity>();
+        db.beginTransaction();
         Cursor cursor = db.rawQuery(sqlStr,null);
 
         if (cursor != null && cursor.getCount() > 0)

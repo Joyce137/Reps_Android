@@ -1,7 +1,5 @@
 package com.example.ustc.healthreps.videoAudio.codec;
 
-import com.example.ustc.healthreps.videoAudio.androiddecoder_log.Utils;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -19,7 +17,7 @@ public class Decoder {
 	private MediaCodec mMediaDecoder;
 	private int mFrameIndex = 0;
 
-	public Decoder(Surface surface, String mime, int width, int height, int bitrate, int framerate){
+	public Decoder(Surface surface,String mime,int width, int height, int bitrate, int framerate){
 		Log.d(TAG,"setupDecoder surface:"+surface+" mime:"+mime+" w:"+width+" h:"+height);
 		try {
 			mMediaDecoder = MediaCodec.createDecoderByType(mime);
